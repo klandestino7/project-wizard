@@ -43,6 +43,8 @@ public sealed class LockOnSystem : Component
 	// ─── Toggle ───────────────────────────────────────────────────────
 	public void ToggleLockOn()
 	{
+		if ( Player is null ) return;
+
 		if ( IsLockedOn )
 		{
 			ClearLockOn();
