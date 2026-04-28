@@ -9,7 +9,7 @@ public sealed class ImpedimentaSpell : BaseSpell
 {
 	private static readonly float[] SlowByTier     = { 0.5f, 0.6f, 0.7f };
 	private static readonly float[] DurationByTier = { 2f, 2.5f, 3f };
-	private static readonly float[] AoEByTier      = { 0f, 2f * 39.37f, 3f * 39.37f }; // metros → unidades s&box
+	private static readonly float[] AoEByTier      = { 0f, 2f * 39.37f, 3f * 39.37f }; // metros para unidades do engine (aprox 1m = 39u)
 
 	public override string  SpellName      => "Impedimenta";
 	public override float   ManaCost       => 30f;

@@ -5,176 +5,243 @@
 @namespace Warlocks.UI
 
 <root>
+@if ( IsOpen && Player != null && Deck != null )
+{
+	<div class="buy-overlay">
 
-	@if ( IsVisible && Player != null )
-	{
-		<div class="buy-menu @( IsVisible ? "visible" : "" )">
-			<div class="buy-header">
-				<div class="buy-title">FASE DE COMPRA</div>
-				<div class="buy-galleons">@Player.Galleons G</div>
-			</div>
-
-			<div class="buy-slots">
-
-				@* Slot Q *@
-				<div class="buy-slot">
-					<div class="slot-key">Q</div>
-					@if ( Player.AbilityQ != null )
-					{
-						<div class="slot-name">@Player.AbilityQ.AbilityName</div>
-						<div class="slot-tier">Tier @Player.AbilityQ.CurrentTier</div>
-						@if ( Player.AbilityQ.CurrentTier < 1 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityQ.Tier1Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityQ, 1) )>
-								T1 — @Player.AbilityQ.Tier1Cost G
-							</button>
-						}
-						else if ( Player.AbilityQ.CurrentTier < 2 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityQ.Tier2Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityQ, 2) )>
-								T2 — @Player.AbilityQ.Tier2Cost G
-							</button>
-						}
-						else
-						{
-							<div class="slot-maxed">MAX</div>
-						}
-					}
-					else
-					{
-						<div class="slot-empty">—</div>
-					}
-				</div>
-
-				@* Slot E *@
-				<div class="buy-slot">
-					<div class="slot-key">E</div>
-					@if ( Player.AbilityE != null )
-					{
-						<div class="slot-name">@Player.AbilityE.AbilityName</div>
-						<div class="slot-tier">Tier @Player.AbilityE.CurrentTier</div>
-						@if ( Player.AbilityE.CurrentTier < 1 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityE.Tier1Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityE, 1) )>
-								T1 — @Player.AbilityE.Tier1Cost G
-							</button>
-						}
-						else if ( Player.AbilityE.CurrentTier < 2 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityE.Tier2Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityE, 2) )>
-								T2 — @Player.AbilityE.Tier2Cost G
-							</button>
-						}
-						else
-						{
-							<div class="slot-maxed">MAX</div>
-						}
-					}
-					else
-					{
-						<div class="slot-empty">—</div>
-					}
-				</div>
-
-				@* Slot R *@
-				<div class="buy-slot">
-					<div class="slot-key">R</div>
-					@if ( Player.AbilityR != null )
-					{
-						<div class="slot-name">@Player.AbilityR.AbilityName</div>
-						<div class="slot-tier">Tier @Player.AbilityR.CurrentTier</div>
-						@if ( Player.AbilityR.CurrentTier < 1 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityR.Tier1Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityR, 1) )>
-								T1 — @Player.AbilityR.Tier1Cost G
-							</button>
-						}
-						else if ( Player.AbilityR.CurrentTier < 2 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityR.Tier2Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityR, 2) )>
-								T2 — @Player.AbilityR.Tier2Cost G
-							</button>
-						}
-						else
-						{
-							<div class="slot-maxed">MAX</div>
-						}
-					}
-					else
-					{
-						<div class="slot-empty">—</div>
-					}
-				</div>
-
-				@* Slot F *@
-				<div class="buy-slot">
-					<div class="slot-key">F</div>
-					@if ( Player.AbilityF != null )
-					{
-						<div class="slot-name">@Player.AbilityF.AbilityName</div>
-						<div class="slot-tier">Tier @Player.AbilityF.CurrentTier</div>
-						@if ( Player.AbilityF.CurrentTier < 1 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityF.Tier1Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityF, 1) )>
-								T1 — @Player.AbilityF.Tier1Cost G
-							</button>
-						}
-						else if ( Player.AbilityF.CurrentTier < 2 )
-						{
-							<button class="btn-upgrade @( CanAfford(Player.AbilityF.Tier2Cost) ? "" : "disabled" )"
-									onclick=@( () => TryUpgrade(Player.AbilityF, 2) )>
-								T2 — @Player.AbilityF.Tier2Cost G
-							</button>
-						}
-						else
-						{
-							<div class="slot-maxed">MAX</div>
-						}
-					}
-					else
-					{
-						<div class="slot-empty">—</div>
-					}
-				</div>
-
-			</div>
-
-			<div class="buy-hint">[ B ] Fechar</div>
+		<div class="buy-header">
+			<div class="buy-title">ARSENAL MÁGICO</div>
+			<div class="buy-galleons"><span class="gal-icon">G</span> @Player.Galleons</div>
+			<div class="buy-hint-close">[ B ] Fechar</div>
 		</div>
-	}
 
+		<div class="buy-body">
+
+			@* ── Catálogo ──────────────────────────────────────── *@
+			<div class="catalog-panel">
+
+				@RenderCategory( "Ofensiva" )
+				@RenderCategory( "Controle" )
+				@RenderCategory( "Defesa" )
+				@RenderCategory( "Utilidade" )
+
+			</div>
+
+			@* ── Painel direito ─────────────────────────────────── *@
+			<div class="right-panel">
+
+				@* Detalhe da spell selecionada *@
+				@if ( SelectedIdx >= 0 )
+				{
+					@RenderDetail( SelectedIdx )
+				}
+				else
+				{
+					<div class="detail-panel detail-empty">Selecione um feitiço</div>
+				}
+
+				@* Deck: 4 slots *@
+				<div class="deck-panel">
+					<div class="deck-label">DECK ATIVO</div>
+					<div class="deck-slots">
+						@RenderDeckSlot( "Q", 0 )
+						@RenderDeckSlot( "E", 1 )
+						@RenderDeckSlot( "R", 2 )
+						@RenderDeckSlot( "F", 3 )
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+}
 </root>
 
 @code {
 	WizardPlayer Player => WizardPlayer.Local;
-	RoundManager Round => RoundManager.Instance;
+	RoundManager Round  => RoundManager.Instance;
+	SpellsDeck   Deck   => Player?.SpellsDeck;
 
-	bool IsVisible => Round?.State == RoundState.BuyPhase
-		&& Input.Down( "BuyMenu" );
+	bool IsOpen => Round?.State == RoundState.BuyPhase && Input.Down( "BuyMenu" );
 
-	bool CanAfford( int cost ) => Player != null && Player.Galleons >= cost;
+	int SelectedIdx = -1;  // índice em SpellCatalog.All
+	int PendingSlot = -1;  // slot aguardando atribuição
 
-	void TryUpgrade( BaseAbility ability, int tier )
+	// ─── Render helpers ────────────────────────────────────────
+
+	RenderFragment RenderCategory( string cat ) => __builder =>
 	{
-		if ( ability == null || !CanAfford( tier == 1 ? ability.Tier1Cost : ability.Tier2Cost ) )
+		bool hasAny = false;
+		for ( int i = 0; i < SpellCatalog.All.Length; i++ )
+			if ( SpellCatalog.All[i].Category == cat ) { hasAny = true; break; }
+		if ( !hasAny ) return;
+
+		<div class="catalog-category">
+			<div class="cat-label">@cat</div>
+			<div class="cat-spells">
+			@for ( int i = 0; i < SpellCatalog.All.Length; i++ )
+			{
+				var entry = SpellCatalog.All[i];
+				if ( entry.Category != cat ) continue;
+				int idx    = i;
+				bool owned = Deck.IsOwned( idx );
+				int  tier  = Deck.GetTier( idx );
+				bool sel   = SelectedIdx == idx;
+				<div class="spell-card @( owned ? "owned" : "" ) @( sel ? "selected" : "" )"
+				     @* style="--accent: @entry.AccentColor" *@
+				     onclick=@( () => SelectSpell( idx ) )>
+					<div class="sc-name">@entry.Name</div>
+					<div class="sc-meta">
+						<span class="sc-cost">@( owned ? $"T{tier}" : $"{entry.BuyCost}G" )</span>
+						<span class="sc-cd">@( entry.BaseCooldown )s</span>
+					</div>
+					@if ( owned )
+					{
+						<div class="sc-pips">
+							<div class="pip @( tier >= 1 ? "lit" : "" )"></div>
+							<div class="pip @( tier >= 2 ? "lit" : "" )"></div>
+						</div>
+					}
+				</div>
+			}
+			</div>
+		</div>
+	};
+
+	RenderFragment RenderDetail( int idx ) => __builder =>
+	{
+		var e     = SpellCatalog.All[idx];
+		bool own  = Deck.IsOwned( idx );
+		int  tier = Deck.GetTier( idx );
+		int  ref_ = RefundOf( idx );
+		bool canBuy  = Player.Galleons >= e.BuyCost;
+		bool canTier1 = Player.Galleons >= e.Tier1Cost;
+		bool canTier2 = Player.Galleons >= e.Tier2Cost;
+
+		<div class="detail-panel" 
+		@* style="--accent: @e.AccentColor" *@
+		>
+			<div class="det-name">@e.Name</div>
+			<div class="det-cat">@e.Category</div>
+			<div class="det-desc">@e.Description</div>
+			<div class="det-stats">
+				<div class="stat-row"><span>CD</span><span>@( e.BaseCooldown )s</span></div>
+				<div class="stat-row"><span>Mana</span><span>@( e.ManaCost > 0f ? $"{e.ManaCost}" : "—" )</span></div>
+			</div>
+			<div class="det-actions">
+				@if ( !own )
+				{
+					<button class="btn-buy @( canBuy ? "" : "disabled" )"
+					        onclick=@( () => Buy( idx ) )>
+						COMPRAR — @e.BuyCost G
+					</button>
+				}
+				else
+				{
+					@if ( tier < 1 )
+					{
+						<button class="btn-upgrade @( canTier1 ? "" : "disabled" )"
+						        onclick=@( () => Upgrade( idx, 1 ) )>
+							TIER 1 — @e.Tier1Cost G
+						</button>
+					}
+					@if ( tier < 2 )
+					{
+						<button class="btn-upgrade @( canTier2 ? "" : "disabled" )"
+						        onclick=@( () => Upgrade( idx, 2 ) )>
+							TIER 2 — @e.Tier2Cost G
+						</button>
+					}
+					@if ( tier >= 2 )
+					{
+						<div class="det-maxed">MAXIMIZADO</div>
+					}
+					<button class="btn-sell" onclick=@( () => Sell( idx ) )>
+						VENDER (+@ref_ G)
+					</button>
+				}
+			</div>
+		</div>
+	};
+
+	RenderFragment RenderDeckSlot( string key, int slot ) => __builder =>
+	{
+		int  cidx   = Deck.GetSlotIdx( slot );
+		bool filled = cidx >= 0;
+		bool pend   = PendingSlot == slot;
+		string name   = filled ? SpellCatalog.All[cidx].Name : "";
+		string accent = filled ? SpellCatalog.All[cidx].AccentColor : "#444";
+		int    stier  = filled ? Deck.GetTier( cidx ) : 0;
+
+		<div class="deck-slot @( pend ? "pending" : "" ) @( filled ? "filled" : "" )"
+		     @* style="--accent: @accent" *@
+		     onclick=@( () => ClickSlot( slot ) )>
+			<div class="ds-key">@key</div>
+			@if ( filled )
+			{
+				<div class="ds-name">@name</div>
+				<div class="ds-tier">T@stier</div>
+				<button class="ds-remove" onclick=@( () => Unassign( slot ) )>✕</button>
+			}
+			else
+			{
+				<div class="ds-empty">@( pend ? "← clique na spell" : "vazio" )</div>
+			}
+		</div>
+	};
+
+	// ─── Lógica de seleção ──────────────────────────────────────
+
+	void SelectSpell( int idx )
+	{
+		if ( PendingSlot >= 0 )
+		{
+			Deck?.ClientAssign( PendingSlot, idx );
+			PendingSlot = -1;
 			return;
-		ability.TryUpgrade( tier );
+		}
+		SelectedIdx = SelectedIdx == idx ? -1 : idx;
 	}
 
-	protected override int BuildHash() => System.HashCode.Combine(
+	void ClickSlot( int slot )
+	{
+		if ( PendingSlot == slot ) { PendingSlot = -1; return; }
+
+		if ( SelectedIdx >= 0 && Deck != null && Deck.IsOwned( SelectedIdx ) )
+		{
+			Deck.ClientAssign( slot, SelectedIdx );
+			SelectedIdx = -1;
+		}
+		else
+		{
+			PendingSlot = slot;
+		}
+	}
+
+	// ─── Ações ──────────────────────────────────────────────────
+
+	void Buy( int idx )     { Deck?.ClientBuy( idx ); }
+	void Upgrade( int idx, int tier ) { Deck?.ClientUpgrade( idx, tier ); }
+	void Sell( int idx )    { Deck?.ClientSell( idx ); if ( SelectedIdx == idx ) SelectedIdx = -1; }
+	void Unassign( int slot ) { Deck?.ClientUnassign( slot ); }
+
+	int RefundOf( int idx )
+	{
+		if ( Deck == null || idx < 0 || idx >= SpellCatalog.All.Length ) return 0;
+		var e    = SpellCatalog.All[idx];
+		int tier = Deck.GetTier( idx );
+		int r    = e.BuyCost / 2;
+		if ( tier >= 1 ) r += e.Tier1Cost / 2;
+		if ( tier >= 2 ) r += e.Tier2Cost / 2;
+		return r;
+	}
+
+	protected override int BuildHash() => HashCode.Combine(
 		Round?.State,
 		Player?.Galleons,
-		Player?.AbilityQ?.CurrentTier,
-		Player?.AbilityE?.CurrentTier,
-		Player?.AbilityR?.CurrentTier,
-		Player?.AbilityF?.CurrentTier,
-		IsVisible
+		Deck?.OwnedMask,
+		Deck?.Slot0Idx,
+		SelectedIdx,
+		IsOpen
 	);
 }

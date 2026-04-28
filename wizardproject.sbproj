@@ -1,8 +1,8 @@
 {
-  "Title": "WizardProject",
+  "Title": "Warlocks",
   "Type": "game",
-  "Org": "local",
-  "Ident": "wizardproject",
+  "Org": "nxtstudio",
+  "Ident": "warlocks",
   "Schema": 1,
   "IncludeSourceFiles": false,
   "Resources": null,
@@ -11,7 +11,7 @@
   "Mounts": null,
   "IsStandaloneOnly": false,
   "Metadata": {
-    "MaxPlayers": 64,
+    "MaxPlayers": 10,
     "MinPlayers": 1,
     "TickRate": 50,
     "GameNetworkType": "Multiplayer",
@@ -28,6 +28,7 @@
       "Keyboard": false,
       "VR": false,
       "Gamepad": false
-    }
+    },
+    "LaunchMode": "Normal"
   }
 }

@@ -197,20 +197,6 @@
         "__guid": "37b315dc-bc2d-4f70-ac19-0317ac301a6a",
         "__enabled": true,
         "Flags": 0,
-        "AbilityE": {
-          "_type": "component",
-          "component_id": "707ec3a2-893b-4650-b598-89b7b5b3dce9",
-          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
-          "component_type": "ProtegoAbility"
-        },
-        "AbilityF": null,
-        "AbilityQ": {
-          "_type": "component",
-          "component_id": "3d3c767c-a94f-438b-926d-9ee49e86c739",
-          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
-          "component_type": "StupefyAbility"
-        },
-        "AbilityR": null,
         "BodyRenderer": null,
         "Camera": null,
         "CharacterController": null,
@@ -247,52 +233,10 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "Shield": 0,
+        "SpellsDeck": null,
         "Team": "None",
-        "WandAttack": {
-          "_type": "component",
-          "component_id": "d7c4b582-d279-44d6-ac12-739e1f49aee2",
-          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
-          "component_type": "WandAttack"
-        },
+        "Wand": null,
         "WandHolder": null
-      },
-      {
-        "__type": "WandAttack",
-        "__guid": "d7c4b582-d279-44d6-ac12-739e1f49aee2",
-        "__enabled": true,
-        "Flags": 0,
-        "BaseDamage": 40,
-        "BeamEffectPrefab": {
-          "_type": "gameobject",
-          "prefab": "prefabs/particles/stupefy_trail.prefab"
-        },
-        "FireRate": 3,
-        "HeadshotDamage": 80,
-        "HitEffectPrefab": null,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Range": 5000
-      },
-      {
-        "__type": "StupefyAbility",
-        "__guid": "3d3c767c-a94f-438b-926d-9ee49e86c739",
-        "__enabled": true,
-        "Flags": 0,
-        "AbilityName": "Stupefy",
-        "CurrentTier": 0,
-        "ManaCost": 20,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Tier1Cost": 400,
-        "Tier2Cost": 1000
       },
       {
         "__type": "DodgeSystem",
@@ -306,23 +250,6 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "Stamina": 100
-      },
-      {
-        "__type": "ProtegoAbility",
-        "__guid": "707ec3a2-893b-4650-b598-89b7b5b3dce9",
-        "__enabled": true,
-        "Flags": 0,
-        "AbilityName": "Protego",
-        "CurrentTier": 0,
-        "ManaCost": 20,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Tier1Cost": 400,
-        "Tier2Cost": 1000
       },
       {
         "__type": "LockOnSystem",
@@ -398,6 +325,42 @@
           "_type": "gameobject",
           "prefab": "prefabs/wand/wandbase_default.prefab"
         }
+      },
+      {
+        "__type": "Wand",
+        "__guid": "961daafa-dead-40e1-b985-fb0fe3be75d1",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "SpellsDeck",
+        "__guid": "bde4e625-42e1-424e-927f-0fa91f25e6e4",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "ProtegoComponent",
+        "__guid": "c5484f28-0e53-4012-aa42-c11b1fc9dc62",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
       }
     ],
     "Children": [
@@ -2256,7 +2219,7 @@
             ]
           },
           {
-            "__guid": "56e12b0e-2fb6-4859-8279-fb6c41f8b32c",
+            "__guid": "33085862-46db-493e-be62-f498ff625c9b",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -2273,7 +2236,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "d4976ad8-ad5d-4c7f-b833-f79ef815218d",
+                "__guid": "41c7a337-563f-4ae7-ba58-9add6f57507f",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2325,7 +2288,7 @@
             "Children": []
           },
           {
-            "__guid": "ce8b32a5-bcb6-40d5-a8a5-ad329e571ed9",
+            "__guid": "63e2960e-1917-4013-adc7-9b87f98496bc",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -2342,7 +2305,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "cec30c01-fd0e-4cb1-9b7c-92a8dc898a5a",
+                "__guid": "da0ea365-fb64-48cf-abbe-16963a4836b7",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2394,7 +2357,7 @@
             "Children": []
           },
           {
-            "__guid": "d15c0ee9-a203-4fcb-aa94-aac83f51230e",
+            "__guid": "e0c0e238-77c3-4e9c-9ff8-4da6fc846d12",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -2411,7 +2374,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "399dd8ad-e547-4816-a7db-b61ad182373c",
+                "__guid": "d79714fa-e113-489b-9144-e29d81f72a89",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2463,7 +2426,7 @@
             "Children": []
           },
           {
-            "__guid": "0c62780f-a32c-4f2c-a7ee-86bf3b3900df",
+            "__guid": "b9d63dc6-69c9-4f75-bcf2-a2a461aa304c",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -2480,7 +2443,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "2d7479b7-c733-46e0-81ce-933cae7bc03e",
+                "__guid": "69c803c4-d9c0-4cea-bb7c-8cf02484d022",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2532,7 +2495,7 @@
             "Children": []
           },
           {
-            "__guid": "a05553ad-65c1-4f4e-846f-c7ef9ce5bede",
+            "__guid": "afe6e784-7a12-43e2-8832-cffb3abe5bf6",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -2549,7 +2512,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "24ef7d7c-c17a-4acb-be1f-92468dad1ea9",
+                "__guid": "04a26c2e-e910-48ee-86a7-664ed8fe4c99",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,

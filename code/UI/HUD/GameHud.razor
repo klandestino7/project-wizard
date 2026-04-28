@@ -17,10 +17,10 @@
 
 			@* Abilities Q E R F *@
 			<div class="abilities">
-				@RenderAbilitySlot( "Q", Player.AbilityQ )
-				@RenderAbilitySlot( "E", Player.AbilityE )
-				@RenderAbilitySlot( "R", Player.AbilityR )
-				@RenderAbilitySlot( "F", Player.AbilityF )
+				@RenderAbilitySlot( "Q", _deck.GetSlot(0) )
+				@RenderAbilitySlot( "E", _deck.GetSlot(1) )
+				@RenderAbilitySlot( "R", _deck.GetSlot(2) )
+				@RenderAbilitySlot( "F", _deck.GetSlot(3) )
 			</div>
 
 			@* Itens *@
@@ -85,6 +85,7 @@
 
 @code {
 	WizardPlayer Player => WizardPlayer.Local;
+	SpellsDeck _deck => Player.SpellsDeck;
 	RoundManager Round => RoundManager.Instance;
 
 	HorcruxSite PlantedHorcrux => Game.ActiveScene
@@ -114,15 +115,15 @@
 		_ => ""
 	};
 
-	RenderFragment RenderAbilitySlot( string key, BaseAbility ability ) => __builder =>
+	RenderFragment RenderAbilitySlot( string key, BaseSpell spell ) => __builder =>
 	{
-		bool ready = ability?.IsReady ?? true;
+		bool ready = spell?.IsReady ?? true;
 		<div class="ability-slot @( ready ? "ready" : "cooling" )">
 			<div class="ability-key">@key</div>
-			<div class="ability-name">@( ability?.AbilityName ?? "–" )</div>
+			<div class="ability-name">@( spell?.SpellName ?? "–" )</div>
 			@if ( !ready )
 			{
-				<div class="ability-cd">@( ability?.CooldownRemaining.ToString( "0.0" ) )s</div>
+				<div class="ability-cd">@( spell?.CooldownRemaining.ToString( "0.0" ) )s</div>
 			}
 		</div>
 	};
@@ -138,8 +139,6 @@
 	protected override int BuildHash() => System.HashCode.Combine(
 		Player?.Galleons,
 		Player?.IsAlive,
-		Player?.AbilityQ?.CooldownRemaining,
-		Player?.AbilityE?.CooldownRemaining,
 		Round?.TimeRemaining,
 		Round?.State
 	);
