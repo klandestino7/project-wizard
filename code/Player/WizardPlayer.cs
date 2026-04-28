@@ -60,7 +60,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( !IsAlive ) return;
 
-		// HandleLook();
+		HandleLook();
 		HandleAbilityInput();
 		HandleInteractInput();
 
@@ -71,7 +71,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	protected override void OnFixedUpdate()
 	{
 		if ( IsProxy || !IsAlive ) return;
-		// HandleMovement();
+		HandleMovement();
 	}
 
 	// ─── Input: Look ──────────────────────────────────────────────────

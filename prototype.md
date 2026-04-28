@@ -1234,12 +1234,12 @@ public partial class SpellUpgradeSystem : Entity
 
 **Deliverables:**
 - [x] Movimento básico de wizard (WASD, jump, crouch)
-- [ ] Sistema de varinha (ataque básico funcionando)
-- [ ] 2 wizards jogáveis com 4 abilities cada
+- [x] Sistema de varinha (ataque básico funcionando) — `WandAttack.cs` hitscan 40/80 dmg
+- [~] 2 wizards jogáveis com 4 abilities cada — 3 abilities: Q Stupefy, E Protego, R Apparition (falta slot F)
 - [ ] 1 mapa simples (3 sites)
-- [ ] Round system básico (buy phase → combat → reset)
-- [ ] UI mínima (HP, ability cooldowns, round timer)
-- [ ] Sistema de bomb plant/defuse
+- [x] Round system básico (buy phase → combat → reset) — `RoundManager.cs`
+- [x] UI mínima (HP, ability cooldowns, round timer) — `GameHud.razor` + `BuyMenu.razor`
+- [x] Sistema de bomb plant/defuse — `HorcruxSite.cs` plant 3s / defuse 7s / fuse 45s
 - [ ] Networking básico (2 players testando)
 
 **Milestone:** 2v2 playable match
@@ -1409,27 +1409,27 @@ public partial class SpellUpgradeSystem : Entity
 
 ### Próximos Passos Imediatos
 
-**Semana 1:**
-1. Setup S&Box project
-2. Prototipo de movimento de wizard
-3. Ataque básico de varinha funcional
+**Semana 1:** ✅
+1. ~~Setup S&Box project~~
+2. ~~Prototipo de movimento de wizard~~
+3. ~~Ataque básico de varinha funcional~~
 
-**Semana 2:**
-1. 1 habilidade projectile (Stupefy)
-2. 1 habilidade defensive (Protego)
-3. Cooldown system
+**Semana 2:** ✅
+1. ~~1 habilidade projectile (Stupefy)~~
+2. ~~1 habilidade defensive (Protego)~~
+3. ~~Cooldown system~~
 
 **Semana 3-4:**
 1. Arena teste simples
-2. Round system básico (timer, reset)
+2. ~~Round system básico (timer, reset)~~
 3. Networking 2 players
 4. First playtest 1v1
 
 **Mês 2:**
-1. 2 wizards completos (4 abilities cada)
-2. Buy menu básico
-3. Economia de galeões
-4. Bomb plant/defuse
+1. 2 wizards completos (4 abilities cada) — falta slot F + 1 ability
+2. ~~Buy menu básico~~
+3. ~~Economia de galeões~~
+4. ~~Bomb plant/defuse~~
 5. Playtest 2v2
 
 **Mês 3:**
@@ -1481,8 +1481,8 @@ Total: 8 pessoas
 **Documento vivo - Atualizar conforme desenvolvimento**
 
 **Versão:** 2.0 - Round-Based Tactical Shooter  
-**Última atualização:** [Data]  
-**Status:** Pre-Production Design Complete
+**Última atualização:** 2026-04-27  
+**Status:** Fase 1 em progresso — 6/8 deliverables concluídos
 
 ---
 

@@ -1,0 +1,118 @@
+.buy-menu {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 480px;
+	background: rgba(10, 8, 20, 0.92);
+	border: 1px solid rgba(180, 140, 40, 0.6);
+	border-radius: 6px;
+	padding: 20px;
+	display: none;
+	flex-direction: column;
+	gap: 16px;
+	font-family: 'Roboto Mono', monospace;
+
+	&.visible {
+		display: flex;
+	}
+}
+
+.buy-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid rgba(180, 140, 40, 0.4);
+	padding-bottom: 10px;
+}
+
+.buy-title {
+	color: #e8c84a;
+	font-size: 18px;
+	font-weight: bold;
+	letter-spacing: 2px;
+}
+
+.buy-galleons {
+	color: #f5d060;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.buy-slots {
+	display: flex;
+	gap: 12px;
+}
+
+.buy-slot {
+	flex: 1;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	min-height: 120px;
+}
+
+.slot-key {
+	color: #aaa;
+	font-size: 11px;
+	letter-spacing: 1px;
+}
+
+.slot-name {
+	color: #fff;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.slot-tier {
+	color: #7ec8e3;
+	font-size: 11px;
+}
+
+.slot-maxed {
+	color: #e8c84a;
+	font-size: 11px;
+	margin-top: auto;
+}
+
+.slot-empty {
+	color: #444;
+	font-size: 18px;
+	margin: auto;
+}
+
+.btn-upgrade {
+	margin-top: auto;
+	width: 100%;
+	padding: 6px 0;
+	background: rgba(232, 200, 74, 0.15);
+	border: 1px solid rgba(232, 200, 74, 0.5);
+	border-radius: 3px;
+	color: #e8c84a;
+	font-size: 11px;
+	font-family: inherit;
+	cursor: pointer;
+
+	&:hover {
+		background: rgba(232, 200, 74, 0.3);
+	}
+
+	&.disabled {
+		opacity: 0.35;
+		cursor: default;
+		pointer-events: none;
+	}
+}
+
+.buy-hint {
+	text-align: center;
+	color: #555;
+	font-size: 11px;
+	letter-spacing: 1px;
+}

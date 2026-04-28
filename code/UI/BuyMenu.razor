@@ -1,0 +1,142 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root class="buy-menu @( IsVisible ? "visible" : "" )">
+
+	@if ( IsVisible && Player != null )
+	{
+		<div class="buy-header">
+			<div class="buy-title">FASE DE COMPRA</div>
+			<div class="buy-galleons">@Player.Galleons G</div>
+		</div>
+
+		<div class="buy-slots">
+
+			@* Slot Q *@
+			<div class="buy-slot">
+				<div class="slot-key">Q</div>
+				@if ( Player.AbilityQ != null )
+				{
+					<div class="slot-name">@Player.AbilityQ.AbilityName</div>
+					<div class="slot-tier">Tier @Player.AbilityQ.CurrentTier</div>
+					@if ( Player.AbilityQ.CurrentTier < 1 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityQ.Tier1Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityQ, 1) )>
+							T1 — @Player.AbilityQ.Tier1Cost G
+						</button>
+					}
+					else if ( Player.AbilityQ.CurrentTier < 2 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityQ.Tier2Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityQ, 2) )>
+							T2 — @Player.AbilityQ.Tier2Cost G
+						</button>
+					}
+					else
+					{
+						<div class="slot-maxed">MAX</div>
+					}
+				}
+				else
+				{
+					<div class="slot-empty">—</div>
+				}
+			</div>
+
+			@* Slot E *@
+			<div class="buy-slot">
+				<div class="slot-key">E</div>
+				@if ( Player.AbilityE != null )
+				{
+					<div class="slot-name">@Player.AbilityE.AbilityName</div>
+					<div class="slot-tier">Tier @Player.AbilityE.CurrentTier</div>
+					@if ( Player.AbilityE.CurrentTier < 1 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityE.Tier1Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityE, 1) )>
+							T1 — @Player.AbilityE.Tier1Cost G
+						</button>
+					}
+					else if ( Player.AbilityE.CurrentTier < 2 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityE.Tier2Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityE, 2) )>
+							T2 — @Player.AbilityE.Tier2Cost G
+						</button>
+					}
+					else
+					{
+						<div class="slot-maxed">MAX</div>
+					}
+				}
+				else
+				{
+					<div class="slot-empty">—</div>
+				}
+			</div>
+
+			@* Slot R *@
+			<div class="buy-slot">
+				<div class="slot-key">R</div>
+				@if ( Player.AbilityR != null )
+				{
+					<div class="slot-name">@Player.AbilityR.AbilityName</div>
+					<div class="slot-tier">Tier @Player.AbilityR.CurrentTier</div>
+					@if ( Player.AbilityR.CurrentTier < 1 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityR.Tier1Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityR, 1) )>
+							T1 — @Player.AbilityR.Tier1Cost G
+						</button>
+					}
+					else if ( Player.AbilityR.CurrentTier < 2 )
+					{
+						<button class="btn-upgrade @( CanAfford(Player.AbilityR.Tier2Cost) ? "" : "disabled" )"
+								onclick=@( () => TryUpgrade(Player.AbilityR, 2) )>
+							T2 — @Player.AbilityR.Tier2Cost G
+						</button>
+					}
+					else
+					{
+						<div class="slot-maxed">MAX</div>
+					}
+				}
+				else
+				{
+					<div class="slot-empty">—</div>
+				}
+			</div>
+
+		</div>
+
+		<div class="buy-hint">[ B ] Fechar</div>
+	}
+
+</root>
+
+@code {
+	WizardPlayer Player => WizardPlayer.Local;
+	RoundManager Round => RoundManager.Instance;
+
+	bool IsVisible => Round?.State == RoundState.BuyPhase
+		&& Input.Down( "BuyMenu" );
+
+	bool CanAfford( int cost ) => Player != null && Player.Galleons >= cost;
+
+	void TryUpgrade( BaseAbility ability, int tier )
+	{
+		if ( ability == null || !CanAfford( tier == 1 ? ability.Tier1Cost : ability.Tier2Cost ) )
+			return;
+		ability.TryUpgrade( tier );
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Round?.State,
+		Player?.Galleons,
+		Player?.AbilityQ?.CurrentTier,
+		Player?.AbilityE?.CurrentTier,
+		Player?.AbilityR?.CurrentTier
+	);
+}
