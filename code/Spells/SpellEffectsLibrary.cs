@@ -25,18 +25,18 @@ public sealed class SpellEffectsLibrary : Component
 	// ─── Lookup ───────────────────────────────────────────────────────
 	public GameObject GetTrailPrefab( string spellClass ) => spellClass switch
 	{
-		nameof( StupefyAbility )    => StupefyTrail,
-		nameof( IncendioAbility )   => IncendioTrail,
-		nameof( ImpedimentaAbility) => ImpedimentaTrail,
-		_                           => null
+		nameof( StupefySpell )     => StupefyTrail,
+		nameof( IncendioSpell )    => IncendioTrail,
+		nameof( ImpedimentaSpell ) => ImpedimentaTrail,
+		_                          => null
 	};
 
 	public GameObject GetHitPrefab( string spellClass ) => spellClass switch
 	{
-		nameof( StupefyAbility )     => StupefyHit,
-		nameof( IncendioAbility )    => IncendioHit,
-		nameof( ImpedimentaAbility ) => ImpedimentaHit,
-		_                            => null
+		nameof( StupefySpell )     => StupefyHit,
+		nameof( IncendioSpell )    => IncendioHit,
+		nameof( ImpedimentaSpell ) => ImpedimentaHit,
+		_                          => null
 	};
 
 	/// <summary>Retorna a instância na cena (helper estático).</summary>

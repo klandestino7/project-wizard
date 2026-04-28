@@ -6,16 +6,16 @@
 /// </summary>
 public sealed class MasterySystem : Component
 {
-	// Hits necessários para cada upgrade automático (nome da classe → threshold)
+	// Hits necessários para upgrade automático gratuito (nome da classe → threshold)
 	private static readonly Dictionary<string, int> UpgradeThreshold = new()
 	{
-		{ "StupefyAbility",       5  },
-		{ "IncendioAbility",      4  },
-		{ "SectumsempraAbility",  3  },
-		{ "ImpedimentaAbility",   4  },
-		{ "ProtegoAbility",       6  },
-		{ "EpiskeyAbility",       3  },
-		{ "DashAbility",          5  },
+		{ nameof( StupefySpell ),      5 },
+		{ nameof( IncendioSpell ),     4 },
+		{ nameof( SectumsempraSpell ), 3 },
+		{ nameof( ImpedimentaSpell ),  4 },
+		{ nameof( ProtegoSpell ),      6 },
+		{ nameof( EpiskeySpell ),      3 },
+		{ nameof( DashSpell ),         5 },
 	};
 
 	// Contagem acumulada por tipo (nome da classe → hits)
@@ -52,22 +52,26 @@ public sealed class MasterySystem : Component
 
 	private void TryFreeUpgrade( string spellClassName )
 	{
-		var ability = GetAbilityByClassName( spellClassName );
-		if ( ability == null || ability.CurrentTier >= 2 ) return;
+		var spell = GetSpellByClassName( spellClassName );
+		if ( spell == null || spell.Tier >= 2 ) return;
 
-		int nextTier = ability.CurrentTier + 1;
-		ability.CurrentTier = nextTier;
-		ability.ApplyTierBonuses();
+		spell.Tier++;
+		spell.OnTierChanged();
 
-		BroadcastMasteryUpgrade( ability.AbilityName, nextTier );
+		BroadcastMasteryUpgrade( spell.SpellName, spell.Tier );
 	}
 
-	private BaseAbility GetAbilityByClassName( string className )
+	private BaseSpell GetSpellByClassName( string className )
 	{
-		foreach ( var ability in new[] { Player.AbilityQ, Player.AbilityE, Player.AbilityR, Player.AbilityF } )
+		var deck = Player.SpellsDeck;
+		if ( deck == null ) return null;
+
+		if ( deck.BasicCast.GetType().Name == className ) return deck.BasicCast;
+
+		for ( int i = 0; i < 4; i++ )
 		{
-			if ( ability == null ) continue;
-			if ( ability.GetType().Name == className ) return ability;
+			var s = deck.GetSlot( i );
+			if ( s != null && s.GetType().Name == className ) return s;
 		}
 		return null;
 	}
