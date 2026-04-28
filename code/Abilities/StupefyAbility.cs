@@ -35,10 +35,8 @@ public sealed class StupefyAbility : BaseAbility
 			_lastActivateCount = _activateCount;
 			if ( Player.IsValid() )
 			{
-				// Usa direção do LockOn se disponível
-				var dir = Player.LockOnSystem?.GetAimDirection()
-					?? Player.EyeAngles.ToRotation().Forward;
-				SpawnProjectile( Player.EyePosition, dir );
+				var origin = Player.GetSpellMuzzle();
+				SpawnProjectile( origin, Player.GetSpellDirection( origin ) );
 			}
 		}
 	}

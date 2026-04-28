@@ -41,8 +41,10 @@ public sealed class SectumsempraAbility : BaseAbility
 	{
 		int t = Math.Clamp( CurrentTier, 0, 2 );
 
+		var muzzle = Player.GetSpellMuzzle();
+		var dir    = Player.GetSpellDirection( muzzle );
 		var tr = Scene.Trace
-			.Ray( Player.EyePosition, Player.EyePosition + Player.EyeAngles.ToRotation().Forward * 5000f )
+			.Ray( muzzle, muzzle + dir * 5000f )
 			.UseHitboxes()
 			.IgnoreGameObjectHierarchy( Player.GameObject )
 			.Run();

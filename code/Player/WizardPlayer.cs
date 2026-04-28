@@ -382,6 +382,38 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		return true;
 	}
 
+	// ─── Spell aim ───────────────────────────────────────────────────
+	/// <summary>Ponto de origem do feitiço: muzzle da varinha ou EyePosition.</summary>
+	public Vector3 GetSpellMuzzle()
+	{
+		if ( WandHolder is not null )
+			return WandHolder.GetMuzzlePosition();
+		return EyePosition;
+	}
+
+	/// <summary>
+	/// Direção do feitiço: muzzle → aim point (centro da tela via trace, ou lock-on).
+	/// Passe o muzzle calculado por GetSpellMuzzle() para que a direção aponte corretamente.
+	/// </summary>
+	public Vector3 GetSpellDirection( Vector3 fromMuzzle )
+	{
+		// Lock-on override
+		if ( LockOnSystem is not null && LockOnSystem.IsLockedOn )
+			return LockOnSystem.GetAimDirection();
+
+		// Trace do centro da tela para o aim point
+		var eyeDir = EyeAngles.ToRotation().Forward;
+		var tr = Scene.Trace
+			.Ray( EyePosition, EyePosition + eyeDir * 4000f )
+			.UseHitboxes()
+			.IgnoreGameObjectHierarchy( GameObject )
+			.WithoutTags( "projectile" )
+			.Run();
+
+		var aimPoint = tr.Hit ? tr.EndPosition : EyePosition + eyeDir * 4000f;
+		return (aimPoint - fromMuzzle).Normal;
+	}
+
 	// ─── INetworkListener ─────────────────────────────────────────────
 	public void OnActive( Connection connection ) { }
 	public void OnDisconnected( Connection connection ) { }

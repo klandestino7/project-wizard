@@ -32,7 +32,10 @@ public sealed class IncendioAbility : BaseAbility
 		{
 			_lastActivateCount = _activateCount;
 			if ( Player.IsValid() )
-				SpawnProjectile( Player.EyePosition, Player.EyeAngles.ToRotation().Forward );
+			{
+				var origin = Player.GetSpellMuzzle();
+				SpawnProjectile( origin, Player.GetSpellDirection( origin ) );
+			}
 		}
 	}
 

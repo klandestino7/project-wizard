@@ -38,8 +38,8 @@ public sealed class WandAttack : Component
 
 	private void FireHitscan()
 	{
-		var origin = _player.EyePosition;
-		var dir = _player.EyeAngles.ToRotation().Forward;
+		var origin = _player.GetSpellMuzzle();
+		var dir    = _player.GetSpellDirection( origin );
 
 		// Visual beam (todos clientes)
 		ShowBeam( origin, origin + dir * Range );
