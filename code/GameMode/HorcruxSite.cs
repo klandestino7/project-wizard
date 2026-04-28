@@ -49,7 +49,7 @@ public sealed class HorcruxSite : Component
 		if ( IsBeingInteracted && _interactingPlayer.IsValid() )
 		{
 			// Verificar se o jogador ainda está próximo e segurando F
-			if ( _interactingPlayer.Transform.Position.Distance( Transform.Position ) > 150f )
+			if ( _interactingPlayer.WorldPosition.Distance( WorldPosition ) > 150f )
 			{
 				CancelInteraction();
 				return;
@@ -89,7 +89,7 @@ public sealed class HorcruxSite : Component
 			CancelInteraction();
 	}
 
-	public void Reset()
+	public new void Reset()
 	{
 		IsPlanted = false;
 		IsDefused = false;
@@ -166,7 +166,7 @@ public sealed class HorcruxSite : Component
 		var rm = RoundManager.Instance;
 		rm?.OnHorcruxExploded();
 
-		BroadcastExplosion( Transform.Position );
+		BroadcastExplosion( WorldPosition );
 		Log.Info( $"[Horcrux] Explodiu no Site {SiteName}!" );
 	}
 

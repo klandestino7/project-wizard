@@ -44,9 +44,6 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	private int _aurorLossStreak = 0;
 	private int _comensalLossStreak = 0;
 	private bool _horcruxPlanted = false;
-	// Delay de warmup sem async: usamos PhaseEndTime com State=Warmup
-	private bool _started = false;
-
 	// ─── Singleton ────────────────────────────────────────────────────
 	public static RoundManager Instance => Game.ActiveScene
 		.GetAllComponents<RoundManager>().FirstOrDefault();

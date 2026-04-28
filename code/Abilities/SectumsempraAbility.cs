@@ -52,7 +52,9 @@ public sealed class SectumsempraAbility : BaseAbility
 		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
 		if ( victim == null || victim.Team == Player.Team ) return;
 
-		bool isHeadshot = tr.HitboxIndex == 0; // assumindo hitbox 0 = cabeça
+		// Headshot: ponto de impacto acima de 75% da altura do alvo
+		float hitHeight = tr.EndPosition.z - victim.WorldPosition.z;
+		bool isHeadshot = hitHeight > WizardPlayer.EyeHeight * 0.75f;
 		float mult = isHeadshot ? HeadshotMultByTier[t] : 1f;
 		int dmg = (int)(DamageByTier[t] * mult);
 
