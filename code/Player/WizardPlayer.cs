@@ -60,7 +60,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( !IsAlive ) return;
 
-		HandleLook();
+		// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
+		// HandleLook();
 		HandleAbilityInput();
 		HandleInteractInput();
 
@@ -71,7 +72,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	protected override void OnFixedUpdate()
 	{
 		if ( IsProxy || !IsAlive ) return;
-		HandleMovement();
+		
+		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
+		// HandleMovement();
 	}
 
 	// ─── Input: Look ──────────────────────────────────────────────────
