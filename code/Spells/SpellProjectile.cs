@@ -14,6 +14,9 @@ public sealed class SpellProjectile : Component
 	[Property, Sync] public bool PierceShield { get; set; } = false;
 	[Property, Sync] public Color SpellColor { get; set; } = Color.Red;
 
+	/// <summary>Se true, lança a vítima no ar após aplicar stun (Stupefy T2).</summary>
+	[Property, Sync] public bool LaunchAirborne { get; set; } = false;
+
 	// ─── Burning DoT (Incendio) ───────────────────────────────────────
 	[Property, Sync] public float BurningDPS { get; set; } = 0f;
 	[Property, Sync] public float BurningDuration { get; set; } = 0f;
@@ -21,6 +24,9 @@ public sealed class SpellProjectile : Component
 	// ─── Slow (Impedimenta) ───────────────────────────────────────────
 	[Property, Sync] public float SlowFraction { get; set; } = 0f;
 	[Property, Sync] public float SlowDuration { get; set; } = 0f;
+
+	/// <summary>Nome da classe da ability de origem — usado pelo MasterySystem.</summary>
+	public string SourceSpellClass { get; set; } = "";
 
 	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
 	public static WizardPlayer PendingShooter { get; set; }
@@ -85,7 +91,9 @@ public sealed class SpellProjectile : Component
 		{
 			if ( PierceShield )
 			{
-				int newHp = victim.Health - Damage;
+				// Bônus de estado aplicado manualmente (bypassa TakeDamage)
+				int dmg = ApplyStateBonuses( Damage, victim );
+				int newHp = victim.Health - dmg;
 				victim.Health = newHp < 0 ? 0 : newHp;
 				if ( victim.Health <= 0 )
 					victim.Die( _shooter );
@@ -95,32 +103,47 @@ public sealed class SpellProjectile : Component
 				victim.TakeDamage( Damage, _shooter );
 			}
 
+			// Stun → seta CombatState
 			if ( StunDuration > 0f )
+			{
 				victim.StunEndTime = Time.Now + StunDuration;
+				victim.SetCombatState( CombatState.Stunned, StunDuration );
+			}
 
+			// Lança ao ar (Stupefy T2)
+			if ( LaunchAirborne )
+				victim.LaunchIntoAir();
+
+			// Burning DoT
 			if ( BurningDPS > 0f && BurningDuration > 0f )
 				victim.ApplyBurning( BurningDPS, BurningDuration, _shooter );
 
-			// Slow: implementado via WizardPlayer.SlowEndTime
+			// Slow
 			if ( SlowFraction > 0f && SlowDuration > 0f )
-				ApplySlowToVictim( victim );
+			{
+				victim.SlowEndTime = Time.Now + SlowDuration;
+				victim.SlowFraction = SlowFraction;
+			}
 
-			// Notifica o MasterySystem do atirador
-			if ( _shooter != null )
+			// Mastery — usa o nome da spell de origem, não "SpellProjectile"
+			if ( _shooter != null && !string.IsNullOrEmpty( SourceSpellClass ) )
 			{
 				var mastery = _shooter.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
-				mastery?.RegisterSpellHit( GetType().Name );
+				mastery?.RegisterSpellHit( SourceSpellClass );
 			}
 		}
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );
 	}
 
-	private void ApplySlowToVictim( WizardPlayer victim )
+	/// <summary>Aplica bônus de dano pelo CombatState do alvo (+50% Airborne, +25% Stunned).</summary>
+	private static int ApplyStateBonuses( int damage, WizardPlayer victim )
 	{
-		// Slow é aplicado reduzindo velocidade via campos no WizardPlayer
-		victim.SlowEndTime = Time.Now + SlowDuration;
-		victim.SlowFraction = SlowFraction;
+		if ( victim.CombatState == CombatState.Airborne )
+			return (int)(damage * 1.5f);
+		if ( victim.CombatState == CombatState.Stunned )
+			return (int)(damage * 1.25f);
+		return damage;
 	}
 
 	[Rpc.Broadcast]

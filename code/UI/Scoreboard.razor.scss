@@ -72,21 +72,33 @@
 }
 
 .sb-columns {
-	display: grid;
-	grid-template-columns: 1fr 40px 40px 70px 50px;
+	display: flex;
+	flex-direction: row;
 	padding: 2px 8px;
 	font-size: 10px;
 	color: #555;
 	letter-spacing: 1px;
+
+	span:first-child  { flex: 1; }
+	span:nth-child(2) { width: 40px; text-align: center; }
+	span:nth-child(3) { width: 40px; text-align: center; }
+	span:nth-child(4) { width: 70px; text-align: center; }
+	span:nth-child(5) { width: 50px; text-align: center; }
 }
 
 .sb-row {
-	display: grid;
-	grid-template-columns: 1fr 40px 40px 70px 50px;
+	display: flex;
+	flex-direction: row;
 	padding: 5px 8px;
 	border-radius: 3px;
 	font-size: 13px;
 	color: #ddd;
+
+	span:first-child  { flex: 1; }
+	span:nth-child(2) { width: 40px; text-align: center; }
+	span:nth-child(3) { width: 40px; text-align: center; }
+	span:nth-child(4) { width: 70px; text-align: center; }
+	span:nth-child(5) { width: 50px; text-align: center; }
 
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.04);

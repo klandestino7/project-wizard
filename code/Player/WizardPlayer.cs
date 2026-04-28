@@ -23,25 +23,35 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property, Sync] public int Kills { get; set; } = 0;
 	[Property, Sync] public int Deaths { get; set; } = 0;
 
-	/// <summary>Hora (Time.Now) em que o stun termina.</summary>
-	[Sync] public float StunEndTime { get; set; } = 0f;
-	public bool IsStunned => Time.Now < StunEndTime;
+	// ─── Estado de combate (Hogwarts Legacy style) ────────────────────
+	[Sync] public CombatState CombatState { get; set; } = CombatState.Normal;
+	[Sync] public float CombatStateEndTime { get; set; } = 0f;
 
-	/// <summary>Burning DoT aplicado por Incendio.</summary>
+	/// <summary>I-frames ativos (dodge). TakeDamage ignorado enquanto true.</summary>
+	[Sync] public bool IsInvincible { get; set; } = false;
+
+	// ─── Stun / Burning / Slow ────────────────────────────────────────
+	[Sync] public float StunEndTime { get; set; } = 0f;
+	public bool IsStunned => CombatState == CombatState.Stunned;
+
 	[Sync] public float BurningEndTime { get; set; } = 0f;
 	[Sync] public float BurningDPS { get; set; } = 0f;
 	public WizardPlayer BurningSource { get; set; }
 
-	/// <summary>Slow aplicado por Impedimenta.</summary>
 	[Sync] public float SlowEndTime { get; set; } = 0f;
 	[Sync] public float SlowFraction { get; set; } = 0f;
 	public bool IsSlowed => Time.Now < SlowEndTime && SlowFraction > 0f;
+
+	/// <summary>True enquanto no ar (lançado). Spells de burst fazem +50% dmg.</summary>
+	public bool IsAirborne => CombatState == CombatState.Airborne;
 
 	// ─── Referências (setar no editor ou via GameManager) ─────────────
 	[Property] public CharacterController CharacterController { get; set; }
 	[Property] public CameraComponent Camera { get; set; }
 	[Property] public ModelRenderer BodyRenderer { get; set; }
 	[Property] public ManaSystem ManaSystem { get; set; }
+	[Property] public DodgeSystem DodgeSystem { get; set; }
+	[Property] public LockOnSystem LockOnSystem { get; set; }
 
 	// ─── Abilities (setadas via inspetor ou GameManager) ──────────────
 	[Property] public WandAttack WandAttack { get; set; }
@@ -63,8 +73,11 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
 	{
+		// 3ª pessoa: corpo visível no cliente local também
 		if ( !IsProxy && BodyRenderer.IsValid() )
-			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.ShadowsOnly;
+			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+	
+    	LockOnSystem = Components.Get<LockOnSystem>();
 	}
 
 	protected override void OnUpdate()
@@ -82,8 +95,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		HandleAbilityInput();
 		HandleInteractInput();
 
-		if ( StunEndTime > 0f && !IsStunned )
-			StunEndTime = 0f;
+		// Expirar estados de combate
+		if ( Networking.IsHost && CombatStateEndTime > 0f && Time.Now >= CombatStateEndTime )
+			SetCombatState( CombatState.Normal );
 	}
 
 	protected override void OnFixedUpdate()
@@ -93,17 +107,21 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
 		// HandleMovement();
 
-		// Burning DoT (servidor)
-		if ( Networking.IsHost && BurningEndTime > 0f && Time.Now < BurningEndTime )
+		if ( !Networking.IsHost ) return;
+
+		// Burning DoT
+		if ( BurningEndTime > 0f && Time.Now < BurningEndTime )
 		{
 			int dot = (int)(BurningDPS * Time.Delta);
 			if ( dot > 0 )
 				TakeDamage( dot, BurningSource );
 		}
-		else if ( Networking.IsHost && BurningEndTime > 0f )
+		else if ( BurningEndTime > 0f )
 		{
 			BurningEndTime = 0f;
 			BurningDPS = 0f;
+			if ( CombatState == CombatState.Burning )
+				SetCombatState( CombatState.Normal );
 		}
 	}
 
@@ -159,9 +177,19 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		cc.Move();
 	}
 
-	// ─── Input: Abilities ─────────────────────────────────────────────
+	// ─── Input: Abilities + Dodge + Lock-on ───────────────────────────
 	private void HandleAbilityInput()
 	{
+		// Dodge — Space (Hogwarts Legacy style, i-frames)
+		if ( Input.Pressed( "Dodge" ) )
+			DodgeSystem?.TryDodge();
+
+		// Lock-on — Middle Mouse / L
+		if ( Input.Pressed( "LockOn" ) )
+			LockOnSystem?.ToggleLockOn();
+
+		if ( IsStunned ) return; // stunado não lança feitiços
+
 		if ( Input.Pressed( "Attack1" ) )
 			WandAttack?.TryFire();
 
@@ -194,16 +222,31 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		WorldRotation = Rotation.FromYaw( EyeAngles.yaw );
 	}
 
+	// ─── Estado de combate ────────────────────────────────────────────
+	public void SetCombatState( CombatState state, float duration = 0f )
+	{
+		if ( !Networking.IsHost ) return;
+		CombatState = state;
+		CombatStateEndTime = duration > 0f ? Time.Now + duration : 0f;
+	}
+
 	// ─── Dano ─────────────────────────────────────────────────────────
 	public void TakeDamage( int amount, WizardPlayer attacker = null, bool isHeadshot = false )
 	{
 		if ( !Networking.IsHost || !IsAlive ) return;
+		if ( IsInvincible ) return; // i-frames do dodge
 
-		// Protego absorve dano
+		// Bônus de dano por estado (Hogwarts Legacy combo system)
+		if ( CombatState == CombatState.Airborne )
+			amount = (int)(amount * 1.5f);  // +50% em alvo no ar
+		else if ( CombatState == CombatState.Stunned )
+			amount = (int)(amount * 1.25f); // +25% em alvo stunado
+
+		// Protego absorve dano (verifica perfect block)
 		var protego = Components.Get<ProtegoAbility>( FindMode.EverythingInSelf );
 		if ( protego != null && protego.IsShieldUp )
 		{
-			var (passthrough, reflected) = protego.AbsorbDamage( amount );
+			var (passthrough, reflected) = protego.AbsorbDamage( amount, attacker );
 			if ( reflected > 0 && attacker != null )
 				attacker.TakeDamage( reflected );
 			amount = passthrough;
@@ -212,12 +255,11 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		if ( amount <= 0 ) return;
 
 		int remaining = amount;
-
 		if ( Shield > 0 )
 		{
-			int shieldAbsorb = Shield < remaining ? Shield : remaining;
-			Shield -= shieldAbsorb;
-			remaining -= shieldAbsorb;
+			int abs = Shield < remaining ? Shield : remaining;
+			Shield -= abs;
+			remaining -= abs;
 		}
 
 		int newHealth = Health - remaining;
@@ -247,6 +289,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		BurningDPS = dps;
 		BurningEndTime = Time.Now + duration;
 		BurningSource = source;
+		SetCombatState( CombatState.Burning, duration );
 	}
 
 	public void ExtinguishBurning()
@@ -255,6 +298,17 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		BurningEndTime = 0f;
 		BurningDPS = 0f;
 		BurningSource = null;
+		if ( CombatState == CombatState.Burning )
+			SetCombatState( CombatState.Normal );
+	}
+
+	/// <summary>Lança o jogador no ar (estado Airborne). Usado por Accio, Stupefy T2, etc.</summary>
+	public void LaunchIntoAir( float height = 250f, float duration = 1.2f )
+	{
+		if ( !Networking.IsHost ) return;
+		SetCombatState( CombatState.Airborne, duration );
+		if ( CharacterController.IsValid() )
+			CharacterController.Punch( Vector3.Up * height );
 	}
 
 	// ─── Morte ────────────────────────────────────────────────────────
@@ -271,6 +325,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		BurningDPS = 0f;
 		SlowEndTime = 0f;
 		SlowFraction = 0f;
+		CombatState = CombatState.Normal;
+		IsInvincible = false;
 
 		var rm = Scene.GetAllComponents<RoundManager>().FirstOrDefault();
 		rm?.OnPlayerDied( this, killer );
@@ -295,6 +351,10 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		StunEndTime = 0f;
 		BurningEndTime = 0f;
 		BurningDPS = 0f;
+		SlowEndTime = 0f;
+		SlowFraction = 0f;
+		CombatState = CombatState.Normal;
+		IsInvincible = false;
 
 		if ( BodyRenderer.IsValid() )
 			BodyRenderer.Enabled = true;
@@ -304,6 +364,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		AbilityR?.ResetCooldown();
 		AbilityF?.ResetCooldown();
 		ManaSystem?.ResetFull();
+		DodgeSystem?.ResetStamina();
 	}
 
 	// ─── Economia ─────────────────────────────────────────────────────

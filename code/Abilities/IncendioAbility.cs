@@ -54,6 +54,7 @@ public sealed class IncendioAbility : BaseAbility
 		proj.BurningDuration = BurnDurationByTier[t];
 		proj.Speed = 1800f;
 		proj.SpellColor = new Color( 1f, 0.4f, 0.05f );
+		proj.SourceSpellClass = nameof( IncendioAbility );
 
 		go.NetworkSpawn();
 	}

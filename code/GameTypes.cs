@@ -32,3 +32,16 @@ public enum RoundEndReason
 	HorcruxDefused,
 	TimeExpired
 }
+
+/// <summary>
+/// Estado de combate do wizard. Determina bônus de dano e disponibilidade de ações.
+/// Influenciado por feitiços de controle (Stupefy, Impedimenta, etc.)
+/// </summary>
+public enum CombatState
+{
+	Normal,
+	Stunned,    // Stupefy — não age, +25% dano recebido
+	Airborne,   // Levitado / lançado — +50% dano recebido por burst
+	Burning,    // Incendio DoT ativo
+	Shielded    // Protego ativo — reflete projéteis
+}

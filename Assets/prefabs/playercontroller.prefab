@@ -203,6 +203,7 @@
           "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
           "component_type": "ProtegoAbility"
         },
+        "AbilityF": null,
         "AbilityQ": {
           "_type": "component",
           "component_id": "3d3c767c-a94f-438b-926d-9ee49e86c739",
@@ -213,10 +214,32 @@
         "BodyRenderer": null,
         "Camera": null,
         "CharacterController": null,
+        "Deaths": 0,
+        "DodgeSystem": {
+          "_type": "component",
+          "component_id": "94f51409-6209-4af3-97f8-20f6be682d0a",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "DodgeSystem"
+        },
         "EyeAngles": "0,0,0",
         "Galleons": 0,
         "Health": 150,
         "IsAlive": true,
+        "ItemSlot1": null,
+        "ItemSlot2": null,
+        "Kills": 0,
+        "LockOnSystem": {
+          "_type": "component",
+          "component_id": "607776c9-6bcd-456b-8564-f1bf6c5d49ca",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "LockOnSystem"
+        },
+        "ManaSystem": {
+          "_type": "component",
+          "component_id": "74318a57-52a2-4f7f-bf5f-9b1e71d450af",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "ManaSystem"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -255,6 +278,7 @@
         "Flags": 0,
         "AbilityName": "Feitiço",
         "CurrentTier": 0,
+        "ManaCost": 20,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -265,12 +289,26 @@
         "Tier2Cost": 1000
       },
       {
+        "__type": "DodgeSystem",
+        "__guid": "94f51409-6209-4af3-97f8-20f6be682d0a",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Stamina": 100
+      },
+      {
         "__type": "ProtegoAbility",
         "__guid": "707ec3a2-893b-4650-b598-89b7b5b3dce9",
         "__enabled": true,
         "Flags": 0,
         "AbilityName": "Feitiço",
         "CurrentTier": 0,
+        "ManaCost": 20,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -279,6 +317,51 @@
         "OnComponentUpdate": null,
         "Tier1Cost": 400,
         "Tier2Cost": 1000
+      },
+      {
+        "__type": "LockOnSystem",
+        "__guid": "607776c9-6bcd-456b-8564-f1bf6c5d49ca",
+        "__enabled": true,
+        "Flags": 0,
+        "MaxRange": 1200,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "SwitchTargetRange": 400
+      },
+      {
+        "__type": "ManaSystem",
+        "__guid": "74318a57-52a2-4f7f-bf5f-9b1e71d450af",
+        "__enabled": true,
+        "Flags": 0,
+        "Mana": 100,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "ThirdPersonCamera",
+        "__guid": "d6932239-16d1-4e13-b2d1-c6dd7e91f92c",
+        "__enabled": true,
+        "Flags": 0,
+        "Camera": null,
+        "LookSensitivity": 1,
+        "Offset": "-50,80,-220",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PitchMax": 70,
+        "PitchMin": -26.780031,
+        "SpringArmLength": 190.54996
       }
     ],
     "Children": [
@@ -346,7 +429,7 @@
         ],
         "Children": [
           {
-            "__guid": "e71011b6-993f-4140-bb1d-c12b1ec2947a",
+            "__guid": "324f437c-bec7-43cb-bd56-797a041153c2",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -363,7 +446,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "02576362-e3f4-4433-a6ca-24a2186bf813",
+                "__guid": "dd1199c2-e7e5-4225-8dfb-cb31da62a518",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -415,7 +498,7 @@
             "Children": []
           },
           {
-            "__guid": "2b0e00a0-fa70-4804-b84b-78db8b6fe846",
+            "__guid": "0686afcf-0aed-49b5-bdd5-571d7db434bd",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -432,7 +515,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "dae8da70-20dd-4ec7-9de3-8d8cc1f48765",
+                "__guid": "c8e506b6-6a39-4216-812d-a23d09481b92",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -484,7 +567,7 @@
             "Children": []
           },
           {
-            "__guid": "9173ec5a-e2af-493e-9edd-a324652153b3",
+            "__guid": "4f10179c-2601-4810-a1b2-2133ecdac39d",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -501,7 +584,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "a3b389a4-366f-4b11-8060-d47e8b21fe3d",
+                "__guid": "f0caf39c-30dc-40f1-b90f-f40c0f4433bb",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -553,7 +636,7 @@
             "Children": []
           },
           {
-            "__guid": "ee24d5c7-2057-402c-a593-86585106a34c",
+            "__guid": "0bf19e27-03cf-4ae0-9ae2-566e4ed993b0",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -570,7 +653,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "635669c5-927a-4fc3-8901-47db2a892e74",
+                "__guid": "f63545bc-6aba-4c0b-9879-d692316f2354",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -622,7 +705,7 @@
             "Children": []
           },
           {
-            "__guid": "c9090177-7f69-4429-a54c-62f806a74a5a",
+            "__guid": "64e712d2-9665-41dc-ac62-a52e20100b83",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -639,7 +722,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "7dad2a0a-7cf0-4a19-934d-fad7ecf3164d",
+                "__guid": "e794e69d-5276-4e57-b9c4-c8428b05cd11",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
