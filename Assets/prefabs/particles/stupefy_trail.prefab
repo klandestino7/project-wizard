@@ -187,9 +187,23 @@
         "Rate": 100,
         "RateOverDistance": 0,
         "ScaleByDistance": false,
-        "TargetPosition": "100,0,100",
+        "TargetPosition": "500,0,0",
         "Thickness": 0,
         "VelocityRandom": 0
+      },
+      {
+        "__type": "ParticleLineTarget",
+        "__guid": "7ec2df37-e2b3-4379-affa-6bffcb7afad1",
+        "__enabled": true,
+        "Flags": 0,
+        "Emitter": null,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Target": null
       }
     ],
     "Children": [],

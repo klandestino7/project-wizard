@@ -65,6 +65,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property] public BaseConsumable ItemSlot1 { get; set; }
 	[Property] public BaseConsumable ItemSlot2 { get; set; }
 
+	private bool isAim = false;
+
 	// ─── Helpers ──────────────────────────────────────────────────────
 	public Vector3 EyePosition => WorldPosition + Vector3.Up * EyeHeight;
 	public static WizardPlayer Local => Game.ActiveScene
@@ -79,6 +81,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 	
     	LockOnSystem = Components.Get<LockOnSystem>();
+	
+		WandHolder = Components.Get<WandHolder>();
+		Camera = Scene.Get<CameraComponent>();
 	}
 
 	protected override void OnUpdate()
@@ -193,6 +198,23 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( Input.Pressed( "Attack1" ) )
 			WandAttack?.TryFire();
+
+		if ( Input.Down( "Attack2" ) )
+		{
+			// Log.Info($" GetSpellMuzzle ::  {GetSpellMuzzle()}");
+			isAim = true;
+
+			var origin = GetSpellMuzzle();
+			var dir    = GetSpellDirection( origin );
+
+			// define um comprimento pra visualizar
+			var end = origin + dir * 1000F;
+
+			// var eyeEnd = EyePosition + EyeAngles.Forward * 5000f;
+
+			// Gizmo.Draw.Line(EyePosition, eyeEnd);     // onde a câmera mira
+			Gizmo.Draw.Line(origin, end); // tiro real
+		}
 
 		if ( Input.Pressed( "Ability1" ) ) AbilityQ?.TryActivate();
 		if ( Input.Pressed( "Ability2" ) ) AbilityE?.TryActivate();
@@ -397,20 +419,32 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	/// </summary>
 	public Vector3 GetSpellDirection( Vector3 fromMuzzle )
 	{
-		// Lock-on override
-		if ( LockOnSystem is not null && LockOnSystem.IsLockedOn )
-			return LockOnSystem.GetAimDirection();
+		// 1. Pegamos a posição e a rotação da câmera
+		var camPos = Camera.WorldPosition;
+		
+		// O SEGREDO: Pegamos o Forward da rotação para virar um Vector3 de direção
+		var camForward = Camera.WorldRotation.Forward; 
 
-		// Trace do centro da tela para o aim point
-		var eyeDir = EyeAngles.ToRotation().Forward;
 		var tr = Scene.Trace
-			.Ray( EyePosition, EyePosition + eyeDir * 4000f )
+			.Ray( camPos, camPos + camForward * 10000f ) // Agora é Vector3 + (Vector3 * float)
 			.UseHitboxes()
 			.IgnoreGameObjectHierarchy( GameObject )
 			.WithoutTags( "projectile" )
 			.Run();
 
-		var aimPoint = tr.Hit ? tr.EndPosition : EyePosition + eyeDir * 4000f;
+		Vector3 aimPoint;
+
+		if ( tr.Hit )
+		{
+			aimPoint = tr.HitPosition;
+		}
+		else
+		{
+			// Se não bater em nada, projeta um ponto no "infinito" à frente da câmera
+			aimPoint = camPos + camForward * 5000f; 
+		}
+
+		// 3. Retorna a direção do muzzle até esse ponto de impacto
 		return (aimPoint - fromMuzzle).Normal;
 	}
 

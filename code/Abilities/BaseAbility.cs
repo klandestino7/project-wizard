@@ -34,7 +34,7 @@ public abstract class BaseAbility : Component
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
 	}
 
 	// ─── Ativação ─────────────────────────────────────────────────────

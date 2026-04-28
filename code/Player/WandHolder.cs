@@ -40,7 +40,7 @@ public sealed class WandHolder : Component
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
 	{
-		_player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
 		AttachWand();
 	}
 
@@ -79,7 +79,7 @@ public sealed class WandHolder : Component
 		if ( _muzzle is not null && _muzzle.IsValid() )
 			return _muzzle.WorldPosition;
 
-		return _player?.EyePosition ?? WorldPosition;
+		return WorldPosition;
 	}
 
 	// ─── Attach ───────────────────────────────────────────────────────

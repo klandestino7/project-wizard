@@ -13,7 +13,7 @@ public sealed class WandAttack : Component
 	/// <summary>Prefab do efeito de feixe (instanciado no ponto de origem, orientado ao alvo).</summary>
 	[Property, Group( "Particles" )] public GameObject BeamEffectPrefab { get; set; }
 	/// <summary>Prefab do efeito de impacto (instanciado no ponto de hit).</summary>
-	[Property, Group( "Particles" )] public GameObject HitEffectPrefab  { get; set; }
+	[Property, Group( "Particles" )] public GameObject HitEffectPrefab { get; set; }
 
 	private float _nextFireTime = 0f;
 	private WizardPlayer _player;
@@ -30,7 +30,7 @@ public sealed class WandAttack : Component
 
 	public void TryFire()
 	{
-		// if ( !CanFire ) return;
+		if ( !CanFire ) return;
 		_nextFireTime = Time.Now + 1f / FireRate;
 		_player.WandHolder?.TriggerCastAnimation();
 		FireHitscan();
@@ -39,13 +39,9 @@ public sealed class WandAttack : Component
 	private void FireHitscan()
 	{
 		var origin = _player.GetSpellMuzzle();
-		var dir    = _player.GetSpellDirection( origin );
+		var dir = _player.GetSpellDirection( origin );
 
-		// Visual beam (todos clientes)
-		ShowBeam( origin, origin + dir * Range );
-
-		if ( !Networking.IsHost ) return;
-
+		// 1. Fazemos o Trace PRIMEIRO para saber o destino exato
 		var tr = Scene.Trace
 			.Ray( origin, origin + dir * Range )
 			.UseHitboxes()
@@ -53,6 +49,12 @@ public sealed class WandAttack : Component
 			.WithoutTags( "projectile" )
 			.Run();
 
+		// 2. O destino visual será onde o raio parou (tr.EndPosition)
+		// Se não bater em nada, ele vai até o limite do Range automaticamente
+		ShowBeam( origin, tr.EndPosition );
+
+		// Logica de Host/Dano
+		if ( !Networking.IsHost ) return;
 		if ( !tr.Hit ) return;
 
 		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
@@ -76,25 +78,34 @@ public sealed class WandAttack : Component
 	private void ShowBeam( Vector3 start, Vector3 end )
 	{
 		var dir = (end - start).Normal;
+		var distance = start.Distance( end );
 
 		if ( BeamEffectPrefab is not null )
 		{
+			// Criamos o objeto visual
 			var beam = BeamEffectPrefab.Clone();
 			beam.WorldPosition = start;
 			beam.WorldRotation = Rotation.LookAt( dir );
 
+			// DICA: Se o seu prefab usa o componente 'SpellProjectile' para o visual:
+			if ( beam.Components.TryGet<SpellProjectile>( out var visualProj ) )
+			{
+				visualProj.Speed = 10000f; // Muito rápido para parecer hitscan
+										   // Desative o dano no componente visual se houver uma flag, 
+										   // ou garanta que ele seja destruído ao chegar no 'end'
+			}
+
+			// Se for uma partícula de rastro (Trail), ela precisa de um tempo para sumir
 			if ( !beam.Components.TryGet<AutoDestroy>( out _ ) )
-				beam.Components.Create<AutoDestroy>().Delay = 0.15f;
+				beam.Components.Create<AutoDestroy>().Delay = 1.0f;
 		}
 
+		// Efeito de impacto (só aparece se o ponto final não for o "vazio")
 		if ( HitEffectPrefab is not null )
 		{
 			var fx = HitEffectPrefab.Clone();
 			fx.WorldPosition = end;
-			fx.WorldRotation = Rotation.LookAt( -dir ); // normal aponta de volta
-
-			if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
-				fx.Components.Create<AutoDestroy>();
+			fx.WorldRotation = Rotation.LookAt( -dir );
 		}
 	}
 }
