@@ -15,10 +15,10 @@
         return;
     }
 
-    @if (ShowBomb && Pawn.Inventory.HasBomb && IsFriendly)
+    @* @if (ShowBomb && IsFriendly)
     {
         <Icon File="/ui/bomb.png" size="24" class="bomb-indicator"></Icon>
-    }
+    } *@
 
     @if (ShowHealth && Pawn.HealthComponent.State == LifeState.Alive && IsFriendly)
     {

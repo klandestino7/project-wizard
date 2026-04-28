@@ -12,13 +12,13 @@ public sealed class TeamEliminated : Component,
 	private bool _bothTeamsHadPlayers;
 
 	/// <summary>
-	/// Transition to this state when all <see cref="Team.Terrorist"/> players are eliminated.
+	/// Transition to this state when all <see cref="Team.DarkFollowers"/> players are eliminated.
 	/// </summary>
 	[Property]
 	public StateComponent TerroristsEliminatedState { get; set; }
 
 	/// <summary>
-	/// Transition to this state when all <see cref="Team.CounterTerrorist"/> players are eliminated.
+	/// Transition to this state when all <see cref="Team.Aurors"/> players are eliminated.
 	/// </summary>
 	[Property]
 	public StateComponent CounterTerroristsEliminatedState { get; set; }
@@ -31,8 +31,8 @@ public sealed class TeamEliminated : Component,
 
 	void IGameEventHandler<EnterStateEvent>.OnGameEvent( EnterStateEvent eventArgs )
 	{
-		_bothTeamsHadPlayers = GameUtils.GetPlayerPawns( Team.CounterTerrorist ).Any()
-			&& GameUtils.GetPlayerPawns( Team.Terrorist ).Any();
+		_bothTeamsHadPlayers = GameUtils.GetPlayerPawns( Team.Aurors ).Any()
+			&& GameUtils.GetPlayerPawns( Team.DarkFollowers ).Any();
 	}
 
 	private bool IsTeamEliminated( Team team )
@@ -48,8 +48,8 @@ public sealed class TeamEliminated : Component,
 			return;
 		}
 
-		var ctsEliminated = IsTeamEliminated( Team.CounterTerrorist );
-		var tsEliminated = IsTeamEliminated( Team.Terrorist );
+		var ctsEliminated = IsTeamEliminated( Team.Aurors );
+		var tsEliminated = IsTeamEliminated( Team.DarkFollowers );
 
 		if ( ctsEliminated && tsEliminated && BothTeamsEliminatedState is not null )
 		{

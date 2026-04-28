@@ -186,13 +186,13 @@ public sealed class CameraController : PawnCameraController, IGameEventHandler<D
 		if ( !Player.IsValid() )
 			return;
 
-		if ( Player.CurrentEquipment.IsValid() )
-		{
-			if ( Player.CurrentEquipment.HasTag( "aiming" ) )
-			{
-				FieldOfViewOffset += Player.CurrentEquipment.AimFovOffset;
-			}
-		}
+		// if ( Player.CurrentEquipment.IsValid() )
+		// {
+		// 	if ( Player.CurrentEquipment.HasTag( "aiming" ) )
+		// 	{
+		// 		FieldOfViewOffset += Player.CurrentEquipment.AimFovOffset;
+		// 	}
+		// }
 
 		// deathcam, "zoom" at target.
 		if ( Player.HealthComponent.State == LifeState.Dead )

@@ -96,11 +96,6 @@ partial class PlayerPawn
 			}
 
 		}
-		else if ( Team == Team.Terrorist && GetZone<BombSite>() is not null )
-		{
-			Inventory.SwitchToSlot( EquipmentSlot.Special );
-			return;
-		}
 	}
 
 	[Rpc.Broadcast( NetFlags.HostOnly )]

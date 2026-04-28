@@ -55,10 +55,10 @@ public partial class PlayerBody : Component
 	{
 		IsFirstPerson = firstPerson;
 
-		if ( Player.CurrentEquipment.IsValid() )
-		{
-			Player.CurrentEquipment.UpdateRenderMode();
-		}
+		// if ( Player.CurrentEquipment.IsValid() )
+		// {
+		// 	Player.CurrentEquipment.UpdateRenderMode();
+		// }
 
 		FirstPersonBody.Enabled = IsFirstPerson;
 	}

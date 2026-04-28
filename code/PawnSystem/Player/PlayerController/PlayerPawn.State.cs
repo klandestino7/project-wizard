@@ -10,10 +10,7 @@ public record OnPlayerRagdolledEvent : IGameEvent
 
 public partial class PlayerPawn
 {
-	/// <summary>
-	/// The player's inventory, items, etc.
-	/// </summary>
-	[RequireComponent] public PlayerInventory Inventory { get; private set; }
+
 
 	/// <summary>
 	/// How long since the player last respawned?
@@ -35,7 +32,6 @@ public partial class PlayerPawn
 				Client.RespawnState = RespawnState.Requested;
 			}
 
-			Inventory.Clear();
 			CreateRagdoll();
 		}
 

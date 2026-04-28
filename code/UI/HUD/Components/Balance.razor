@@ -11,11 +11,6 @@
 
 @code
 {
-    /// <summary>
-    /// The player's inventory
-    /// </summary>
-    public PlayerInventory Inventory => Player.IsValid() ? Player.Inventory : null;
-
     /// The player
     public PlayerPawn Player => Client.IsValid() ? Client.PlayerPawn : null;
 

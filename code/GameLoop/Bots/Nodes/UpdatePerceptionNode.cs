@@ -43,17 +43,6 @@ public class UpdatePerceptionNode : BaseBehaviorNode
 				teammates.Add( otherPawn );
 		}
 
-		// Scan all dropped equipment (or other items)
-		foreach ( var pickup in pawn.Scene.GetAll<DroppedEquipment>() )
-		{
-			if ( pickup.WorldPosition.DistanceSquared( origin ) > rangeSqr )
-				continue;
-
-			// optional LOS for items? (if you want)
-			// if ( !IsInLineOfSight( pawn, pickup ) ) continue;
-
-			items.Add( pickup );
-		}
 
 		context.SetData( ENEMIES_KEY, enemies );
 		context.SetData( TEAMMATES_KEY, teammates );

@@ -83,12 +83,6 @@
             <div class="dot" />
             <label class="name">@(Player.HealthComponent.Health.ToString( "0" ))%</label>
             <label class="name">@Player.DisplayName</label>
-
-
-            @if (Player.Inventory.HasBomb && (!Viewer.IsValid() || Player.IsFriendly(Viewer)) )
-            {
-                <Icon File="/ui/bomb.png" size="24"></Icon>
-            }
         }
         else
         {

@@ -118,8 +118,8 @@ public static class TeamExtensions
 	{
 		return team switch
 		{
-			Team.Aurors => Team.Terrorist,
-			Team.DarkFollowers => Team.CounterTerrorist,
+			Team.Aurors => Team.DarkFollowers,
+			Team.DarkFollowers => Team.Aurors,
 			_ => Team.Unassigned
 		};
 	}

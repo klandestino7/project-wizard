@@ -41,11 +41,11 @@ public sealed class TeamScoring : Component,
 
 	public Team GetHighest()
 	{
-		var tScore = Scores.GetValueOrDefault( Team.Terrorist );
-		var ctScore = Scores.GetValueOrDefault( Team.CounterTerrorist );
+		var tScore = Scores.GetValueOrDefault( Team.DarkFollowers );
+		var ctScore = Scores.GetValueOrDefault( Team.Aurors );
 
-		if ( tScore > ctScore ) return Team.Terrorist;
-		if ( ctScore > tScore ) return Team.CounterTerrorist;
+		if ( tScore > ctScore ) return Team.DarkFollowers;
+		if ( ctScore > tScore ) return Team.Aurors;
 
 		return Team.Unassigned;
 	}
@@ -54,8 +54,8 @@ public sealed class TeamScoring : Component,
 	{
 		if ( InitialScores != 0 )
 		{
-			Scores[Team.Terrorist] = InitialScores;
-			Scores[Team.CounterTerrorist] = InitialScores;
+			Scores[Team.DarkFollowers] = InitialScores;
+			Scores[Team.Aurors] = InitialScores;
 		}
 	}
 
@@ -75,11 +75,11 @@ public sealed class TeamScoring : Component,
 
 	public void Flip()
 	{
-		var ctScores = Scores.GetValueOrDefault( Team.CounterTerrorist );
-		var tScores = Scores.GetValueOrDefault( Team.Terrorist );
+		var ctScores = Scores.GetValueOrDefault( Team.Aurors );
+		var tScores = Scores.GetValueOrDefault( Team.DarkFollowers );
 
-		Scores[Team.Terrorist] = ctScores;
-		Scores[Team.CounterTerrorist] = tScores;
+		Scores[Team.DarkFollowers] = ctScores;
+		Scores[Team.Aurors] = tScores;
 	}
 
 	void IGameEventHandler<TeamsSwappedEvent>.OnGameEvent( TeamsSwappedEvent eventArgs )
@@ -116,8 +116,8 @@ public sealed class CompareTeamScores : Component,
 	{
 		var teamScoring = GameMode.Instance.Get<TeamScoring>( true );
 
-		var tScore = teamScoring.Scores.GetValueOrDefault( Team.Terrorist );
-		var ctScore = teamScoring.Scores.GetValueOrDefault( Team.CounterTerrorist );
+		var tScore = teamScoring.Scores.GetValueOrDefault( Team.DarkFollowers );
+		var ctScore = teamScoring.Scores.GetValueOrDefault( Team.Aurors );
 
 		if ( tScore >= ctScore + MinMargin )
 		{

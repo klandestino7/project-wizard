@@ -27,7 +27,7 @@ public sealed class PlayerStatsRule : Component,
 		// TODO: Don't count team-kills?
 
 		var inflictor = eventArgs.DamageInfo.Inflictor;
-		if ( inflictor is Equipment wpn && wpn.IsValid() )
+		if ( wpn.IsValid() )
 		{
 			using ( Rpc.FilterInclude( player.Network.Owner ) )
 			{

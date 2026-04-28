@@ -71,7 +71,7 @@ public static partial class GameUtils
 	/// <summary>
 	/// Helper list of the two teams.
 	/// </summary>
-	public static IReadOnlyList<Team> Teams { get; } = new[] { Team.Terrorist, Team.CounterTerrorist };
+	public static IReadOnlyList<Team> Teams { get; } = new[] { Team.DarkFollowers, Team.Aurors };
 
 	/// <summary>
 	/// Get a player from a component that belongs to a player or their descendants.

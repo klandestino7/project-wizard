@@ -30,10 +30,7 @@ public sealed class KillRewards : Component, IGameEventHandler<KillEvent>
 		{
 			killerPlayer.Client.GiveCash( -FriendlyFirePenalty );
 		}
-		// else if ( damageInfo.Inflictor is Equipment weapon )
-		// {
-		// 	killerPlayer.Client.GiveCash( weapon.Resource.KillReward );
-		// }
+
 	}
 }
 
@@ -48,7 +45,7 @@ public sealed class DefuseObjectiveRewards : Component,
 	public int BombDefuseReward { get; set; } = 300;
 
 	/// <summary>
-	/// Team reward for <see cref="Team.Terrorist"/>s if the bomb was planted but the round was lost.
+	/// Team reward for <see cref="Team.DarkFollowers"/>s if the bomb was planted but the round was lost.
 	/// </summary>
 	[Property, Sync( SyncFlags.FromHost )]
 	public int BombPlantTeamReward { get; set; } = 800;
@@ -62,7 +59,7 @@ public sealed class DefuseObjectiveRewards : Component,
 	{
 		eventArgs.Defuser?.Client.GiveCash( BombDefuseReward );
 
-		foreach ( var player in GameUtils.GetPlayers( Team.Terrorist ) )
+		foreach ( var player in GameUtils.GetPlayers( Team.DarkFollowers ) )
 		{
 			player.GiveCash( BombPlantTeamReward );
 		}

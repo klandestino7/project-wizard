@@ -32,7 +32,7 @@
 			@* Galeões *@
 			<div class="galleons">
 				<div class="galleon-icon">G</div>
-				<div class="galleon-amount">@Player.Galleons</div>
+				<div class="galleon-amount">@Player.Balance</div>
 			</div>
 		</div>
 
@@ -137,7 +137,7 @@
 	};
 
 	protected override int BuildHash() => System.HashCode.Combine(
-		Player?.Galleons,
+		Player?.Balance,
 		Player?.IsAlive,
 		Round?.TimeRemaining,
 		Round?.State

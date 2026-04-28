@@ -20,15 +20,15 @@ public sealed class IdleAnimator : Component
 	/// Remove this whole fucking function. Jesus.
 	/// </summary>
 	/// <param name="eq"></param>
-	async void AsyncOn( Equipment eq )
-	{
-		await GameTask.DelaySeconds( 0.05f );
+	// async void AsyncOn( Equipment eq )
+	// {
+	// 	await GameTask.DelaySeconds( 0.05f );
 
-		if ( !eq.IsValid() )
-			return;
+	// 	if ( !eq.IsValid() )
+	// 		return;
 
-		eq.UpdateRenderMode( true );
-	}
+	// 	eq.UpdateRenderMode( true );
+	// }
 
 	protected override void OnStart()
 	{

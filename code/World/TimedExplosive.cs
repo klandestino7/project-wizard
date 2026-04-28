@@ -23,12 +23,10 @@ public sealed class TimedExplosive : Component, IUse, IMinimapIcon, IDescription
 	/// <summary>
 	/// How long the defuse will take, based on if the defuser has a defuse kit.
 	/// </summary>
-	public float DefuseTime => DefusingPlayer?.Inventory.HasDefuseKit ?? false
-		? FastDefuseTime
-		: BaseDefuseTime;
+	public float DefuseTime => BaseDefuseTime;
 
 	public float Progress => Math.Clamp( TimeSinceDefuseStart / DefuseTime, 0f, 1f );
-
+ 
 	[Sync( SyncFlags.FromHost )] public TimeSince TimeSinceDefuseStart { get; private set; }
 	[Sync( SyncFlags.FromHost )] public TimeSince TimeSincePlanted { get; private set; }
 	[Sync( SyncFlags.FromHost )] public bool IsDefused { get; private set; }
@@ -238,7 +236,7 @@ public sealed class TimedExplosive : Component, IUse, IMinimapIcon, IDescription
 
 	public UseResult CanUse( PlayerPawn player )
 	{
-		return !IsDefused && !DefusingPlayer.IsValid() && player.Team == Team.CounterTerrorist;
+		return !IsDefused && !DefusingPlayer.IsValid() && player.Team == Team.Aurors;
 	}
 
 	public void OnUse( PlayerPawn player )
@@ -252,6 +250,6 @@ public sealed class TimedExplosive : Component, IUse, IMinimapIcon, IDescription
 		if ( Spottable.IsSpotted )
 			return true;
 
-		return viewer.Team == Team.Terrorist;
+		return viewer.Team == Team.DarkFollowers;
 	}
 }

@@ -7,14 +7,14 @@ public static class DefuseExtensions
 	/// </summary>
 	public static bool IsPlanting( this PlayerPawn player, out DefuseC4 DefuseC4 )
 	{
-		if ( !player.CurrentEquipment.IsValid() )
-		{
-			DefuseC4 = null;
-			return false;
-		}
+		// if ( !player.CurrentEquipment.IsValid() )
+		// {
+		// 	DefuseC4 = null;
+		// 	return false;
+		// }
 
-		DefuseC4 = player.CurrentEquipment?.GetComponentInChildren<DefuseC4>();
-		return DefuseC4 is { Active: true, IsPlanting: true };
+		// DefuseC4 = player.CurrentEquipment?.GetComponentInChildren<DefuseC4>();
+		// return DefuseC4 is { Active: true, IsPlanting: true };
 	}
 
 	/// <summary>

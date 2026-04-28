@@ -20,7 +20,7 @@ public sealed class AllowInstantDefuse : Component,
 		explosive.FinishDefusing();
 	}
 
-	private bool AnyTerroristsAlive => GameUtils.GetPlayerPawns( Team.Terrorist )
+	private bool AnyTerroristsAlive => GameUtils.GetPlayerPawns( Team.DarkFollowers )
 		.Any( x => x.HealthComponent.State == LifeState.Alive );
 
 	private bool HasEnoughTime( TimedExplosive explosive )

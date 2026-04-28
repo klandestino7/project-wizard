@@ -76,8 +76,8 @@ public sealed class TeamAssigner : Component,
 			return;
 		}
 
-		var ts = GameUtils.GetPlayers( Team.Terrorist ).Count();
-		var cts = GameUtils.GetPlayers( Team.CounterTerrorist ).Count();
+		var ts = GameUtils.GetPlayers( Team.DarkFollowers ).Count();
+		var cts = GameUtils.GetPlayers( Team.Aurors ).Count();
 
 		var curScore = GetTeamCountScore( ts, cts );
 
@@ -105,7 +105,7 @@ public sealed class TeamAssigner : Component,
 			return;
 		}
 
-		var fromTeam = bestDelta < 0 ? Team.CounterTerrorist : Team.Terrorist;
+		var fromTeam = bestDelta < 0 ? Team.Aurors : Team.DarkFollowers;
 
 		var toSwap = GameUtils.GetPlayers( fromTeam )
 			.OrderBy( GetScore )
@@ -165,8 +165,8 @@ public sealed class TeamAssigner : Component,
 
 	private Team SelectTeam()
 	{
-		var ts = GameUtils.GetPlayers( Team.Terrorist ).Count();
-		var cts = GameUtils.GetPlayers( Team.CounterTerrorist ).Count();
+		var ts = GameUtils.GetPlayers( Team.DarkFollowers ).Count();
+		var cts = GameUtils.GetPlayers( Team.Aurors ).Count();
 
 		var tScore = GetTeamCountScore( ts + 1, cts );
 		var ctScore = GetTeamCountScore( ts, cts + 1 );
@@ -178,15 +178,15 @@ public sealed class TeamAssigner : Component,
 
 		return tScore.CompareTo( ctScore ) switch
 		{
-			> 0 => Team.CounterTerrorist,
-			< 0 => Team.Terrorist,
+			> 0 => Team.Aurors,
+			< 0 => Team.DarkFollowers,
 			_ => RandomTeam()
 		};
 	}
 
 	private static Team RandomTeam()
 	{
-		return Random.Shared.NextSingle() < 0.5f ? Team.Terrorist : Team.CounterTerrorist;
+		return Random.Shared.NextSingle() < 0.5f ? Team.DarkFollowers : Team.Aurors;
 	}
 
 	void IGameEventHandler<PlayerConnectedEvent>.OnGameEvent( PlayerConnectedEvent eventArgs )
