@@ -1115,7 +1115,7 @@ public partial class SpellUpgradeSystem : Entity
 - 1 mapa jogável
 
 **Deliverables:**
-- [ ] Movimento básico de wizard (WASD, jump, crouch)
+- [x] Movimento básico de wizard (WASD, jump, crouch)
 - [ ] Sistema de varinha (ataque básico funcionando)
 - [ ] 2 wizards jogáveis com 4 abilities cada
 - [ ] 1 mapa simples (3 sites)
