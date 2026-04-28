@@ -1,0 +1,162 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root class="game-hud">
+
+	@if ( Player != null && Player.IsAlive )
+	{
+		@* ── Bottom Bar ───────────────────────────────────────────── *@
+		<div class="hud-bottom">
+
+			@* HP + Shield *@
+			<div class="status-bars">
+				<div class="bar-label">HP</div>
+				<div class="bar-track">
+					<div class="bar-fill hp-fill" style="width: @( HealthPercent )%"></div>
+				</div>
+				<div class="bar-value">@Player.Health</div>
+
+				@if ( Player.Shield > 0 )
+				{
+					<div class="bar-label shield-label">SHIELD</div>
+					<div class="bar-track">
+						<div class="bar-fill shield-fill" style="width: @( ShieldPercent )%"></div>
+					</div>
+					<div class="bar-value">@Player.Shield</div>
+				}
+			</div>
+
+			@* Abilities *@
+			<div class="abilities">
+				<div class="ability-slot @( IsQReady ? "ready" : "cooling" )">
+					<div class="ability-key">Q</div>
+					<div class="ability-name">@( Player.AbilityQ?.AbilityName ?? "–" )</div>
+					@if ( !IsQReady )
+					{
+						<div class="ability-cd">@( Player.AbilityQ?.CooldownRemaining.ToString("0.0") )s</div>
+					}
+				</div>
+				<div class="ability-slot @( IsEReady ? "ready" : "cooling" )">
+					<div class="ability-key">E</div>
+					<div class="ability-name">@( Player.AbilityE?.AbilityName ?? "–" )</div>
+					@if ( !IsEReady )
+					{
+						<div class="ability-cd">@( Player.AbilityE?.CooldownRemaining.ToString("0.0") )s</div>
+					}
+				</div>
+				<div class="ability-slot @( IsRReady ? "ready" : "cooling" )">
+					<div class="ability-key">R</div>
+					<div class="ability-name">@( Player.AbilityR?.AbilityName ?? "–" )</div>
+					@if ( !IsRReady )
+					{
+						<div class="ability-cd">@( Player.AbilityR?.CooldownRemaining.ToString("0.0") )s</div>
+					}
+				</div>
+			</div>
+
+			@* Galeões *@
+			<div class="galleons">
+				<div class="galleon-icon">G</div>
+				<div class="galleon-amount">@Player.Galleons</div>
+			</div>
+		</div>
+
+		@* ── Top Bar ──────────────────────────────────────────────── *@
+		<div class="hud-top">
+			<div class="score auror-score">@( Round?.AurorScore ?? 0 )</div>
+			<div class="round-info">
+				<div class="round-num">ROUND @( Round?.CurrentRound ?? 0 ) / @RoundManager.MaxRounds</div>
+				<div class="round-state">@( GetStateLabel() )</div>
+				<div class="round-timer @( IsLowTime ? "timer-low" : "" )">@( TimerLabel )</div>
+			</div>
+			<div class="score comensal-score">@( Round?.ComensalScore ?? 0 )</div>
+		</div>
+
+		@* ── Horcrux timer (quando plantada) ─────────────────────── *@
+		@{
+			var plantedSite = PlantedHorcrux;
+		}
+		@if ( plantedSite != null )
+		{
+			<div class="horcrux-timer">
+				<div class="horcrux-label">HORCRUX</div>
+				<div class="horcrux-countdown @( plantedSite.TimeUntilExplosion < 10f ? "critical" : "" )">
+					@plantedSite.TimeUntilExplosion.ToString( "0.0" )
+				</div>
+			</div>
+		}
+
+		@* ── Crosshair ────────────────────────────────────────────── *@
+		<div class="crosshair">
+			<div class="cross-h"></div>
+			<div class="cross-v"></div>
+		</div>
+	}
+	else if ( Player != null && !Player.IsAlive )
+	{
+		<div class="dead-screen">
+			<div class="dead-text">ELIMINADO</div>
+			<div class="dead-sub">Aguarde o próximo round</div>
+		</div>
+	}
+
+</root>
+
+@code {
+	WizardPlayer Player => WizardPlayer.Local;
+	RoundManager Round => RoundManager.Instance;
+
+	float HealthPercent => Player != null
+		? (float)Player.Health / WizardPlayer.MaxHealth * 100f
+		: 0f;
+
+	float ShieldPercent => Player != null
+		? (float)Player.Shield / WizardPlayer.MaxShield * 100f
+		: 0f;
+
+	bool IsQReady => Player?.AbilityQ?.IsReady ?? true;
+	bool IsEReady => Player?.AbilityE?.IsReady ?? true;
+	bool IsRReady => Player?.AbilityR?.IsReady ?? true;
+
+	HorcruxSite PlantedHorcrux => Game.ActiveScene
+		.GetAllComponents<HorcruxSite>()
+		.FirstOrDefault( s => s.IsPlanted && !s.IsDefused && !s.HasExploded );
+
+	float TimeRemaining => Round?.TimeRemaining ?? 0f;
+	bool IsLowTime => TimeRemaining < 10f && Round?.State == RoundState.Combat;
+
+	string TimerLabel
+	{
+		get
+		{
+			if ( Round == null ) return "–";
+			int mins = (int)(TimeRemaining / 60f);
+			int secs = (int)(TimeRemaining % 60f);
+			return $"{mins}:{secs:00}";
+		}
+	}
+
+	string GetStateLabel()
+	{
+		return Round?.State switch
+		{
+			RoundState.BuyPhase => "FASE DE COMPRA",
+			RoundState.Combat => "COMBATE",
+			RoundState.PostRound => "FIM DE ROUND",
+			RoundState.MatchEnd => "PARTIDA ENCERRADA",
+			_ => ""
+		};
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Player?.Health,
+		Player?.Shield,
+		Player?.Galleons,
+		Player?.IsAlive,
+		Player?.AbilityQ?.CooldownRemaining,
+		Player?.AbilityE?.CooldownRemaining,
+		Round?.CurrentRound,
+		Round?.State
+	);
+}
