@@ -1,3 +1,8 @@
+global using Sandbox;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
 
 /// <summary>
 /// Site de plant/defuse do Horcrux (equivalente ao bomb site do CS/Valorant).
@@ -25,8 +30,9 @@ public sealed class HorcruxSite : Component
 	private WizardPlayer _interactingPlayer;
 	private float _interactStartTime;
 
-	public float TimeUntilExplosion => IsPlanted ? MathX.Max( 0f, ExplosionTime - Time.Now ) : 0f;
-
+	public float TimeUntilExplosion => IsPlanted 
+		? Math.Max( 0f, (float)(ExplosionTime - Time.Now) ) 
+		: 0f;
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnUpdate()
 	{

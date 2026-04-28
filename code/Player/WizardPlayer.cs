@@ -37,7 +37,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property] public BaseAbility AbilityR { get; set; }
 
 	// ─── Helpers ──────────────────────────────────────────────────────
-	public Vector3 EyePosition => Transform.Position + Vector3.Up * EyeHeight;
+	public Vector3 EyePosition => WorldPosition + Vector3.Up * EyeHeight;
 	public static WizardPlayer Local => Game.ActiveScene
 		.GetAllComponents<WizardPlayer>()
 		.FirstOrDefault( p => !p.IsProxy );
@@ -84,10 +84,10 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		angles.roll = 0f;
 		EyeAngles = angles;
 
-		Transform.Rotation = Rotation.FromYaw( EyeAngles.yaw );
+		WorldRotation = Rotation.FromYaw( EyeAngles.yaw );
 
 		if ( Camera.IsValid() )
-			Camera.Transform.LocalRotation = Rotation.FromPitch( EyeAngles.pitch );
+			Camera.LocalRotation = Rotation.FromPitch( EyeAngles.pitch );
 	}
 
 	// ─── Input: Movimento ─────────────────────────────────────────────
@@ -142,7 +142,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		if ( !Input.Down( "PlantDefuse" ) ) return;
 
 		var site = Scene.GetAllComponents<HorcruxSite>()
-			.FirstOrDefault( s => s.Transform.Position.Distance( Transform.Position ) < 150f );
+			.FirstOrDefault( s => s.WorldPosition.Distance( WorldPosition ) < 150f );
 
 		site?.TryInteract( this );
 	}
@@ -153,7 +153,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		if ( BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 
-		Transform.Rotation = Rotation.FromYaw( EyeAngles.yaw );
+		WorldRotation = Rotation.FromYaw( EyeAngles.yaw );
 	}
 
 	// ─── Dano ─────────────────────────────────────────────────────────
@@ -165,12 +165,12 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( Shield > 0 )
 		{
-			int shieldAbsorb = Math.Min( Shield, remaining );
+			int shieldAbsorb = System.Math.Min( Shield, remaining );
 			Shield -= shieldAbsorb;
 			remaining -= shieldAbsorb;
 		}
 
-		Health = Math.Max( 0, Health - remaining );
+		Health = System.Math.Max( 0, Health - remaining );
 
 		if ( Health <= 0 )
 			Die( attacker );
@@ -179,13 +179,13 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	public void Heal( int amount )
 	{
 		if ( !Networking.IsHost ) return;
-		Health = Math.Min( MaxHealth, Health + amount );
+		Health = System.Math.Min( MaxHealth, Health + amount );
 	}
 
 	public void ApplyShield( int amount )
 	{
 		if ( !Networking.IsHost ) return;
-		Shield = Math.Min( MaxShield, Shield + amount );
+		Shield = System.Math.Min( MaxShield, Shield + amount );
 	}
 
 	// ─── Morte ────────────────────────────────────────────────────────
@@ -210,7 +210,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	// ─── Respawn ──────────────────────────────────────────────────────
 	public void Respawn( Vector3 position )
 	{
-		Transform.Position = position;
+		WorldPosition = position;
 		Health = MaxHealth;
 		Shield = 0;
 		IsAlive = true;

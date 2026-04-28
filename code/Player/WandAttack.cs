@@ -52,7 +52,7 @@ public sealed class WandAttack : Component
 		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
 		if ( victim == null || victim.Team == _player.Team ) return;
 
-		bool headshot = tr.Hitbox?.Name?.Contains( "head", StringComparison.OrdinalIgnoreCase ) ?? false;
+		bool headshot = tr.Hitbox?.Tags.Has( "head" ) ?? false;
 		int dmg = headshot ? HeadshotDamage : BaseDamage;
 
 		victim.TakeDamage( dmg, _player, headshot );

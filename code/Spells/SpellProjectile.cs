@@ -2,20 +2,24 @@
 /// <summary>
 /// Projétil genérico de feitiço. Criado pelo servidor, posição sincronizada
 /// automaticamente pelo networking do S&Box.
+/// Antes de NetworkSpawn(), setar SpellProjectile.PendingShooter com o atirador.
 /// </summary>
 public sealed class SpellProjectile : Component
 {
-	// ─── Propriedades sincronizadas (setar antes de NetworkSpawn) ─────
-	[Property, Sync] public ulong ShooterNetId { get; set; }
+	// ─── Propriedades sincronizadas ───────────────────────────────────
+	[Property, Sync] public Team ShooterTeam { get; set; }
 	[Property, Sync] public int Damage { get; set; } = 80;
 	[Property, Sync] public float StunDuration { get; set; } = 1f;
 	[Property, Sync] public float Speed { get; set; } = 2000f;
 	[Property, Sync] public bool PierceShield { get; set; } = false;
 	[Property, Sync] public Color SpellColor { get; set; } = Color.Red;
 
+	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
+	public static WizardPlayer PendingShooter { get; set; }
+
 	private const float Lifetime = 3f;
 
-	private WizardPlayer _shooter;
+	private WizardPlayer _shooter;  // apenas no servidor
 	private float _spawnTime;
 	private bool _hit = false;
 
@@ -23,12 +27,15 @@ public sealed class SpellProjectile : Component
 	{
 		_spawnTime = Time.Now;
 
-		// Localiza o atirador pelo NetId (funciona em todos os clientes)
-		_shooter = Scene.GetAllComponents<WizardPlayer>()
-			.FirstOrDefault( p => p.Network.OwnerId == ShooterNetId );
+		// Captura o atirador apenas no servidor (onde foi spawned)
+		if ( Networking.IsHost )
+		{
+			_shooter = PendingShooter;
+			PendingShooter = null;
+		}
 
-		// Visual: cria um ponto de luz colorido simples como placeholder
-		// TODO: substituir por modelo ou partícula de projétil
+		// Visual placeholder: ponto de luz colorido
+		// TODO: substituir por modelo/partícula de projétil
 		var light = Components.Create<PointLight>();
 		light.LightColor = SpellColor;
 		light.Radius = 80f;
@@ -46,11 +53,10 @@ public sealed class SpellProjectile : Component
 			return;
 		}
 
-		// Mover para frente
-		var step = Transform.Rotation.Forward * Speed * Time.Delta;
+		var step = WorldRotation.Forward * Speed * Time.Delta;
 
 		var tr = Scene.Trace
-			.Ray( Transform.Position, Transform.Position + step )
+			.Ray( WorldPosition, WorldPosition + step )
 			.UseHitboxes()
 			.IgnoreGameObjectHierarchy( _shooter?.GameObject )
 			.WithoutTags( "projectile" )
@@ -64,19 +70,20 @@ public sealed class SpellProjectile : Component
 			return;
 		}
 
-		Transform.Position += step;
+		WorldPosition += step;
 	}
 
 	private void OnHit( SceneTraceResult tr )
 	{
 		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
 
-		if ( victim != null && _shooter != null && victim.Team != _shooter.Team )
+		if ( victim != null && victim.Team != ShooterTeam )
 		{
 			if ( PierceShield )
 			{
-				// Ignora shield, vai direto no HP
-				victim.Health = Math.Max( 0, victim.Health - Damage );
+				// Ignora shield, dano direto no HP
+				int newHp = victim.Health - Damage;
+				victim.Health = newHp < 0 ? 0 : newHp;
 				if ( victim.Health <= 0 )
 					victim.Die( _shooter );
 			}
@@ -96,6 +103,5 @@ public sealed class SpellProjectile : Component
 	private void PlayHitEffect( Vector3 position, Vector3 normal )
 	{
 		// TODO: spawnar partícula de impacto
-		// Ex: SceneParticles.PlayInstant( "particles/spell_impact.vpcf", position );
 	}
 }

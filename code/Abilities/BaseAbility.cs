@@ -9,16 +9,27 @@ public abstract class BaseAbility : Component
 	[Property] public int Tier2Cost { get; set; } = 1000;
 
 	[Property, Sync] public int CurrentTier { get; set; } = 0;
-	[Sync] private float _cooldownEnd { get; set; } = 0f;
+
+	// Privado com [Sync] pode causar problemas — usar protected
+	[Sync] protected float CooldownEnd { get; set; } = 0f;
 
 	protected WizardPlayer Player { get; private set; }
 
 	/// <summary>Cooldowns em segundos para cada tier. Override nas subclasses.</summary>
 	protected virtual float[] CooldownByTier => new[] { 10f, 8f, 6f };
-	public float CurrentCooldownDuration => CooldownByTier[Math.Clamp( CurrentTier, 0, 2 )];
 
-	public bool IsReady => Time.Now >= _cooldownEnd;
-	public float CooldownRemaining => MathX.Max( 0f, _cooldownEnd - Time.Now );
+	private int SafeTier => CurrentTier < 0 ? 0 : CurrentTier > 2 ? 2 : CurrentTier;
+
+	public float CurrentCooldownDuration => CooldownByTier[SafeTier];
+	public bool IsReady => Time.Now >= CooldownEnd;
+	public float CooldownRemaining
+	{
+		get
+		{
+			float r = CooldownEnd - Time.Now;
+			return r < 0f ? 0f : r;
+		}
+	}
 	public float CooldownFraction => IsReady ? 1f : 1f - CooldownRemaining / CurrentCooldownDuration;
 
 	protected override void OnStart()
@@ -31,13 +42,13 @@ public abstract class BaseAbility : Component
 	{
 		if ( !IsReady || !Player.IsValid() || !Player.IsAlive || Player.IsStunned ) return;
 		Activate();
-		_cooldownEnd = Time.Now + CurrentCooldownDuration;
+		CooldownEnd = Time.Now + CurrentCooldownDuration;
 	}
 
 	protected abstract void Activate();
 
 	// ─── Cooldown ─────────────────────────────────────────────────────
-	public void ResetCooldown() => _cooldownEnd = 0f;
+	public void ResetCooldown() => CooldownEnd = 0f;
 	public void ResetTier() => CurrentTier = 0;
 
 	// ─── Upgrade (chamado pelo BuyMenu) ───────────────────────────────

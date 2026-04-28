@@ -1,3 +1,8 @@
+global using Sandbox;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
 
 /// <summary>
 /// Gerencia rounds, economia e vitória da partida.
@@ -32,8 +37,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	[Property, Sync] public int ComensalScore { get; set; } = 0;
 	[Property, Sync] public RoundState State { get; set; } = RoundState.Warmup;
 	[Property, Sync] public float PhaseEndTime { get; set; } = 0f;
-
-	public float TimeRemaining => MathX.Max( 0f, PhaseEndTime - Time.Now );
+	public float TimeRemaining => Math.Max( 0f, PhaseEndTime - Time.Now );
 
 	// ─── Estado interno (servidor) ────────────────────────────────────
 	private int _aurorLossStreak = 0;

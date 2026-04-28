@@ -11,45 +11,39 @@ public sealed class StupefyAbility : BaseAbility
 	private static readonly float[] StunByTier = { 1f, 1.5f, 2f };
 	protected override float[] CooldownByTier => new[] { 6f, 5f, 4f };
 
-	public int CurrentDamage => DamageByTier[Math.Clamp( CurrentTier, 0, 2 )];
-	public float CurrentStun => StunByTier[Math.Clamp( CurrentTier, 0, 2 )];
+	private int TierIndex => CurrentTier < 0 ? 0 : CurrentTier > 2 ? 2 : CurrentTier;
+	public int CurrentDamage => DamageByTier[TierIndex];
+	public float CurrentStun => StunByTier[TierIndex];
 	public bool PierceShield => CurrentTier >= 2;
 
 	protected override void Activate()
 	{
-		if ( Networking.IsHost )
-		{
-			SpawnProjectile();
-		}
-		else
-		{
-			RequestSpawnProjectile();
-		}
+		// Broadcast para todos os peers; apenas o host executa o spawn real.
+		BroadcastActivate( Player.EyePosition, Player.EyeAngles.ToRotation() );
 	}
 
-	[Authority]
-	private void RequestSpawnProjectile()
+	[Broadcast]
+	private void BroadcastActivate( Vector3 origin, Rotation dir )
 	{
-		SpawnProjectile();
+		if ( !Networking.IsHost ) return;
+		SpawnProjectile( origin, dir.Forward );
 	}
 
-	private void SpawnProjectile()
+	private void SpawnProjectile( Vector3 origin, Vector3 direction )
 	{
-		var origin = Player.EyePosition;
-		var direction = Player.EyeAngles.ToRotation().Forward;
-
 		var go = new GameObject( true, "Stupefy_Projectile" );
-		go.Transform.Position = origin;
-		go.Transform.Rotation = Rotation.LookAt( direction );
+		go.WorldPosition = origin;
+		go.WorldRotation = Rotation.LookAt( direction );
 		go.Tags.Add( "projectile" );
 
+		SpellProjectile.PendingShooter = Player;
 		var proj = go.Components.Create<SpellProjectile>();
-		proj.ShooterNetId = Player.Network.OwnerId;
+		proj.ShooterTeam = Player.Team;
 		proj.Damage = CurrentDamage;
 		proj.StunDuration = CurrentStun;
 		proj.Speed = 2000f;
 		proj.PierceShield = PierceShield;
-		proj.SpellColor = new Color( 0.9f, 0.1f, 0.1f ); // Vermelho
+		proj.SpellColor = new Color( 0.9f, 0.1f, 0.1f );
 
 		go.NetworkSpawn();
 	}
