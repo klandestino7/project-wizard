@@ -51,7 +51,7 @@ public sealed class ProtegoAbility : BaseAbility
 	{
 		if ( !IsShieldUp ) return (incoming, 0);
 
-		int absorbed = Math.Min( ShieldHP, incoming );
+		int absorbed = ShieldHP < incoming ? ShieldHP : incoming;
 		ShieldHP -= absorbed;
 
 		if ( ShieldHP <= 0 )

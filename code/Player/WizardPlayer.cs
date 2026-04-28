@@ -71,7 +71,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	protected override void OnFixedUpdate()
 	{
 		if ( IsProxy || !IsAlive ) return;
-		HandleMovement();
+		// HandleMovement();
 	}
 
 	// ─── Input: Look ──────────────────────────────────────────────────
@@ -169,12 +169,13 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( Shield > 0 )
 		{
-			int shieldAbsorb = System.Math.Min( Shield, remaining );
+			int shieldAbsorb = Shield < remaining ? Shield : remaining;
 			Shield -= shieldAbsorb;
 			remaining -= shieldAbsorb;
 		}
 
-		Health = System.Math.Max( 0, Health - remaining );
+		int newHealth = Health - remaining;
+		Health = newHealth < 0 ? 0 : newHealth;
 
 		if ( Health <= 0 )
 			Die( attacker );
@@ -183,13 +184,15 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	public void Heal( int amount )
 	{
 		if ( !Networking.IsHost ) return;
-		Health = System.Math.Min( MaxHealth, Health + amount );
+		int healed = Health + amount;
+		Health = healed > MaxHealth ? MaxHealth : healed;
 	}
 
 	public void ApplyShield( int amount )
 	{
 		if ( !Networking.IsHost ) return;
-		Shield = System.Math.Min( MaxShield, Shield + amount );
+		int newShield = Shield + amount;
+		Shield = newShield > MaxShield ? MaxShield : newShield;
 	}
 
 	// ─── Morte ────────────────────────────────────────────────────────
