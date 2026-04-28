@@ -1,0 +1,21 @@
+
+/// <summary>
+/// Protego (E): escudo mágico reativo.
+/// Define custo, cooldown e tier do feitiço.
+/// O estado do escudo (sync, VFX, absorção) fica no ProtegoComponent (Component separado).
+/// </summary>
+public sealed class ProtegoSpell : BaseSpell
+{
+	public override string  SpellName      => "Protego";
+	public override float   ManaCost       => 30f;
+	public override float   BaseCooldown   => 6f;
+	public override float[] CooldownByTier => new[] { 6f, 5f, 4f };
+	public override int     Tier1Cost      => 500;
+	public override int     Tier2Cost      => 1200;
+
+	public override void Execute( Wand wand )
+	{
+		var shield = wand.Player.Components.Get<ProtegoComponent>( FindMode.EverythingInSelf );
+		shield?.Activate( Tier );
+	}
+}

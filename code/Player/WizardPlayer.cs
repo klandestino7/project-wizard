@@ -54,18 +54,13 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property] public LockOnSystem LockOnSystem { get; set; }
 	[Property] public WandHolder WandHolder { get; set; }
 
-	// ─── Abilities (setadas via inspetor ou GameManager) ──────────────
-	[Property] public WandAttack WandAttack { get; set; }
-	[Property] public BaseAbility AbilityQ { get; set; }
-	[Property] public BaseAbility AbilityE { get; set; }
-	[Property] public BaseAbility AbilityR { get; set; }
-	[Property] public BaseAbility AbilityF { get; set; }
+	// ─── Sistema de feitiços ──────────────────────────────────────────
+	[Property] public Wand       Wand       { get; set; }
+	[Property] public SpellsDeck SpellsDeck { get; set; }
 
 	// ─── Itens consumíveis ────────────────────────────────────────────
 	[Property] public BaseConsumable ItemSlot1 { get; set; }
 	[Property] public BaseConsumable ItemSlot2 { get; set; }
-
-	private bool isAim = false;
 
 	// ─── Helpers ──────────────────────────────────────────────────────
 	public Vector3 EyePosition => WorldPosition + Vector3.Up * EyeHeight;
@@ -83,7 +78,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
     	LockOnSystem = Components.Get<LockOnSystem>();
 	
 		WandHolder = Components.Get<WandHolder>();
-		Camera = Scene.Get<CameraComponent>();
+		Camera     = Scene.Get<CameraComponent>();
+		Wand       = Components.Get<Wand>();
+		SpellsDeck = Components.Get<SpellsDeck>();
 	}
 
 	protected override void OnUpdate()
@@ -197,29 +194,12 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		if ( IsStunned ) return; // stunado não lança feitiços
 
 		if ( Input.Pressed( "Attack1" ) )
-			WandAttack?.TryFire();
+			Wand?.TryCastBasic();
 
-		if ( Input.Down( "Attack2" ) )
-		{
-			// Log.Info($" GetSpellMuzzle ::  {GetSpellMuzzle()}");
-			isAim = true;
-
-			var origin = GetSpellMuzzle();
-			var dir    = GetSpellDirection( origin );
-
-			// define um comprimento pra visualizar
-			var end = origin + dir * 1000F;
-
-			// var eyeEnd = EyePosition + EyeAngles.Forward * 5000f;
-
-			// Gizmo.Draw.Line(EyePosition, eyeEnd);     // onde a câmera mira
-			Gizmo.Draw.Line(origin, end); // tiro real
-		}
-
-		if ( Input.Pressed( "Ability1" ) ) AbilityQ?.TryActivate();
-		if ( Input.Pressed( "Ability2" ) ) AbilityE?.TryActivate();
-		if ( Input.Pressed( "Ability3" ) ) AbilityR?.TryActivate();
-		if ( Input.Pressed( "Ability4" ) ) AbilityF?.TryActivate();
+		if ( Input.Pressed( "Ability1" ) ) Wand?.TryCastSlot( 0 ); // Q
+		if ( Input.Pressed( "Ability2" ) ) Wand?.TryCastSlot( 1 ); // E (Protego)
+		if ( Input.Pressed( "Ability3" ) ) Wand?.TryCastSlot( 2 ); // R
+		if ( Input.Pressed( "Ability4" ) ) Wand?.TryCastSlot( 3 ); // F
 
 		if ( Input.Pressed( "Item1" ) ) ItemSlot1?.TryUse();
 		if ( Input.Pressed( "Item2" ) ) ItemSlot2?.TryUse();
@@ -265,8 +245,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		else if ( CombatState == CombatState.Stunned )
 			amount = (int)(amount * 1.25f); // +25% em alvo stunado
 
-		// Protego absorve dano (verifica perfect block)
-		var protego = Components.Get<ProtegoAbility>( FindMode.EverythingInSelf );
+		// ProtegoComponent absorve dano (verifica perfect block)
+		var protego = Components.Get<ProtegoComponent>( FindMode.EverythingInSelf );
 		if ( protego != null && protego.IsShieldUp )
 		{
 			var (passthrough, reflected) = protego.AbsorbDamage( amount, attacker );
@@ -382,10 +362,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		if ( BodyRenderer.IsValid() )
 			BodyRenderer.Enabled = true;
 
-		AbilityQ?.ResetCooldown();
-		AbilityE?.ResetCooldown();
-		AbilityR?.ResetCooldown();
-		AbilityF?.ResetCooldown();
+		SpellsDeck?.ResetAllCooldowns();
 		ManaSystem?.ResetFull();
 		DodgeSystem?.ResetStamina();
 	}
