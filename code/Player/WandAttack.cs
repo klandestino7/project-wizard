@@ -32,6 +32,7 @@ public sealed class WandAttack : Component
 	{
 		// if ( !CanFire ) return;
 		_nextFireTime = Time.Now + 1f / FireRate;
+		_player.WandHolder?.TriggerCastAnimation();
 		FireHitscan();
 	}
 

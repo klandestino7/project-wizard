@@ -122,42 +122,6 @@
         "StartAsleep": false
       },
       {
-        "__type": "Facepunch.AnimationHelper",
-        "__guid": "5b79ebea-f821-49a8-8836-98c8eda37bfb",
-        "__enabled": true,
-        "Flags": 0,
-        "EyeSource": null,
-        "Height": 1,
-        "IkLeftFoot": {
-          "_type": "gameobject",
-          "go": "b3382dd3-8438-42f9-b96c-f786c0d13aac"
-        },
-        "IkLeftHand": {
-          "_type": "gameobject",
-          "go": "48cde994-7c24-4ff8-b3ee-9d5228d4187e"
-        },
-        "IkRightFoot": {
-          "_type": "gameobject",
-          "go": "e0a3ee02-c842-4207-b076-3e58f6d6efc5"
-        },
-        "IkRightHand": {
-          "_type": "gameobject",
-          "go": "92b27538-c096-4a25-bec5-4b8913c61431"
-        },
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Target": {
-          "_type": "component",
-          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
-          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
-          "component_type": "SkinnedModelRenderer"
-        }
-      },
-      {
         "__type": "Sandbox.Movement.MoveModeWalk",
         "__guid": "cd22957c-7f2f-4942-82b2-ab9551065aee",
         "__enabled": true,
@@ -289,7 +253,8 @@
           "component_id": "d7c4b582-d279-44d6-ac12-739e1f49aee2",
           "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
           "component_type": "WandAttack"
-        }
+        },
+        "WandHolder": null
       },
       {
         "__type": "WandAttack",
@@ -403,6 +368,72 @@
         "PitchMax": 70,
         "PitchMin": -26.780031,
         "SpringArmLength": 190.54996
+      },
+      {
+        "__type": "WandHolder",
+        "__guid": "9afefd91-5ef1-4d31-9501-35b24adf67ab",
+        "__enabled": true,
+        "Flags": 0,
+        "AnimHelper": {
+          "_type": "component",
+          "component_id": "88faf99e-3be4-44bf-9078-83bf43e65c1f",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "AnimationHelper"
+        },
+        "AttachAngles": "0,0,0",
+        "AttachOffset": "4,-2,-3",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PlayerRenderer": {
+          "_type": "component",
+          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "WandPrefab": {
+          "_type": "gameobject",
+          "prefab": "prefabs/wand/wandbase_default.prefab"
+        }
+      },
+      {
+        "__type": "AnimationHelper",
+        "__guid": "88faf99e-3be4-44bf-9078-83bf43e65c1f",
+        "__enabled": true,
+        "Flags": 0,
+        "EyeSource": null,
+        "Height": 1,
+        "IkLeftFoot": {
+          "_type": "gameobject",
+          "go": "b3382dd3-8438-42f9-b96c-f786c0d13aac"
+        },
+        "IkLeftHand": {
+          "_type": "gameobject",
+          "go": "48cde994-7c24-4ff8-b3ee-9d5228d4187e"
+        },
+        "IkRightFoot": {
+          "_type": "gameobject",
+          "go": "e0a3ee02-c842-4207-b076-3e58f6d6efc5"
+        },
+        "IkRightHand": {
+          "_type": "gameobject",
+          "go": "92b27538-c096-4a25-bec5-4b8913c61431"
+        },
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Target": {
+          "_type": "component",
+          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "SkinnedModelRenderer"
+        }
       }
     ],
     "Children": [

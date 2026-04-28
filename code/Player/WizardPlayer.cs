@@ -52,6 +52,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property] public ManaSystem ManaSystem { get; set; }
 	[Property] public DodgeSystem DodgeSystem { get; set; }
 	[Property] public LockOnSystem LockOnSystem { get; set; }
+	[Property] public WandHolder WandHolder { get; set; }
 
 	// ─── Abilities (setadas via inspetor ou GameManager) ──────────────
 	[Property] public WandAttack WandAttack { get; set; }

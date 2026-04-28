@@ -50,6 +50,9 @@ public abstract class BaseAbility : Component
 
 		Activate();
 
+		// Animação de cast na varinha
+		Player.WandHolder?.TriggerCastAnimation();
+
 		// Consome mana no servidor
 		if ( Networking.IsHost )
 			mana?.TrySpend( ManaCost );

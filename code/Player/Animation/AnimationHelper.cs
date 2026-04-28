@@ -1,4 +1,3 @@
-namespace Facepunch;
 
 public sealed class AnimationHelper : Component
 {
