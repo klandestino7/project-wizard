@@ -9,6 +9,8 @@
 
 **Fórmula:** Estrutura de Valorant + Progressão de Deadlock + 100% Harry Potter
 
+> **Mudança de Design:** Não há wizards/agentes pré-definidos. Cada jogador monta seu próprio mago comprando magias livremente durante a fase de preparação, formando um deck de até 4 magias simultâneas.
+
 ---
 
 ## 🎮 ESTRUTURA DE PARTIDA
@@ -23,9 +25,9 @@
 
 **Cada Round:**
 - **Fase de Preparação:** 30 segundos
-  - Compra de itens/upgrades
-  - Escolha de loadout de feitiços
-  - Estratégia de time
+  - Compra de magias e upgrades com Galeões
+  - Montagem do deck (escolha até 4 magias para o round)
+  - Compra de itens consumíveis e estratégia de time
 - **Fase de Combate:** 90 segundos
   - Objetivo principal ativo
   - Eliminação ou objetivo completado = round ganho
@@ -87,9 +89,9 @@
 ### Sistema de Dinheiro: "Galeões"
 
 **Diferente de MOBA:** Dinheiro NÃO acumula para comprar itens permanentes. Serve para:
-1. Comprar **upgrades de feitiços** para aquele round
-2. Comprar **itens consumíveis** (poções, shields)
-3. Desbloquear **habilidades extras** temporárias
+1. **Comprar magias** para o seu deck do round
+2. **Upar magias** que você já tem (Tier 1 → Tier 2)
+3. **Comprar itens consumíveis** (poções, equipamentos)
 
 **Ganho de Galeões:**
 
@@ -106,32 +108,64 @@
 
 **Carrega entre rounds:** Sim! Como Valorant, você acumula dinheiro para rounds futuros.
 
+---
+
+### Sistema de Deck de Magias
+
+**O jogador monta seu próprio mago.** Não há classes ou agentes fixos — você compra as magias que quiser e equipa até **4 simultâneas** no seu deck.
+
+**Regras do Deck:**
+- Capacidade: **4 magias ativas** por round
+- Magias são compradas durante a fase de preparação com Galeões
+- Magias compradas **permanecem entre rounds** (como armas no Valorant)
+- Você pode **vender** uma magia para recuperar parte do valor
+- Se morrer, perde as magias compradas naquele round (exceto as que já tinha de rounds anteriores)
+
+**Round Inicial (Round 1 - Pistol Round equivalente):**
+- Todo jogador começa com **800G**
+- Dá para comprar 1-2 magias básicas (Tier 0)
+- Deck de pistol = magias baratas + ataque básico de varinha
+
+---
+
+### Sistema de Mana
+
+As magias consomem **Mana** além de ter cooldown. Mana funciona como uma stamina mágica:
+
+**Mana:**
+- **Máximo:** 100 mana
+- **Regeneração:** 15 mana/segundo (começa 2s após usar a última magia)
+- **Custo por Magia:** Varia (magias poderosas custam mais)
+- **Não existe "sem mana"** no estilo de MOBA — as magias simplesmente ficam bloqueadas até ter mana suficiente
+
+**Poção de Mana (500G):**
+- Regenera 60 mana instantaneamente
+- 1 uso por round
+- Permite usar magias sem esperar a regen natural
+
+**Interação Cooldown + Mana:**
+- Magia só pode ser usada se: cooldown zerado **E** mana suficiente
+- Isso cria decisões táticas (guardar mana para situação crítica vs usar agora)
+
+---
+
 ### O Que Comprar com Galeões
 
-#### **CATEGORIA 1: SPELL UPGRADES (Temporários por Round)**
+#### **MAGIAS (Compra Permanece entre Rounds)**
 
-Cada feitiço pode ser upado durante a fase de compra:
+Magias são compradas igual armas no Valorant. Cada magia tem:
+- **Custo de compra** (Tier 0)
+- **Custo de upgrade** para Tier 1 e Tier 2
+- **Custo de mana** por uso
 
-**Exemplo - Stupefy (Feitiço Básico):**
-- **Tier 0 (Grátis):** 80 damage, 1s stun, 6s cooldown
-- **Tier 1 (400G):** 120 damage, 1.5s stun, 5s cooldown
-- **Tier 2 (1000G):** 160 damage, 2s stun, 4s cooldown, +penetra shields
+Tiers persistem entre rounds se você tiver mantido a magia.
 
-**Exemplo - Protego (Shield):**
-- **Tier 0 (Grátis):** Absorve 100 HP, 3s duração
-- **Tier 1 (500G):** Absorve 200 HP, 4s duração
-- **Tier 2 (1200G):** Absorve 350 HP, 5s duração, reflete 30% damage
+#### **ITENS CONSUMÍVEIS (Uso no Round)**
 
-**Sistema:**
-- Você escolhe quais feitiços upar a cada round
-- Upgrades duram APENAS aquele round
-- Round seguinte = volta ao tier 0
-
-#### **CATEGORIA 2: ITENS CONSUMÍVEIS**
-
-**Poções (Uso Único por Round):**
-- **Felix Felicis (800G):** Próximo feitiço não tem cooldown
+**Poções:**
+- **Felix Felicis (800G):** Próximo feitiço não tem cooldown nem custo de mana
 - **Poção Vigorizante (600G):** Regenera 50 HP instantâneo
+- **Poção de Mana (500G):** Restaura 60 mana instantaneamente
 - **Antídoto Universal (400G):** Remove DoTs e debuffs
 - **Poção de Resistência (700G):** +50 armor por 15 segundos
 
@@ -140,19 +174,6 @@ Cada feitiço pode ser upado durante a fase de compra:
 - **Mapa do Maroto (400G):** Revela inimigos em 20m por 5s, 40s CD
 - **Timeturner Fragment (1500G):** Revive no local da morte (1x por round)
 - **Deluminador (300G):** Apaga luzes de uma área, cria escuridão
-
-#### **CATEGORIA 3: HABILIDADES EXTRAS (Unlock Temporário)**
-
-**Ultimate Spells (Compra Desbloqueia por 1 Round):**
-- **Expecto Patronum (3800G):** Invulnerabilidade 3s + empurra inimigos
-- **Fiendfyre (4200G):** Wall de fogo que bloqueia passagem por 10s
-- **Protego Maxima (3500G):** Domo de proteção para time inteiro (5s)
-- **Avada Kedavra (5000G):** One-shot kill, mas 2s cast time + revela posição
-
-**Habilidades Utilitárias:**
-- **Apparition (1800G):** Teleporte curto 1x no round
-- **Accio (1200G):** Puxa inimigo ou objeto
-- **Wingardium Leviosa (900G):** Cria cobertura levitando objetos
 
 ### Progressão DENTRO da Partida (Elemento MOBA)
 
@@ -172,208 +193,262 @@ Cada feitiço pode ser upado durante a fase de compra:
 
 ---
 
-## 🧙 SISTEMA DE WIZARDS (CLASSES)
+## 🧙 SISTEMA DE CUSTOMIZAÇÃO DO MAGO
 
-### 12 Wizards Únicos (Heróis)
+### Montando Seu Próprio Wizard
 
-Cada jogador escolhe 1 wizard antes da partida. Cada wizard tem:
-- **4 Feitiços Únicos** (Q, E, R, Ultimate)
-- **Passiva** (sempre ativa)
-- **Role:** Duelista, Sentinela, Controlador, Iniciador
+**Não existem classes ou agentes fixos.** Cada jogador é um mago genérico que monta seu estilo de jogo comprando magias durante a fase de preparação — igual a comprar armas no Valorant.
 
-Diferente de Valorant: você pode trocar de wizard entre rounds (custo: 200G)
+**Regras:**
+- Deck ativo: **até 4 magias simultâneas** (slots Q, E, R, F)
+- Todas as magias estão disponíveis para todos os jogadores
+- A composição do time emerge naturalmente das escolhas individuais
+- Você pode reorganizar o deck entre rounds na fase de compra
 
-### Exemplos de Wizards
-
----
-
-#### **AUROR ELITE** - Duelista
-*Ex-auror especializado em duelos mágicos diretos*
-
-**Passiva - Reflexos de Combate:**
-- Primeiro feitiço após matar inimigo tem cooldown reduzido em 50%
-
-**Q - Stupefy Rápido (5s CD):**
-- Projétil rápido, 90 damage, 0.8s stun
-- Custo upgrade: 400/1000G
-
-**E - Expelliarmus (12s CD):**
-- Desarma inimigo (remove feitiço equipado por 3s)
-- 60 damage
-- Custo upgrade: 600/1400G
-
-**R - Duelist's Dash (18s CD):**
-- Dash rápido em direção à mira
-- +30% fire rate por 4s após dash
-- Custo upgrade: 900/2000G
-
-**ULTIMATE - Protego Diabolica (Compra: 3800G):**
-- Círculo de fogo azul ao redor (8m radius)
-- Aliados dentro: +20% damage
-- Inimigos dentro: 40 damage/segundo
+**Estratégia de Composição:**
+O time pode naturalmente dividir papéis: 1-2 jogadores ofensivos, 1-2 com utilidade/controle, 1 com defesa/suporte. Não há restrição — é resultado orgânico das compras.
 
 ---
 
-#### **METAMORPHMAGUS** - Controlador
-*Bruxo capaz de alterar terreno e controlar posicionamento*
+### Catálogo de Magias
 
-**Passiva - Forma Adaptativa:**
-- Ao ficar parado 3s, ganha camuflagem parcial (50% invisível)
+Todas as magias usam **mana + cooldown**. Cada magia tem Tier 0 (compra básica), com opção de upgrade para Tier 1 e Tier 2 na fase de preparação.
 
-**Q - Conjure Wall (8s CD):**
-- Cria parede mágica sólida (10s duração)
-- Pode ser destruída (300 HP)
-- Custo upgrade: 500/1200G
-
-**E - Smoke Serpent (20s CD):**
-- Lança cobra de fumaça que viaja e explode
-- Cria nuvem de fumaça 8s
-- Custo upgrade: 700/1600G
-
-**R - Transfiguration Trap (25s CD):**
-- Coloca armadilha invisível
-- Inimigo que pisar: transformado em sapo por 2s (não pode atacar)
-- Custo upgrade: 1100/2500G
-
-**ULTIMATE - Piertotum Locomotor (Compra: 4000G):**
-- Anima 3 estátuas que patrulham área
-- Atiram em inimigos (50 damage/tiro)
-- 15s duração
+**Formato:**
+> **Nome** | Custo: Tier0 / Tier1 upgrade / Tier2 upgrade | Mana: X | CD: Xs
 
 ---
 
-#### **OCLUMÊNTE** - Sentinela
-*Mestre em defesa mental e proteção de áreas*
+#### ⚔️ OFENSIVAS — Dano Direto
 
-**Passiva - Mental Fortress:**
-- Imune a confusão e efeitos de controle mental
-
-**Q - Protego (6s CD):**
-- Shield frontal absorve 150 HP
-- Reflete projéteis
-- Custo upgrade: 500/1200G
-
-**E - Legilimens Pulse (30s CD):**
-- Revela inimigos em cone 25m por 3s
-- Atravessa paredes
-- Custo upgrade: 400/900G
-
-**R - Anchor Point (35s CD - 2 cargas):**
-- Coloca orbe mágico
-- Aliados próximos ao orbe: regeneram 10 HP/s
-- Custo upgrade: 800/1800G
-
-**ULTIMATE - Mind Palace (Compra: 3500G):**
-- Cria domo de proteção mental
-- Aliados dentro: +30% redução de dano mágico
-- 8s duração, 12m radius
+Magias para bater e destruir inimigos.
 
 ---
 
-#### **MORTÍFAGO** - Iniciador (Apenas time Comensais)
-*Seguidor das Trevas especializado em iniciar combates*
+**Stupefy** | 300G / +400G / +700G | Mana: 20 | CD: 5s
+- *Projétil direto de atordoamento*
+- **T0:** 80 dmg, 0.8s stun
+- **T1:** 120 dmg, 1.2s stun, -0.5s CD
+- **T2:** 160 dmg, 2s stun, penetra shields amarelos
 
-**Passiva - Dark Mark:**
-- Inimigos eliminados deixam marca que revela área por 5s
+**Incendio** | 400G / +500G / +900G | Mana: 25 | CD: 7s
+- *Projétil de fogo que causa burning*
+- **T0:** 60 dmg + 20 dmg/s por 3s (burning)
+- **T1:** 80 dmg + 25 dmg/s por 4s
+- **T2:** 100 dmg + 30 dmg/s por 5s, AoE ao impacto (2m)
 
-**Q - Crucio Beam (8s CD):**
-- Feixe channeled (2s)
-- 40 damage/segundo + slow 40%
-- Custo upgrade: 600/1400G
+**Sectumsempra** | 600G / +700G / +1100G | Mana: 30 | CD: 8s
+- *Feixe hitscan de corte, headshot bonus*
+- **T0:** 100 dmg, headshot 2x
+- **T1:** 130 dmg, headshot 2.2x
+- **T2:** 160 dmg, headshot 2.5x, causa bleeding (15 dmg/s por 3s)
 
-**E - Shadow Step (20s CD):**
-- Teleporte para sombra visível (15m max)
-- Deixa clone de sombra 3s no local original
-- Custo upgrade: 1000/2200G
+**Confringo** | 500G / +600G / +1000G | Mana: 35 | CD: 10s
+- *Explosão em área no ponto de impacto*
+- **T0:** 70 dmg AoE (3m radius)
+- **T1:** 90 dmg AoE (3.5m), knockback
+- **T2:** 120 dmg AoE (4m), knockback forte, destrói coberturas
 
-**R - Fear Aura (30s CD):**
-- AoE que causa "fear" (inimigos se afastam do centro)
-- 3s duração
-- Custo upgrade: 1200/2600G
-
-**ULTIMATE - Morsmordre (Compra: 4500G):**
-- Summon Marca Negra no céu
-- Toda área fica escura por 12s
-- Comensais: veem normalmente + 20% movimento
-- Aurores: visão reduzida 70%
-
----
-
-#### **FEITICEIRA DE CURA** - Suporte
-*Especialista em cura e buffs para o time*
-
-**Passiva - Healing Touch:**
-- Habilidades que curam também removem 1 debuff
-
-**Q - Episkey (7s CD):**
-- Cura aliado 80 HP instantâneo
-- Custo upgrade: 400/1000G
-
-**E - Rejuvenation Field (25s CD):**
-- Cria área de cura
-- 20 HP/s para aliados dentro (6s duração)
-- Custo upgrade: 800/1800G
-
-**R - Wiggenweld Dart (15s CD):**
-- Dispara poção à distância
-- Aliado: cura 120 HP
-- Inimigo: 70 damage + 30% heal reduction por 5s
-- Custo upgrade: 700/1600G
-
-**ULTIMATE - Phoenix Rebirth (Compra: 4200G):**
-- Revive 1 aliado morto com 60% HP
-- Pode ser pré-castado (guarda ressurreição por 15s)
-- Range: 20m
+**Difindo** | 350G / +450G / +800G | Mana: 20 | CD: 6s
+- *Corte hitscan rápido, baixo cooldown*
+- **T0:** 70 dmg, headshot 1.8x
+- **T1:** 90 dmg, headshot 2x
+- **T2:** 110 dmg, headshot 2.2x, 2 cargas
 
 ---
 
-#### **LEGILIMANTE** - Duelista/Assassino
-*Mestre em invasão mental e combate psicológico*
+#### 🧠 CONTROLE — Crowd Control
 
-**Passiva - Mind Reader:**
-- Inimigos com <30% HP aparecem no minimap
-
-**Q - Confundus Shot (6s CD):**
-- Projétil que confunde (inverte controles por 1.5s)
-- 50 damage
-- Custo upgrade: 500/1200G
-
-**E - Obliviate (18s CD):**
-- Apaga "memória" do mapa (remove callouts/pings em área)
-- Inimigos afetados: não aparecem no minimap por 6s
-- Custo upgrade: 900/2000G
-
-**R - Legilimens Strike (20s CD):**
-- Dash + ataque corpo-a-corpo
-- 150 damage + copia 1 feitiço do inimigo (pode usar 1x)
-- Custo upgrade: 1100/2400G
-
-**ULTIMATE - Mass Imperius (Compra: 5000G):**
-- Mind control em 1 inimigo por 4s
-- Você controla movimento dele
-- Ele ataca aliados (reduced damage)
+Servem para travar, puxar ou manipular inimigos.
 
 ---
 
-### Roles e Composição
+**Impedimenta** | 500G / +600G / +1000G | Mana: 30 | CD: 9s
+- *Slow pesado em área*
+- **T0:** Slow 50% por 2s
+- **T1:** Slow 60% por 2.5s, AoE (2m)
+- **T2:** Slow 70% por 3s, AoE (3m), também afeta quem entra na área
 
-**Duelista (2-3 por time):**
-- Foco em kills e entry fragging
-- High damage, low utility
+**Petrificus Totalus** | 700G / +800G / +1200G | Mana: 40 | CD: 12s
+- *Paralisa completamente um inimigo*
+- **T0:** Root 1.5s (inimigo não move, ainda pode atirar)
+- **T1:** Root 2s + silência habilidades
+- **T2:** Root 2.5s + silência + reduz HP max em 20 durante efeito
 
-**Sentinela (1-2 por time):**
-- Segura sites e protege time
-- Heals, shields, anchors
+**Accio** | 400G / +500G / +900G | Mana: 25 | CD: 10s
+- *Puxa inimigo ou objeto em direção a você*
+- **T0:** Puxa inimigo 6m em direção a você
+- **T1:** Puxa 8m, causa 40 dmg no final
+- **T2:** Puxa 10m, 60 dmg, stun 0.5s ao chegar
 
-**Controlador (1-2 por time):**
-- Controla espaço do mapa
-- Smokes, walls, slows
+**Glacius** | 600G / +700G / +1100G | Mana: 35 | CD: 11s
+- *Congela inimigo no lugar*
+- **T0:** Freeze 1.5s (inimigo não move nem atira)
+- **T1:** Freeze 2s + 30 dmg inicial
+- **T2:** Freeze 2.5s + 50 dmg + inimigo fica frágil (recebe +20% dano por 3s após)
 
-**Iniciador (1 por time):**
-- Inicia teamfights e revela inimigos
-- Info gathering, engage tools
+---
 
-**Composição Ideal:** 2 Duelistas, 1 Sentinela, 1 Controlador, 1 Iniciador, 1 Flex
+#### 🟡 FORÇA — Force
+
+Quebram defesas específicas (escudos amarelos / Protego).
+
+---
+
+**Expelliarmus** | 450G / +550G / +950G | Mana: 25 | CD: 8s
+- *Desarma inimigo removendo feitiço ativo*
+- **T0:** Remove 1 feitiço equipado por 2s, 50 dmg
+- **T1:** Remove 1 feitiço por 3s, 70 dmg, break shield amarelo
+- **T2:** Remove 2 feitiços por 3s, 90 dmg, break shield + knockback
+
+**Bombarda** | 650G / +800G / +1200G | Mana: 40 | CD: 12s
+- *Explosão que destrói escudos e coberturas*
+- **T0:** 90 dmg, destrói Protego instantaneamente
+- **T1:** 120 dmg, destrói Protego + knockback forte
+- **T2:** 150 dmg, destrói Protego + knockback + AoE (3m)
+
+**Depulso** | 400G / +500G / +900G | Mana: 30 | CD: 9s
+- *Empurra inimigo com força, quebra posicionamento*
+- **T0:** Empurra 8m, 40 dmg
+- **T1:** Empurra 10m, 60 dmg, break Protego parcial
+- **T2:** Empurra 12m, 80 dmg, destrói shields e atordoa 0.5s
+
+---
+
+#### 🟣 CONTROLE PSÍQUICO — Manipulação
+
+Afetam comportamento ou estado mental.
+
+---
+
+**Confundus** | 600G / +700G / +1100G | Mana: 35 | CD: 11s
+- *Inverte os controles do inimigo por alguns segundos*
+- **T0:** Inverte controles por 1.5s
+- **T1:** Inverte controles por 2s + 40 dmg
+- **T2:** Inverte controles por 2.5s + 60 dmg + reduz mana em 20
+
+**Obliviate** | 500G / +600G / +1000G | Mana: 30 | CD: 15s
+- *Remove informação do mapa — inimigos afetados somem do minimap*
+- **T0:** Alvo some do minimap do time inimigo por 5s
+- **T1:** Alvo + aliados do alvo somem por 6s
+- **T2:** Alvo + aliados somem por 8s + remove callouts/pings da área
+
+**Legilimens** | 700G / +900G / +1400G | Mana: 45 | CD: 20s
+- *Revela posição e intenção — mostra o que o inimigo está fazendo*
+- **T0:** Revela inimigo alvo por 3s (posição no minimap)
+- **T1:** Revela inimigo + 2 aliados mais próximos por 4s
+- **T2:** Revela time todo do alvo por 4s + mostra se estão comprando ou plantando
+
+---
+
+#### 🛡️ DEFESA — Sobrevivência e Contra-Ataque
+
+---
+
+**Protego** | 400G / +500G / +900G | Mana: 30 | CD: 6s
+- *Escudo frontal que absorve dano e reflete projéteis*
+- **T0:** Absorve 100 HP por 3s
+- **T1:** Absorve 200 HP por 4s
+- **T2:** Absorve 350 HP por 5s, reflete 30% do dano recebido
+
+**Episkey** | 500G / +600G / +1000G | Mana: 25 | CD: 10s
+- *Cura instantânea — funciona em si mesmo ou aliado próximo*
+- **T0:** Cura 80 HP
+- **T1:** Cura 120 HP, remove 1 debuff
+- **T2:** Cura 160 HP, remove todos debuffs, +20 HP temporário por 5s
+
+**Protego Horribilis** | 800G / +1000G / +1600G | Mana: 50 | CD: 20s
+- *Escudo em área que protege aliados próximos*
+- **T0:** Domo de 4m, absorve 80 HP para todos dentro por 3s
+- **T1:** Domo de 5m, absorve 120 HP por 4s
+- **T2:** Domo de 6m, absorve 200 HP por 5s, reflete projéteis
+
+**Aguamenti** | 300G / +400G / +700G | Mana: 20 | CD: 8s
+- *Jato de água que apaga burning e dá slow*
+- **T0:** Remove burning de aliado, slow 20% em inimigo
+- **T1:** Remove burning + bleeding, slow 30%, 40 dmg
+- **T2:** Combo com Glacius: congela inimigo molhado instantaneamente
+
+---
+
+#### ☠️ ARTES DAS TREVAS — Magias Proibidas
+
+Magias mais apelonas, alto risco/recompensa. Caras e poderosas.
+
+---
+
+**Crucio** | 900G / +1100G / +1800G | Mana: 50 | CD: 14s
+- *Feixe channeled de dor extrema — slow pesado e dano contínuo*
+- **T0:** Canal 2s, 45 dmg/s + slow 40%
+- **T1:** Canal 2.5s, 55 dmg/s + slow 50%
+- **T2:** Canal 3s, 65 dmg/s + slow 60% + causa "trauma" (inimigo fica com CD +20% por 5s)
+
+**Fiendfyre** | 1200G / +1500G / +2200G | Mana: 65 | CD: 25s
+- *Parede de fogo mágico que bloqueia passagem e causa dano massivo*
+- **T0:** Parede de 6m por 8s, 30 dmg/s em quem tocar
+- **T1:** Parede de 8m por 10s, 40 dmg/s
+- **T2:** Parede de 10m por 12s, 50 dmg/s, persegue lentamente
+
+**Morsmordre** | 1500G / +1800G / +2600G | Mana: 70 | CD: 30s
+- *Marca das Trevas — escurece área e dá vantagem para quem lançou*
+- **T0:** Escuridão 8m por 10s, você vê normalmente dentro
+- **T1:** Escuridão 10m por 12s, aliados também veem
+- **T2:** Escuridão 12m por 15s, aliados +15% movimento dentro
+
+**Avada Kedavra** | 3500G (sem upgrade) | Mana: 90 | CD: Round único
+- *A maldição da morte — mata instantaneamente, mas tem custo altíssimo*
+- **Custo:** 3500G, só pode ser usada **1 vez por round**
+- **Mecânica:** 2.5s de cast time visível + revela sua posição no minimap inimigo por 5s
+- **Efeito:** Kill instantâneo em qualquer HP (exceto quem tiver Protego ativo)
+- **Contraplay:** Protego T2 absorve completamente; Petrificus cancela o cast
+
+---
+
+#### 🧰 UTILITÁRIAS — Exploração e Suporte
+
+Fora de combate, mas algumas ajudam na luta.
+
+---
+
+**Apparition** | 700G / +900G / +1400G | Mana: 40 | CD: 20s
+- *Teleporte rápido em linha de visão (máximo 15m)*
+- **T0:** Teleporte 12m, pequeno delay (0.5s)
+- **T1:** Teleporte 15m, delay reduzido (0.3s)
+- **T2:** Teleporte 18m, sem delay, pode usar através de fumaça
+
+**Wingardium Leviosa** | 400G / +500G / +900G | Mana: 25 | CD: 15s
+- *Levita objetos do ambiente criando cobertura temporária*
+- **T0:** Levita 1 objeto médio, cobertura 8s
+- **T1:** Levita 1 objeto grande, cobertura 10s
+- **T2:** Levita até 2 objetos, cobertura 12s, pode empurrar inimigos com o objeto
+
+**Nox / Lumos** | 200G (sem upgrade) | Mana: 10 | CD: 3s
+- *Apaga ou acende luz na área — cria escuridão ou revela área escura*
+- Utilidade situacional, barata, boa para eco rounds
+
+**Mapa do Maroto** | 400G (item, não magia) | — | CD: 40s
+- *Revela inimigos em 20m por 5s*
+- Item consumível equipado no slot de item, não ocupa slot de magia
+
+---
+
+### Composição e Sinergia de Time
+
+Sem classes fixas, os papéis emergem das compras. Exemplos de synergias:
+
+| Combo | Efeito |
+|-------|--------|
+| Glacius + Confringo | Inimigo congelado recebe dano duplo da explosão |
+| Aguamenti + Glacius | Inimigo molhado → congelado instantaneamente |
+| Accio + Bombarda | Puxa inimigo para dentro da explosão |
+| Crucio + Sectumsempra | Crucio stuna/slowa, Sectumsempra acerta headshot fácil |
+| Legilimens + Morsmordre | Sabe onde todos estão + cega time inimigo |
+
+**Eco Round Sugerido (800G):**
+- Stupefy T0 (300G) + Protego T0 (400G) = 700G, fica 100G de sobra
+
+**Full Buy (3000G+):**
+- Sectumsempra T1 + Glacius T1 + Apparition T0 + Protego T1 = ~3200G
 
 ---
 
@@ -507,7 +582,7 @@ Cada wizard tem 4 habilidades:
 
 - **HP:** 150 (padrão)
 - **Shield:** 0-50 (comprado com itens)
-- **Mana:** Infinita (cooldowns controlam uso)
+- **Mana:** 0-100 (regenera 15/s após 2s de pausa no uso)
 - **Stamina:** Para dash/movimento (100, regen 20/s)
 
 ### Combate Avançado
@@ -658,29 +733,38 @@ Cada wizard tem 4 habilidades:
 
 **0:00 - Fase de Compra (30s):**
 ```
-Você (Auror Elite): 3200G acumulados
-- Upa Stupefy para Tier 2 (1000G)
-- Compra Felix Felicis (800G)
-- Compra Mapa do Maroto (400G)
-- Sobra: 1000G para próximo round
+Você: 3200G acumulados
+Deck atual (já tinha de rounds anteriores):
+  [Q] Stupefy T1 (comprado no round 3)
+  [E] Apparition T0 (comprado no round 2)
+
+Decisão do round 5:
+  - Upa Stupefy para T2: +700G
+  - Compra Sectumsempra T0: 600G
+  - Compra Poção de Mana: 500G
+  - Sobra: 1400G para próximo round
+
+Deck final: Stupefy T2 / Apparition T0 / Sectumsempra T0 / (slot vazio)
+Mana: 100/100 | HP: 150
 ```
 
 **0:30 - Saída da Base:**
 - Time decide: "Rush B fake, then rotate A"
-- Controlador vai primeiro com smoke
-- Você segue atrás como entry fragger
+- Aliado com Morsmordre vai abrir escuridão no mid
+- Você segue como entry fragger
 
 **0:45 - Mid Control:**
-- Inimigo aparece, você lança Stupefy
-- Acerta! 160 damage + 2s stun (Tier 2 effect)
-- Time avança
+- Inimigo atrás de cobertura, você lança Stupefy
+- Acerta! 160 dmg + 2s stun (T2 effect) — custa 20 mana
+- Mana: 80/100 | Time avança
 
 **1:05 - Execute no Site A:**
-- Iniciador usa Ultimate, revela 2 inimigos
-- Você dash para dentro (R)
-- Ativa Felix Felicis (poção), lança Expelliarmus sem cooldown
-- Kill!
-- +200G no próximo round
+- Aliado usa Legilimens, revela 2 inimigos atrás da parede
+- Você usa Apparition (40 mana) para flanquear
+- Lança Sectumsempra (30 mana) + headshot = 100 + 160 = Kill!
+- Mana: 10/100 — crítico!
+- Usa Poção de Mana → +60 mana → 70/100
+- +200G
 
 **1:20 - Plant:**
 - Teammate planta Horcrux
@@ -688,21 +772,23 @@ Você (Auror Elite): 3200G acumulados
 - +300G por assist no plant
 
 **1:30 - Defesa Pós-Plant:**
-- Ouve passos pelo Mapa do Maroto
-- Pre-aim no canto
-- Defensor aparece, você headshot com varinha
-- Kill! +200G
+- Ouve passos, lança Stupefy no corner
+- Headshot na varinha básica (sem custo de mana) = 80 dmg
+- Follow-up Stupefy = Kill! +200G
+- Mana regenerou: 55/100
 
 **1:45 - Clutch:**
-- 1v2 situação
-- Usa Protego para bloquear feitiço
-- Retalia com Stupefy
+- 1v2, mana em 55
+- Usa Protego (30 mana) para bloquear feitiço
+- Retalia com Stupefy (20 mana) = Kill!
+- Fica com 5 mana — sem feitiços disponíveis
+- Elimina o último com varinha básica
 - Horcrux explode!
 
 **ROUND GANHO:**
 - Time ganha +3000G total
-- Você pessoalmente: 3000 (vitória) + 200 (kill) + 200 (kill) + 300 (plant) = 3700G
-- Próximo round: vai ter dinheiro para comprar Ultimate
+- Você: 3000 (vitória) + 200 + 200 (kills) + 300 (plant) = 3700G
+- Próximo round: 3700 + 1400 sobra = 5100G → pode comprar Crucio T1 + Avada Kedavra
 
 ---
 
@@ -766,14 +852,46 @@ Você (Auror Elite): 3200G acumulados
 ```
 WizardingWarfare/
 ├── code/
-│   ├── Wizards/
-│   │   ├── BaseWizard.cs (classe base)
-│   │   ├── AurorElite.cs
-│   │   ├── Metamorphmagus.cs
-│   │   ├── Oclumente.cs
-│   │   ├── Mortifago.cs
-│   │   ├── Feiticeira.cs
-│   │   └── Legilimante.cs
+│   ├── Player/
+│   │   ├── WizardPlayer.cs (jogador base, sem classe fixa)
+│   │   ├── SpellDeck.cs (gerencia os 4 slots de magia)
+│   │   └── ManaSystem.cs (mana + regeneração)
+│   ├── Spells/
+│   │   ├── BaseSpell.cs (classe base de magia)
+│   │   ├── SpellCatalog.cs (registro de todas magias)
+│   │   ├── Offensive/
+│   │   │   ├── Stupefy.cs
+│   │   │   ├── Incendio.cs
+│   │   │   ├── Sectumsempra.cs
+│   │   │   ├── Confringo.cs
+│   │   │   └── Difindo.cs
+│   │   ├── Control/
+│   │   │   ├── Impedimenta.cs
+│   │   │   ├── PetrifucusTotalus.cs
+│   │   │   ├── Accio.cs
+│   │   │   └── Glacius.cs
+│   │   ├── Force/
+│   │   │   ├── Expelliarmus.cs
+│   │   │   ├── Bombarda.cs
+│   │   │   └── Depulso.cs
+│   │   ├── PsychicControl/
+│   │   │   ├── Confundus.cs
+│   │   │   ├── Obliviate.cs
+│   │   │   └── Legilimens.cs
+│   │   ├── Defense/
+│   │   │   ├── Protego.cs
+│   │   │   ├── Episkey.cs
+│   │   │   ├── ProtegoHorribilis.cs
+│   │   │   └── Aguamenti.cs
+│   │   ├── DarkArts/
+│   │   │   ├── Crucio.cs
+│   │   │   ├── Fiendfyre.cs
+│   │   │   ├── Morsmordre.cs
+│   │   │   └── AvadaKedavra.cs
+│   │   └── Utility/
+│   │       ├── Apparition.cs
+│   │       ├── WingardiumLeviosa.cs
+│   │       └── NoxLumos.cs
 │   ├── Abilities/
 │   │   ├── BaseAbility.cs
 │   │   ├── ProjectileAbility.cs
@@ -1370,16 +1488,21 @@ Total: 8 pessoas
 
 ## 🎓 ANEXO: GLOSSÁRIO DE TERMOS
 
-**Aurores:** Wizards do Ministério da Magia (defensores)  
+**Aurores:** Time do Ministério da Magia (defensores)  
 **Comensais:** Seguidores das Trevas (atacantes)  
 **Galeões:** Moeda do jogo (economia)  
 **Horcrux:** Objetivo tipo bomb (plant/defuse)  
-**Spell Tier:** Nível de upgrade do feitiço (0, 1, 2)  
+**Deck:** Os 4 slots de magia ativos do jogador no round  
+**Spell Tier:** Nível de upgrade do feitiço (T0 compra base, T1/T2 upgrade)  
+**Mana:** Recurso que as magias consomem (regenera 15/s após 2s de pausa)  
 **Maestria:** Micro-progressão por uso de feitiços  
-**Felix Felicis:** Poção que remove cooldown  
-**Mapa do Maroto:** Item que revela inimigos  
-**Protego Diabolica:** Ultimate do Auror Elite  
-**RR:** Rank Rating (pontos de ranqueada)
+**Felix Felicis:** Poção que remove cooldown e custo de mana do próximo feitiço  
+**Mapa do Maroto:** Item que revela inimigos em 20m  
+**Eco Round:** Round onde se compra pouco (≤800G) para economizar  
+**Full Buy:** Round com compra máxima (3000G+)  
+**RR:** Rank Rating (pontos de ranqueada)  
+**Artes das Trevas:** Categoria de magias proibidas de alto risco/recompensa  
+**Force:** Categoria de magias que quebram escudos amarelos (Protego)
 
 ---
 
