@@ -25,8 +25,8 @@ public sealed class SpellProjectile : Component
 	[Property, Sync] public float SlowFraction { get; set; } = 0f;
 	[Property, Sync] public float SlowDuration { get; set; } = 0f;
 
-	/// <summary>Nome da classe da ability de origem — usado pelo MasterySystem.</summary>
-	public string SourceSpellClass { get; set; } = "";
+	/// <summary>Nome da classe da ability de origem — usado pelo MasterySystem e SpellEffectsLibrary.</summary>
+	[Property, Sync] public string SourceSpellClass { get; set; } = "";
 
 	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
 	public static WizardPlayer PendingShooter { get; set; }
@@ -51,6 +51,17 @@ public sealed class SpellProjectile : Component
 		light.LightColor = SpellColor;
 		light.Radius = 80f;
 		light.Enabled = true;
+
+		// Trail de partícula — roda em todos os clientes (OnStart não filtra IsHost)
+		var lib = SpellEffectsLibrary.Get( Scene );
+		var trailPrefab = lib?.GetTrailPrefab( SourceSpellClass );
+		if ( trailPrefab is not null )
+		{
+			var trail = trailPrefab.Clone();
+			trail.Parent = GameObject;
+			trail.LocalPosition = Vector3.Zero;
+			trail.LocalRotation = Rotation.Identity;
+		}
 	}
 
 	protected override void OnFixedUpdate()
@@ -149,6 +160,15 @@ public sealed class SpellProjectile : Component
 	[Rpc.Broadcast]
 	private void PlayHitEffect( Vector3 position, Vector3 normal )
 	{
-		// TODO: spawnar partícula de impacto
+		var lib = SpellEffectsLibrary.Get( Scene );
+		var hitPrefab = lib?.GetHitPrefab( SourceSpellClass );
+		if ( hitPrefab is null ) return;
+
+		var fx = hitPrefab.Clone();
+		fx.WorldPosition = position;
+		fx.WorldRotation = Rotation.LookAt( normal );
+
+		if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
+			fx.Components.Create<AutoDestroy>();
 	}
 }

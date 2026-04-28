@@ -1200,6 +1200,38 @@
             "prefab": "prefabs/playercontroller.prefab"
           },
           "State": "Warmup"
+        },
+        {
+          "__type": "SpellEffectsLibrary",
+          "__guid": "0299721b-f7c8-43ab-979f-186a17502d79",
+          "__enabled": true,
+          "Flags": 0,
+          "ImpedimentaHit": null,
+          "ImpedimentaTrail": {
+            "_type": "gameobject",
+            "prefab": "prefabs/particles/stupefy_trail.prefab"
+          },
+          "IncendioHit": null,
+          "IncendioTrail": {
+            "_type": "gameobject",
+            "prefab": "prefabs/particles/stupefy_trail.prefab"
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "StupefyHit": null,
+          "StupefyTrail": {
+            "_type": "gameobject",
+            "prefab": "prefabs/particles/stupefy_trail.prefab"
+          },
+          "WandAttackBeam": {
+            "_type": "gameobject",
+            "prefab": "prefabs/particles/stupefy_trail.prefab"
+          },
+          "WandAttackHit": null
         }
       ],
       "Children": []

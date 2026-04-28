@@ -10,6 +10,11 @@ public sealed class WandAttack : Component
 	[Property] public int HeadshotDamage { get; set; } = 80;
 	[Property] public float Range { get; set; } = 5000f;
 
+	/// <summary>Prefab do efeito de feixe (instanciado no ponto de origem, orientado ao alvo).</summary>
+	[Property, Group( "Particles" )] public GameObject BeamEffectPrefab { get; set; }
+	/// <summary>Prefab do efeito de impacto (instanciado no ponto de hit).</summary>
+	[Property, Group( "Particles" )] public GameObject HitEffectPrefab  { get; set; }
+
 	private float _nextFireTime = 0f;
 	private WizardPlayer _player;
 
@@ -69,8 +74,26 @@ public sealed class WandAttack : Component
 	[Rpc.Broadcast]
 	private void ShowBeam( Vector3 start, Vector3 end )
 	{
-		// TODO: spawnar partícula de feixe de varinha
-		// Ex: SceneParticles.PlayInstant( "particles/wand_beam.vpcf", start );
-		Log.Info(" PARTICLE RUN");
+		var dir = (end - start).Normal;
+
+		if ( BeamEffectPrefab is not null )
+		{
+			var beam = BeamEffectPrefab.Clone();
+			beam.WorldPosition = start;
+			beam.WorldRotation = Rotation.LookAt( dir );
+
+			if ( !beam.Components.TryGet<AutoDestroy>( out _ ) )
+				beam.Components.Create<AutoDestroy>().Delay = 0.15f;
+		}
+
+		if ( HitEffectPrefab is not null )
+		{
+			var fx = HitEffectPrefab.Clone();
+			fx.WorldPosition = end;
+			fx.WorldRotation = Rotation.LookAt( -dir ); // normal aponta de volta
+
+			if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
+				fx.Components.Create<AutoDestroy>();
+		}
 	}
 }

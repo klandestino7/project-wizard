@@ -78,9 +78,21 @@ public sealed class ImpedimentaProjectile : Component
 	protected override void OnStart()
 	{
 		_spawnTime = Time.Now;
+
 		var light = Components.Create<PointLight>();
 		light.LightColor = SpellColor;
 		light.Radius = 60f;
+
+		// Trail de partícula — todos os clientes
+		var lib = SpellEffectsLibrary.Get( Scene );
+		var trailPrefab = lib?.GetTrailPrefab( nameof( ImpedimentaAbility ) );
+		if ( trailPrefab is not null )
+		{
+			var trail = trailPrefab.Clone();
+			trail.Parent = GameObject;
+			trail.LocalPosition = Vector3.Zero;
+			trail.LocalRotation = Rotation.Identity;
+		}
 	}
 
 	protected override void OnFixedUpdate()
@@ -106,11 +118,27 @@ public sealed class ImpedimentaProjectile : Component
 		{
 			_hit = true;
 			ApplySlow( tr.EndPosition );
+			BroadcastHitEffect( tr.EndPosition, tr.Normal );
 			GameObject.Destroy();
 			return;
 		}
 
 		WorldPosition += step;
+	}
+
+	[Rpc.Broadcast]
+	private void BroadcastHitEffect( Vector3 position, Vector3 normal )
+	{
+		var lib = SpellEffectsLibrary.Get( Scene );
+		var hitPrefab = lib?.GetHitPrefab( nameof( ImpedimentaAbility ) );
+		if ( hitPrefab is null ) return;
+
+		var fx = hitPrefab.Clone();
+		fx.WorldPosition = position;
+		fx.WorldRotation = Rotation.LookAt( normal );
+
+		if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
+			fx.Components.Create<AutoDestroy>();
 	}
 
 	private void ApplySlow( Vector3 hitPos )

@@ -261,8 +261,13 @@
         "__enabled": true,
         "Flags": 0,
         "BaseDamage": 40,
+        "BeamEffectPrefab": {
+          "_type": "gameobject",
+          "prefab": "prefabs/particles/stupefy_trail.prefab"
+        },
         "FireRate": 3,
         "HeadshotDamage": 80,
+        "HitEffectPrefab": null,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -429,7 +434,7 @@
         ],
         "Children": [
           {
-            "__guid": "324f437c-bec7-43cb-bd56-797a041153c2",
+            "__guid": "e42e1de7-b783-4445-8e12-01a51c6db36c",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -446,7 +451,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "dd1199c2-e7e5-4225-8dfb-cb31da62a518",
+                "__guid": "adc2381b-730a-4110-a5c7-ab402364cff9",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -498,7 +503,7 @@
             "Children": []
           },
           {
-            "__guid": "0686afcf-0aed-49b5-bdd5-571d7db434bd",
+            "__guid": "dadcfca8-c2c6-4888-b05d-78e9f1681cda",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -515,7 +520,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "c8e506b6-6a39-4216-812d-a23d09481b92",
+                "__guid": "f3d64ed7-1db8-4aa4-b852-e7c63a5886c1",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -567,7 +572,7 @@
             "Children": []
           },
           {
-            "__guid": "4f10179c-2601-4810-a1b2-2133ecdac39d",
+            "__guid": "5bbe8e37-7e0f-4f62-9539-b5d01da43f19",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -584,7 +589,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "f0caf39c-30dc-40f1-b90f-f40c0f4433bb",
+                "__guid": "d0ed94c9-7719-4c13-92f6-12d4a01ea218",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -636,7 +641,7 @@
             "Children": []
           },
           {
-            "__guid": "0bf19e27-03cf-4ae0-9ae2-566e4ed993b0",
+            "__guid": "74359c17-20a0-41e6-80dd-cda32a78ffae",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -653,7 +658,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "f63545bc-6aba-4c0b-9879-d692316f2354",
+                "__guid": "88cbaca6-542f-435a-bd15-f731ca38ca6a",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -705,7 +710,7 @@
             "Children": []
           },
           {
-            "__guid": "64e712d2-9665-41dc-ac62-a52e20100b83",
+            "__guid": "04fe355b-a57b-46a8-a032-0f2c5b1aff59",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -722,7 +727,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "e794e69d-5276-4e57-b9c4-c8428b05cd11",
+                "__guid": "e8a79299-0dd3-4d6e-9fec-418bb13d2b24",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
