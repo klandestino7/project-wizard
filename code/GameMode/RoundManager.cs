@@ -329,25 +329,25 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	public void OnDisconnected( Connection connection ) { }
 
 	// ─── Broadcasts ───────────────────────────────────────────────────
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastRoundStart( int round )
 	{
 		Log.Info( $"[Round {round}] BuyPhase iniciada" );
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastCombatStart()
 	{
 		Log.Info( $"[Round {CurrentRound}] Combate começou!" );
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastRoundEnd( Team winner, RoundEndReason reason )
 	{
 		Log.Info( $"[Round {CurrentRound}] {winner} venceu! Motivo: {reason}" );
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastMatchEnd( Team winner )
 	{
 		Log.Info( $"[Partida encerrada] {winner} venceu {(winner == Team.Aurors ? AurorScore : ComensalScore)}-{(winner == Team.Aurors ? ComensalScore : AurorScore)}!" );

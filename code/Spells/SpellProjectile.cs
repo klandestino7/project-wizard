@@ -99,7 +99,7 @@ public sealed class SpellProjectile : Component
 		PlayHitEffect( tr.EndPosition, tr.Normal );
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void PlayHitEffect( Vector3 position, Vector3 normal )
 	{
 		// TODO: spawnar partícula de impacto

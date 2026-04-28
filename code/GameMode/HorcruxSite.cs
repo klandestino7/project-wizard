@@ -171,19 +171,19 @@ public sealed class HorcruxSite : Component
 	}
 
 	// ─── Broadcasts ───────────────────────────────────────────────────
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastPlant( string site )
 	{
 		// TODO: tocar som de plant + anuncio "Horcrux plantada no Site X!"
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastDefuse( string site )
 	{
 		// TODO: tocar som de defuse + anuncio "Horcrux desarmada!"
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastExplosion( Vector3 position )
 	{
 		// TODO: spawnar VFX de explosão mágica

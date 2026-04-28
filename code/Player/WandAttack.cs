@@ -25,7 +25,7 @@ public sealed class WandAttack : Component
 
 	public void TryFire()
 	{
-		if ( !CanFire ) return;
+		// if ( !CanFire ) return;
 		_nextFireTime = Time.Now + 1f / FireRate;
 		FireHitscan();
 	}
@@ -66,10 +66,11 @@ public sealed class WandAttack : Component
 		// Kill galleons são dados pelo RoundManager via OnPlayerDied
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void ShowBeam( Vector3 start, Vector3 end )
 	{
 		// TODO: spawnar partícula de feixe de varinha
 		// Ex: SceneParticles.PlayInstant( "particles/wand_beam.vpcf", start );
+		Log.Info(" PARTICLE RUN");
 	}
 }

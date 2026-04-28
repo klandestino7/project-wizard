@@ -37,7 +37,7 @@
         "BodyMass": 500,
         "BodyRadius": 16,
         "BrakePower": 1,
-        "CameraOffset": "256,0,12",
+        "CameraOffset": "120,40.0199547,10",
         "ColliderObject": {
           "_type": "gameobject",
           "go": "55d0d023-ed87-4fe8-9935-ec2b622c8ae8"
@@ -197,8 +197,18 @@
         "__guid": "37b315dc-bc2d-4f70-ac19-0317ac301a6a",
         "__enabled": true,
         "Flags": 0,
-        "AbilityE": null,
-        "AbilityQ": null,
+        "AbilityE": {
+          "_type": "component",
+          "component_id": "707ec3a2-893b-4650-b598-89b7b5b3dce9",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "ProtegoAbility"
+        },
+        "AbilityQ": {
+          "_type": "component",
+          "component_id": "3d3c767c-a94f-438b-926d-9ee49e86c739",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "StupefyAbility"
+        },
         "AbilityR": null,
         "BodyRenderer": null,
         "Camera": null,
@@ -206,7 +216,7 @@
         "EyeAngles": "0,0,0",
         "Galleons": 0,
         "Health": 150,
-        "IsAlive": false,
+        "IsAlive": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -215,7 +225,12 @@
         "OnComponentUpdate": null,
         "Shield": 0,
         "Team": "None",
-        "WandAttack": null
+        "WandAttack": {
+          "_type": "component",
+          "component_id": "d7c4b582-d279-44d6-ac12-739e1f49aee2",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "WandAttack"
+        }
       },
       {
         "__type": "WandAttack",
@@ -264,31 +279,6 @@
         "OnComponentUpdate": null,
         "Tier1Cost": 400,
         "Tier2Cost": 1000
-      },
-      {
-        "__type": "WizardPlayer",
-        "__guid": "3c15f2a4-a04c-45be-81da-07fa18ae0442",
-        "__enabled": true,
-        "Flags": 0,
-        "AbilityE": null,
-        "AbilityQ": null,
-        "AbilityR": null,
-        "BodyRenderer": null,
-        "Camera": null,
-        "CharacterController": null,
-        "EyeAngles": "0,0,0",
-        "Galleons": 0,
-        "Health": 150,
-        "IsAlive": false,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Shield": 0,
-        "Team": "None",
-        "WandAttack": null
       }
     ],
     "Children": [
@@ -356,7 +346,7 @@
         ],
         "Children": [
           {
-            "__guid": "f9f343fe-cc46-458a-a641-2d6f9754306f",
+            "__guid": "e71011b6-993f-4140-bb1d-c12b1ec2947a",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -373,7 +363,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "3755d3ca-6af8-4844-b35e-c8be75eddb2c",
+                "__guid": "02576362-e3f4-4433-a6ca-24a2186bf813",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -425,7 +415,7 @@
             "Children": []
           },
           {
-            "__guid": "3e2c6868-9ea6-4e0f-b4b7-af7a324ffeab",
+            "__guid": "2b0e00a0-fa70-4804-b84b-78db8b6fe846",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -442,7 +432,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "572ef302-e51c-4093-833a-717773039711",
+                "__guid": "dae8da70-20dd-4ec7-9de3-8d8cc1f48765",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -494,7 +484,7 @@
             "Children": []
           },
           {
-            "__guid": "906daa07-00d9-4d2d-8332-7c1dd4ab8284",
+            "__guid": "9173ec5a-e2af-493e-9edd-a324652153b3",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -511,7 +501,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "4a2a4c19-67b0-4bb1-812a-8f9d84172fbc",
+                "__guid": "a3b389a4-366f-4b11-8060-d47e8b21fe3d",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -563,7 +553,7 @@
             "Children": []
           },
           {
-            "__guid": "9f342f97-53ce-4e9e-845e-49f548b5f0aa",
+            "__guid": "ee24d5c7-2057-402c-a593-86585106a34c",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -580,7 +570,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "624fb4e4-cc31-4995-84c8-3e7f0f1acf9d",
+                "__guid": "635669c5-927a-4fc3-8901-47db2a892e74",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -632,7 +622,7 @@
             "Children": []
           },
           {
-            "__guid": "b90b3df0-aac3-4cfa-8b89-b95035466115",
+            "__guid": "c9090177-7f69-4429-a54c-62f806a74a5a",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -649,7 +639,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "ffe569de-715b-4dcf-8172-c5d26edd9cac",
+                "__guid": "7dad2a0a-7cf0-4a19-934d-fad7ecf3164d",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,

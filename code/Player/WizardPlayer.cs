@@ -18,7 +18,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property, Sync] public int Shield { get; set; } = 0;
 	[Property, Sync] public int Galleons { get; set; } = 0;
 	[Property, Sync] public Team Team { get; set; } = Team.None;
-	[Property, Sync] public bool IsAlive { get; set; } = false;
+	[Property, Sync] public bool IsAlive { get; set; } = true;
 	[Property, Sync] public Angles EyeAngles { get; set; }
 
 	/// <summary>Hora (Time.Now) em que o stun termina. Derivado: IsStunned.</summary>
@@ -60,7 +60,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 
 		if ( !IsAlive ) return;
 
-		HandleLook();
+		// HandleLook();
 		HandleAbilityInput();
 		HandleInteractInput();
 
@@ -130,7 +130,11 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	// ─── Input: Abilities ─────────────────────────────────────────────
 	private void HandleAbilityInput()
 	{
-		if ( Input.Pressed( "Attack1" ) ) WandAttack?.TryFire();
+		if ( Input.Pressed( "Attack1" ) )
+		{
+			WandAttack?.TryFire();
+		}
+
 		if ( Input.Pressed( "Ability1" ) ) AbilityQ?.TryActivate();
 		if ( Input.Pressed( "Ability2" ) ) AbilityE?.TryActivate();
 		if ( Input.Pressed( "Ability3" ) ) AbilityR?.TryActivate();
@@ -200,7 +204,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		BroadcastDeath();
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void BroadcastDeath()
 	{
 		if ( BodyRenderer.IsValid() )

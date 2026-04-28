@@ -16,21 +16,35 @@ public sealed class StupefyAbility : BaseAbility
 	public float CurrentStun => StunByTier[TierIndex];
 	public bool PierceShield => CurrentTier >= 2;
 
-	protected override void Activate()
+	/// <summary>
+	/// Contador incrementado pelo owner ao ativar. O host detecta a mudança
+	/// e spawna o projétil. Evita [Broadcast] com structs (que causam erros de System.Runtime).
+	/// </summary>
+	[Sync] private int _activateCount { get; set; } = 0;
+	private int _lastActivateCount = 0;
+
+	protected override void OnUpdate()
 	{
-		// Broadcast para todos os peers; apenas o host executa o spawn real.
-		BroadcastActivate( Player.EyePosition, Player.EyeAngles.ToRotation() );
+		base.OnUpdate();
+
+		// Host: detecta nova ativação e spawna projétil
+		if ( Networking.IsHost && _activateCount != _lastActivateCount )
+		{
+			_lastActivateCount = _activateCount;
+			if ( Player.IsValid() )
+				SpawnProjectile( Player.EyePosition, Player.EyeAngles.ToRotation().Forward );
+		}
 	}
 
-	[Broadcast]
-	private void BroadcastActivate( Vector3 origin, Rotation dir )
+	protected override void Activate()
 	{
-		if ( !Networking.IsHost ) return;
-		SpawnProjectile( origin, dir.Forward );
+		// Owner incrementa o contador → host detecta via [Sync] e spawna
+		_activateCount++;
 	}
 
 	private void SpawnProjectile( Vector3 origin, Vector3 direction )
 	{
+		Log.Info("  SpawnProjectile :: ");
 		var go = new GameObject( true, "Stupefy_Projectile" );
 		go.WorldPosition = origin;
 		go.WorldRotation = Rotation.LookAt( direction );

@@ -68,7 +68,7 @@ public sealed class ProtegoAbility : BaseAbility
 		Player.ApplyShield( -Player.Shield ); // zera shield
 	}
 
-	[Broadcast]
+	[Rpc.Broadcast]
 	private void ShowEffect()
 	{
 		// TODO: spawnar VFX de Protego (domo azul translúcido)
