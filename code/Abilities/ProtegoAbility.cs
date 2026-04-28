@@ -22,6 +22,7 @@ public sealed class ProtegoAbility : BaseAbility
 	[Sync] public float ShieldEndTime { get; private set; } = 0f;
 	[Sync] public float ActivatedAt { get; private set; } = 0f;
 	[Sync] public int ShieldHP { get; private set; } = 0;
+	[Sync] private GameObject ShieldFx { get; set; }
 
 	public bool IsShieldUp => ShieldActive && Time.Now < ShieldEndTime && ShieldHP > 0;
 
@@ -81,25 +82,64 @@ public sealed class ProtegoAbility : BaseAbility
 		int passthrough = incoming - absorbed;
 		return (passthrough, reflected);
 	}
-
 	private void DeactivateShield()
 	{
 		ShieldActive = false;
+
 		Player.ApplyShield( -Player.Shield );
+
 		if ( Player.CombatState == CombatState.Shielded )
 			Player.SetCombatState( CombatState.Normal );
+
+		HideEffect();
 	}
 
 	[Rpc.Broadcast]
 	private void ShowEffect()
 	{
-		// TODO: VFX domo azul translúcido
+		if ( ShieldFx != null )
+			return;
+
+		ShieldFx = new GameObject( true, "ProtegoFX" );
+		ShieldFx.SetParent( Player.GameObject, true );
+
+		ShieldFx.Transform.LocalPosition = Vector3.Up * 40f;
+		ShieldFx.Transform.LocalScale = 1.5f;
+
+		var renderer = ShieldFx.Components.Create<ModelRenderer>();
+		renderer.Model = Model.Load("models/dev/sphere.vmdl");
+		renderer.MaterialOverride = Material.Load("materials/protego/unlit_translucent.vmat");
+
+		// var mat = Material.Create( "protego_mat", "shaders/unlit_translucent.shader" );
+
+		// mat.Set( "Color", new Color( 0.2f, 0.5f, 1f, 0.25f ) );
+
+		// renderer.MaterialOverride = mat;
+	}
+
+
+	[Rpc.Broadcast]
+	private void HideEffect()
+	{
+		if ( ShieldFx == null ) return;
+
+		ShieldFx.Destroy();
+		ShieldFx = null;
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastPerfectBlock()
 	{
-		// TODO: VFX de perfect block (flash dourado + câmera shake leve)
+		if ( ShieldFx == null ) return;
+
+		// flash rápido
+		var renderer = ShieldFx.Components.Get<ModelRenderer>();
+		if ( renderer != null )
+		{
+			var mat = renderer.MaterialOverride;
+			mat.Set( "Color", new Color( 1f, 0.85f, 0.2f, 0.6f ) ); // dourado
+		}
+
 		Log.Info( "[Protego] Perfect Block!" );
 	}
 }
