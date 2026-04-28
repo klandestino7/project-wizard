@@ -14,7 +14,7 @@ public partial class PlayerPawn
 	[Property, Sync] public int Health { get; set; } = MaxHealth;
 	[Property, Sync] public int Shield { get; set; } = 0;
 	[Property, Sync] public int Balance { get; set; } = 0;
-	[Property, Sync] public Team Team { get; set; } = Team.None;
+	[Property, Sync] public Team Team { get; set; } = Team.Unassigned;
 	[Property, Sync] public bool IsAlive { get; set; } = true;
 	// [Property, Sync] public Angles EyeAngles { get; set; }
 	[Property, Sync] public int Kills { get; set; } = 0;

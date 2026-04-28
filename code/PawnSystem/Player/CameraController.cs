@@ -263,8 +263,8 @@ public sealed class CameraController : PawnCameraController, IGameEventHandler<D
 
 		if ( firstPersonPOV )
 			Player.CreateViewModel( false );
-		else
-			Player.ClearViewModel();
+		// else
+			// Player.ClearViewModel();;
 	}
 
 	private void SetBoomLength( float length )

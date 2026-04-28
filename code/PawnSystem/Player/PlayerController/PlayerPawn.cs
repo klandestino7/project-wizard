@@ -43,6 +43,10 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 	[Property]
 	public GameObject HoldGameObject { get; set; }
 
+	public bool CanBuy => HealthComponent.State == LifeState.Alive && IsInBuyZone;
+	private bool IsInBuyZone => Client?.BuyMenuMode is BuyMenuMode.EnabledEverywhere
+		|| Client?.BuyMenuMode is BuyMenuMode.EnabledInBuyZone && GetZone<BuyZone>() is not null;
+
 	/// <summary>
 	/// Get a quick reference to the real Camera GameObject.
 	/// </summary>
@@ -207,7 +211,6 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 		BuildWishVelocity();
 		BuildInput();
 
-		UpdateRecoilAndSpread();
 		ApplyAcceleration();
 
 		ApplyMovement();

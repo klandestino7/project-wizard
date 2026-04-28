@@ -543,6 +543,6 @@ public partial class PlayerPawn
 		DebugText.Write( $"Speed: {CharacterController.Velocity.Length}" );
 		DebugText.Spacer();
 		DebugText.Write( $"Weapon Info", Color.White, 20 );
-		DebugText.Write( $"Spread: {Spread}" );
+		// DebugText.Write( $"Spread: {Spread}" );
 	}
 }

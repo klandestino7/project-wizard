@@ -10,7 +10,7 @@ public interface ITeam : IValid
 
 public enum Team
 {
-	None = 0,
+	Unassigned = 0,
 	Aurors = 1,         // Defenders - Ministério da Magia
 	DarkFollowers = 2   // Attackers - Comensais
 }

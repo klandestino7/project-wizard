@@ -11,7 +11,7 @@
 
 		<div class="buy-header">
 			<div class="buy-title">ARSENAL MÁGICO</div>
-			<div class="buy-galleons"><span class="gal-icon">G</span> @Player.Galleons</div>
+			<div class="buy-galleons"><span class="gal-icon">G</span> @Player.Balance</div>
 			<div class="buy-hint-close">[ B ] Fechar</div>
 		</div>
 
@@ -114,9 +114,9 @@
 		bool own  = Deck.IsOwned( idx );
 		int  tier = Deck.GetTier( idx );
 		int  ref_ = RefundOf( idx );
-		bool canBuy  = Player.Galleons >= e.BuyCost;
-		bool canTier1 = Player.Galleons >= e.Tier1Cost;
-		bool canTier2 = Player.Galleons >= e.Tier2Cost;
+		bool canBuy  = Player.Balance >= e.BuyCost;
+		bool canTier1 = Player.Balance >= e.Tier1Cost;
+		bool canTier2 = Player.Balance >= e.Tier2Cost;
 
 		<div class="detail-panel" 
 		@* style="--accent: @e.AccentColor" *@
@@ -238,7 +238,7 @@
 
 	protected override int BuildHash() => HashCode.Combine(
 		Round?.State,
-		Player?.Galleons,
+		Player?.Balance,
 		Deck?.OwnedMask,
 		Deck?.Slot0Idx,
 		SelectedIdx,

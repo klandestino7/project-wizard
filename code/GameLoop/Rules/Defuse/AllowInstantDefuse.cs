@@ -15,7 +15,6 @@ public sealed class AllowInstantDefuse : Component,
 		if ( explosive is null ) return;
 		if ( AnyTerroristsAlive ) return;
 		if ( !HasEnoughTime( explosive ) ) return;
-		if ( AnyNearbyGrenades( eventArgs.Defuser ) ) return;
 
 		explosive.FinishDefusing();
 	}
@@ -32,20 +31,6 @@ public sealed class AllowInstantDefuse : Component,
 		// If it's going to be close, let them suffer
 
 		return explosive.DefuseTime < untilExplode - 1;
-	}
-
-	private bool AnyNearbyGrenades( PlayerPawn player )
-	{
-		if ( Scene.GetAllComponents<BaseGrenade>().Any( x => x.CanDealDamage ) ) return true;
-
-		var maxDistSq = 128f * 128f;
-
-		if ( MolotovFireNode.All.Any( x => (x.WorldPosition - player.WorldPosition).LengthSquared < maxDistSq ) )
-		{
-			return true;
-		}
-
-		return false;
 	}
 }
 

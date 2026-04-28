@@ -27,13 +27,13 @@ public sealed class PlayerStatsRule : Component,
 		// TODO: Don't count team-kills?
 
 		var inflictor = eventArgs.DamageInfo.Inflictor;
-		if ( wpn.IsValid() )
-		{
+		// if ( wpn.IsValid() )
+		// {
 			using ( Rpc.FilterInclude( player.Network.Owner ) )
 			{
 				SendKillStat( eventArgs.DamageInfo.Hitbox );
 			}
-		}
+		// }
 	}
 
 	/// <summary>
