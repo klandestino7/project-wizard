@@ -1,0 +1,77 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root>
+
+	@if ( IsVisible )
+	{
+		<div class="scoreboard">
+			<div class="sb-header">
+				<div class="sb-title">SCOREBOARD</div>
+				<div class="sb-round">Round @( Round?.CurrentRound ?? 0 ) / @RoundManager.MaxRounds</div>
+			</div>
+
+			@* Aurores *@
+			<div class="sb-team auror-team">
+				<div class="sb-team-header">
+					<span class="team-name">AURORES</span>
+					<span class="team-score">@( Round?.AurorScore ?? 0 )</span>
+				</div>
+				<div class="sb-columns">
+					<span>JOGADOR</span><span>K</span><span>M</span><span>G</span><span>HP</span>
+				</div>
+				@foreach ( var p in GetTeam( Team.Aurors ) )
+				{
+					<div class="sb-row @( p.IsAlive ? "" : "sb-dead" )">
+						<span class="sb-name">@( p.Network.Owner?.DisplayName ?? "?" )</span>
+						<span>@p.Kills</span>
+						<span>@p.Deaths</span>
+						<span class="sb-gold">@p.Galleons</span>
+						<span class="sb-hp">@p.Health</span>
+					</div>
+				}
+			</div>
+
+			@* Comensais *@
+			<div class="sb-team comensal-team">
+				<div class="sb-team-header">
+					<span class="team-name">COMENSAIS</span>
+					<span class="team-score">@( Round?.ComensalScore ?? 0 )</span>
+				</div>
+				<div class="sb-columns">
+					<span>JOGADOR</span><span>K</span><span>M</span><span>G</span><span>HP</span>
+				</div>
+				@foreach ( var p in GetTeam( Team.DarkFollowers ) )
+				{
+					<div class="sb-row @( p.IsAlive ? "" : "sb-dead" )">
+						<span class="sb-name">@( p.Network.Owner?.DisplayName ?? "?" )</span>
+						<span>@p.Kills</span>
+						<span>@p.Deaths</span>
+						<span class="sb-gold">@p.Galleons</span>
+						<span class="sb-hp">@p.Health</span>
+					</div>
+				}
+			</div>
+		</div>
+	}
+
+</root>
+
+@code {
+	RoundManager Round => RoundManager.Instance;
+
+	bool IsVisible => Input.Down( "Score" );
+
+	IEnumerable<WizardPlayer> GetTeam( Team team ) =>
+		Game.ActiveScene.GetAllComponents<WizardPlayer>()
+			.Where( p => p.Team == team )
+			.OrderByDescending( p => p.Kills );
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Round?.CurrentRound,
+		Round?.AurorScore,
+		Round?.ComensalScore,
+		IsVisible
+	);
+}

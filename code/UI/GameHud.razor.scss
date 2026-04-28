@@ -1,6 +1,7 @@
 /* ─── Variáveis SCSS (compiladas em build, sem :root) ───────────── */
 $hp-color:      #4fc3f7;
 $shield-color:  #b39ddb;
+$mana-color:    #7c4dff;
 $ability-bg:    rgba(10, 10, 20, 0.75);
 $ability-ready: #e8c84a;
 $gold-color:    #f5c542;
@@ -125,6 +126,8 @@ $overlay-bg:    rgba(8, 8, 18, 0.72);
 
 .hp-fill     { background-color: $hp-color; }
 .shield-fill { background-color: $shield-color; }
+.mana-fill   { background-color: $mana-color; }
+.mana-label  { color: #9c7ef5; }
 
 .bar-value {
 	font-size: 12px;
@@ -172,6 +175,60 @@ $overlay-bg:    rgba(8, 8, 18, 0.72);
 	font-weight: 700;
 	color: #ff7043;
 	margin-top: 2px;
+}
+
+/* ─── Itens consumíveis ─────────────────────────────────────────── */
+.item-slots {
+	display: flex;
+	flex-direction: row;
+	gap: 6px;
+}
+
+.item-slot {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: $ability-bg;
+	border: 1px solid rgba(255,255,255,0.1);
+	border-radius: 6px;
+	padding: 4px 8px;
+	min-width: 52px;
+
+	&.item-used {
+		opacity: 0.3;
+		border-style: dashed;
+	}
+}
+
+.item-key {
+	font-size: 9px;
+	color: $text-dim;
+	letter-spacing: 1px;
+}
+
+.item-name {
+	font-size: 9px;
+	color: $text-main;
+	text-align: center;
+}
+
+/* ─── Status effects ────────────────────────────────────────────── */
+.status-effect {
+	position: absolute;
+	top: 120px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 11px;
+	letter-spacing: 2px;
+	padding: 3px 10px;
+	border-radius: 4px;
+	animation: pulse 0.5s ease-in-out infinite alternate;
+
+	&.burning {
+		color: #ff6d00;
+		background-color: rgba(255, 100, 0, 0.2);
+		border: 1px solid rgba(255, 100, 0, 0.5);
+	}
 }
 
 /* ─── Galeões ───────────────────────────────────────────────────── */

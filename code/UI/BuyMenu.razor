@@ -110,6 +110,38 @@
 					}
 				</div>
 
+				@* Slot F *@
+				<div class="buy-slot">
+					<div class="slot-key">F</div>
+					@if ( Player.AbilityF != null )
+					{
+						<div class="slot-name">@Player.AbilityF.AbilityName</div>
+						<div class="slot-tier">Tier @Player.AbilityF.CurrentTier</div>
+						@if ( Player.AbilityF.CurrentTier < 1 )
+						{
+							<button class="btn-upgrade @( CanAfford(Player.AbilityF.Tier1Cost) ? "" : "disabled" )"
+									onclick=@( () => TryUpgrade(Player.AbilityF, 1) )>
+								T1 — @Player.AbilityF.Tier1Cost G
+							</button>
+						}
+						else if ( Player.AbilityF.CurrentTier < 2 )
+						{
+							<button class="btn-upgrade @( CanAfford(Player.AbilityF.Tier2Cost) ? "" : "disabled" )"
+									onclick=@( () => TryUpgrade(Player.AbilityF, 2) )>
+								T2 — @Player.AbilityF.Tier2Cost G
+							</button>
+						}
+						else
+						{
+							<div class="slot-maxed">MAX</div>
+						}
+					}
+					else
+					{
+						<div class="slot-empty">—</div>
+					}
+				</div>
+
 			</div>
 
 			<div class="buy-hint">[ B ] Fechar</div>
@@ -139,6 +171,7 @@
 		Player?.Galleons,
 		Player?.AbilityQ?.CurrentTier,
 		Player?.AbilityE?.CurrentTier,
-		Player?.AbilityR?.CurrentTier
+		Player?.AbilityR?.CurrentTier,
+		Player?.AbilityF?.CurrentTier
 	);
 }

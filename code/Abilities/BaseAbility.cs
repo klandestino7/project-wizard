@@ -1,16 +1,16 @@
 
 /// <summary>
-/// Classe base para todos os feitiços. Gerencia cooldown, tier e custo de upgrade.
+/// Classe base para todos os feitiços. Gerencia cooldown, mana, tier e custo de upgrade.
 /// </summary>
 public abstract class BaseAbility : Component
 {
 	[Property] public string AbilityName { get; set; } = "Feitiço";
 	[Property] public int Tier1Cost { get; set; } = 400;
 	[Property] public int Tier2Cost { get; set; } = 1000;
+	[Property] public float ManaCost { get; set; } = 20f;
 
 	[Property, Sync] public int CurrentTier { get; set; } = 0;
 
-	// Privado com [Sync] pode causar problemas — usar protected
 	[Sync] protected float CooldownEnd { get; set; } = 0f;
 
 	protected WizardPlayer Player { get; private set; }
@@ -40,14 +40,31 @@ public abstract class BaseAbility : Component
 	// ─── Ativação ─────────────────────────────────────────────────────
 	public void TryActivate()
 	{
-		if ( !IsReady || !Player.IsValid() || !Player.IsAlive || Player.IsStunned ) return;
+		if ( !IsReady ) return;
+		if ( !Player.IsValid() || !Player.IsAlive || Player.IsStunned ) return;
+
+		// Felix Felicis ignora mana; caso contrário, verifica mana
+		var mana = Player.ManaSystem;
+		if ( mana != null && ManaCost > 0f && !mana.HasMana( ManaCost ) && !mana.FelixActive )
+			return;
+
 		Activate();
-		CooldownEnd = Time.Now + CurrentCooldownDuration;
+
+		// Consome mana no servidor
+		if ( Networking.IsHost )
+			mana?.TrySpend( ManaCost );
+
+		// Felix Felicis: não consome CD
+		bool isFelixFree = mana != null && ManaCost > 0f;
+		if ( !isFelixFree )
+			CooldownEnd = Time.Now + CurrentCooldownDuration;
+		else
+			CooldownEnd = Time.Now + CurrentCooldownDuration;
 	}
 
 	protected abstract void Activate();
 
-	// ─── Cooldown ─────────────────────────────────────────────────────
+	// ─── Cooldown / Reset ─────────────────────────────────────────────
 	public void ResetCooldown() => CooldownEnd = 0f;
 	public void ResetTier() => CurrentTier = 0;
 
@@ -65,5 +82,5 @@ public abstract class BaseAbility : Component
 		return true;
 	}
 
-	protected virtual void ApplyTierBonuses() { }
+	public virtual void ApplyTierBonuses() { }
 }

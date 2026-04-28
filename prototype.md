@@ -1254,13 +1254,13 @@ public partial class SpellUpgradeSystem : Entity
 - 2 mapas polidos
 
 **Deliverables:**
-- [ ] 6 wizards únicos completos
-- [ ] Sistema de economia (galeões, compra, persistência)
-- [ ] 15+ itens compráveis (poções, equipamentos)
-- [ ] Spell upgrade system (tier 0/1/2)
-- [ ] Maestria de feitiços (micro-progressão)
+- [~] 6 wizards únicos completos — 6 feitiços implementados: Stupefy, Protego, Apparition, Incendio, Sectumsempra, Impedimenta + Episkey (7 total)
+- [x] Sistema de economia (galeões, compra, persistência) — `RoundManager` + `BaseAbility.TryUpgrade`
+- [~] 15+ itens compráveis (poções, equipamentos) — 3 consumíveis: HealPotion, ManaPotion, FelixFelicis
+- [x] Spell upgrade system (tier 0/1/2) — `BaseAbility` com ManaCost + TryUpgrade
+- [x] Maestria de feitiços (micro-progressão) — `MasterySystem.cs`
 - [ ] 2 mapas completos e balanceados
-- [ ] UI completa (buy menu, scoreboard, minimap)
+- [x] UI completa (buy menu, scoreboard, minimap) — `BuyMenu` (Q/E/R/F) + `Scoreboard` (Tab)
 - [ ] Sistema de ranks básico
 - [ ] Matchmaking simples
 - [ ] Tutorial interativo
@@ -1482,7 +1482,7 @@ Total: 8 pessoas
 
 **Versão:** 2.0 - Round-Based Tactical Shooter  
 **Última atualização:** 2026-04-27  
-**Status:** Fase 1 em progresso — 6/8 deliverables concluídos
+**Status:** Fase 2 em progresso — 6/10 deliverables concluídos
 
 ---
 

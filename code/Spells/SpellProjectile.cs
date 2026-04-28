@@ -9,17 +9,25 @@ public sealed class SpellProjectile : Component
 	// ─── Propriedades sincronizadas ───────────────────────────────────
 	[Property, Sync] public Team ShooterTeam { get; set; }
 	[Property, Sync] public int Damage { get; set; } = 80;
-	[Property, Sync] public float StunDuration { get; set; } = 1f;
+	[Property, Sync] public float StunDuration { get; set; } = 0f;
 	[Property, Sync] public float Speed { get; set; } = 2000f;
 	[Property, Sync] public bool PierceShield { get; set; } = false;
 	[Property, Sync] public Color SpellColor { get; set; } = Color.Red;
+
+	// ─── Burning DoT (Incendio) ───────────────────────────────────────
+	[Property, Sync] public float BurningDPS { get; set; } = 0f;
+	[Property, Sync] public float BurningDuration { get; set; } = 0f;
+
+	// ─── Slow (Impedimenta) ───────────────────────────────────────────
+	[Property, Sync] public float SlowFraction { get; set; } = 0f;
+	[Property, Sync] public float SlowDuration { get; set; } = 0f;
 
 	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
 	public static WizardPlayer PendingShooter { get; set; }
 
 	private const float Lifetime = 3f;
 
-	private WizardPlayer _shooter;  // apenas no servidor
+	private WizardPlayer _shooter;
 	private float _spawnTime;
 	private bool _hit = false;
 
@@ -27,15 +35,12 @@ public sealed class SpellProjectile : Component
 	{
 		_spawnTime = Time.Now;
 
-		// Captura o atirador apenas no servidor (onde foi spawned)
 		if ( Networking.IsHost )
 		{
 			_shooter = PendingShooter;
 			PendingShooter = null;
 		}
 
-		// Visual placeholder: ponto de luz colorido
-		// TODO: substituir por modelo/partícula de projétil
 		var light = Components.Create<PointLight>();
 		light.LightColor = SpellColor;
 		light.Radius = 80f;
@@ -46,7 +51,6 @@ public sealed class SpellProjectile : Component
 	{
 		if ( !Networking.IsHost || _hit ) return;
 
-		// Expirar
 		if ( Time.Now - _spawnTime > Lifetime )
 		{
 			GameObject.Destroy();
@@ -81,7 +85,6 @@ public sealed class SpellProjectile : Component
 		{
 			if ( PierceShield )
 			{
-				// Ignora shield, dano direto no HP
 				int newHp = victim.Health - Damage;
 				victim.Health = newHp < 0 ? 0 : newHp;
 				if ( victim.Health <= 0 )
@@ -94,9 +97,30 @@ public sealed class SpellProjectile : Component
 
 			if ( StunDuration > 0f )
 				victim.StunEndTime = Time.Now + StunDuration;
+
+			if ( BurningDPS > 0f && BurningDuration > 0f )
+				victim.ApplyBurning( BurningDPS, BurningDuration, _shooter );
+
+			// Slow: implementado via WizardPlayer.SlowEndTime
+			if ( SlowFraction > 0f && SlowDuration > 0f )
+				ApplySlowToVictim( victim );
+
+			// Notifica o MasterySystem do atirador
+			if ( _shooter != null )
+			{
+				var mastery = _shooter.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
+				mastery?.RegisterSpellHit( GetType().Name );
+			}
 		}
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );
+	}
+
+	private void ApplySlowToVictim( WizardPlayer victim )
+	{
+		// Slow é aplicado reduzindo velocidade via campos no WizardPlayer
+		victim.SlowEndTime = Time.Now + SlowDuration;
+		victim.SlowFraction = SlowFraction;
 	}
 
 	[Rpc.Broadcast]

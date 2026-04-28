@@ -20,21 +20,39 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property, Sync] public Team Team { get; set; } = Team.None;
 	[Property, Sync] public bool IsAlive { get; set; } = true;
 	[Property, Sync] public Angles EyeAngles { get; set; }
+	[Property, Sync] public int Kills { get; set; } = 0;
+	[Property, Sync] public int Deaths { get; set; } = 0;
 
-	/// <summary>Hora (Time.Now) em que o stun termina. Derivado: IsStunned.</summary>
+	/// <summary>Hora (Time.Now) em que o stun termina.</summary>
 	[Sync] public float StunEndTime { get; set; } = 0f;
 	public bool IsStunned => Time.Now < StunEndTime;
+
+	/// <summary>Burning DoT aplicado por Incendio.</summary>
+	[Sync] public float BurningEndTime { get; set; } = 0f;
+	[Sync] public float BurningDPS { get; set; } = 0f;
+	public WizardPlayer BurningSource { get; set; }
+
+	/// <summary>Slow aplicado por Impedimenta.</summary>
+	[Sync] public float SlowEndTime { get; set; } = 0f;
+	[Sync] public float SlowFraction { get; set; } = 0f;
+	public bool IsSlowed => Time.Now < SlowEndTime && SlowFraction > 0f;
 
 	// ─── Referências (setar no editor ou via GameManager) ─────────────
 	[Property] public CharacterController CharacterController { get; set; }
 	[Property] public CameraComponent Camera { get; set; }
 	[Property] public ModelRenderer BodyRenderer { get; set; }
+	[Property] public ManaSystem ManaSystem { get; set; }
 
 	// ─── Abilities (setadas via inspetor ou GameManager) ──────────────
 	[Property] public WandAttack WandAttack { get; set; }
 	[Property] public BaseAbility AbilityQ { get; set; }
 	[Property] public BaseAbility AbilityE { get; set; }
 	[Property] public BaseAbility AbilityR { get; set; }
+	[Property] public BaseAbility AbilityF { get; set; }
+
+	// ─── Itens consumíveis ────────────────────────────────────────────
+	[Property] public BaseConsumable ItemSlot1 { get; set; }
+	[Property] public BaseConsumable ItemSlot2 { get; set; }
 
 	// ─── Helpers ──────────────────────────────────────────────────────
 	public Vector3 EyePosition => WorldPosition + Vector3.Up * EyeHeight;
@@ -45,7 +63,6 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
 	{
-		// Esconde o corpo no cliente local (first-person)
 		if ( !IsProxy && BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.ShadowsOnly;
 	}
@@ -72,9 +89,22 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	protected override void OnFixedUpdate()
 	{
 		if ( IsProxy || !IsAlive ) return;
-		
+
 		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
 		// HandleMovement();
+
+		// Burning DoT (servidor)
+		if ( Networking.IsHost && BurningEndTime > 0f && Time.Now < BurningEndTime )
+		{
+			int dot = (int)(BurningDPS * Time.Delta);
+			if ( dot > 0 )
+				TakeDamage( dot, BurningSource );
+		}
+		else if ( Networking.IsHost && BurningEndTime > 0f )
+		{
+			BurningEndTime = 0f;
+			BurningDPS = 0f;
+		}
 	}
 
 	// ─── Input: Look ──────────────────────────────────────────────────
@@ -99,11 +129,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		var cc = CharacterController;
 		if ( !cc.IsValid() ) return;
 
-		// Gravidade
 		if ( !cc.IsOnGround )
 			cc.Velocity += Vector3.Down * 850f * Time.Delta;
 
-		// Direção desejada
 		var forward = Rotation.FromYaw( EyeAngles.yaw ).Forward;
 		var right = Rotation.FromYaw( EyeAngles.yaw ).Right;
 		var wishDir = Vector3.Zero;
@@ -120,6 +148,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 				: WalkSpeed;
 
 		if ( IsStunned ) speed *= 0.2f;
+		if ( IsSlowed ) speed *= (1f - SlowFraction);
 
 		cc.Accelerate( wishDir * speed );
 		cc.ApplyFriction( cc.IsOnGround ? 6f : 0.5f );
@@ -134,13 +163,15 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	private void HandleAbilityInput()
 	{
 		if ( Input.Pressed( "Attack1" ) )
-		{
 			WandAttack?.TryFire();
-		}
 
 		if ( Input.Pressed( "Ability1" ) ) AbilityQ?.TryActivate();
 		if ( Input.Pressed( "Ability2" ) ) AbilityE?.TryActivate();
 		if ( Input.Pressed( "Ability3" ) ) AbilityR?.TryActivate();
+		if ( Input.Pressed( "Ability4" ) ) AbilityF?.TryActivate();
+
+		if ( Input.Pressed( "Item1" ) ) ItemSlot1?.TryUse();
+		if ( Input.Pressed( "Item2" ) ) ItemSlot2?.TryUse();
 	}
 
 	// ─── Input: Interação (plant/defuse) ──────────────────────────────
@@ -167,6 +198,18 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	public void TakeDamage( int amount, WizardPlayer attacker = null, bool isHeadshot = false )
 	{
 		if ( !Networking.IsHost || !IsAlive ) return;
+
+		// Protego absorve dano
+		var protego = Components.Get<ProtegoAbility>( FindMode.EverythingInSelf );
+		if ( protego != null && protego.IsShieldUp )
+		{
+			var (passthrough, reflected) = protego.AbsorbDamage( amount );
+			if ( reflected > 0 && attacker != null )
+				attacker.TakeDamage( reflected );
+			amount = passthrough;
+		}
+
+		if ( amount <= 0 ) return;
 
 		int remaining = amount;
 
@@ -198,11 +241,36 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		Shield = newShield > MaxShield ? MaxShield : newShield;
 	}
 
+	public void ApplyBurning( float dps, float duration, WizardPlayer source )
+	{
+		if ( !Networking.IsHost ) return;
+		BurningDPS = dps;
+		BurningEndTime = Time.Now + duration;
+		BurningSource = source;
+	}
+
+	public void ExtinguishBurning()
+	{
+		if ( !Networking.IsHost ) return;
+		BurningEndTime = 0f;
+		BurningDPS = 0f;
+		BurningSource = null;
+	}
+
 	// ─── Morte ────────────────────────────────────────────────────────
 	public void Die( WizardPlayer killer = null )
 	{
 		if ( !IsAlive ) return;
 		IsAlive = false;
+		Deaths++;
+
+		if ( killer != null )
+			killer.Kills++;
+
+		BurningEndTime = 0f;
+		BurningDPS = 0f;
+		SlowEndTime = 0f;
+		SlowFraction = 0f;
 
 		var rm = Scene.GetAllComponents<RoundManager>().FirstOrDefault();
 		rm?.OnPlayerDied( this, killer );
@@ -225,6 +293,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		Shield = 0;
 		IsAlive = true;
 		StunEndTime = 0f;
+		BurningEndTime = 0f;
+		BurningDPS = 0f;
 
 		if ( BodyRenderer.IsValid() )
 			BodyRenderer.Enabled = true;
@@ -232,6 +302,8 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		AbilityQ?.ResetCooldown();
 		AbilityE?.ResetCooldown();
 		AbilityR?.ResetCooldown();
+		AbilityF?.ResetCooldown();
+		ManaSystem?.ResetFull();
 	}
 
 	// ─── Economia ─────────────────────────────────────────────────────

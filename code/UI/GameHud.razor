@@ -9,7 +9,7 @@
 		@* ── Bottom Bar ───────────────────────────────────────────── *@
 		<div class="hud-bottom">
 
-			@* HP + Shield *@
+			@* HP + Shield + Mana *@
 			<div class="status-bars">
 				<div class="bar-label">HP</div>
 				<div class="bar-track">
@@ -25,34 +25,26 @@
 					</div>
 					<div class="bar-value">@Player.Shield</div>
 				}
+
+				<div class="bar-label mana-label">MANA</div>
+				<div class="bar-track">
+					<div class="bar-fill mana-fill" style="width: @( ManaPercent )%"></div>
+				</div>
+				<div class="bar-value">@( (int)(Mana) )</div>
 			</div>
 
-			@* Abilities *@
+			@* Abilities Q E R F *@
 			<div class="abilities">
-				<div class="ability-slot @( IsQReady ? "ready" : "cooling" )">
-					<div class="ability-key">Q</div>
-					<div class="ability-name">@( Player.AbilityQ?.AbilityName ?? "–" )</div>
-					@if ( !IsQReady )
-					{
-						<div class="ability-cd">@( Player.AbilityQ?.CooldownRemaining.ToString("0.0") )s</div>
-					}
-				</div>
-				<div class="ability-slot @( IsEReady ? "ready" : "cooling" )">
-					<div class="ability-key">E</div>
-					<div class="ability-name">@( Player.AbilityE?.AbilityName ?? "–" )</div>
-					@if ( !IsEReady )
-					{
-						<div class="ability-cd">@( Player.AbilityE?.CooldownRemaining.ToString("0.0") )s</div>
-					}
-				</div>
-				<div class="ability-slot @( IsRReady ? "ready" : "cooling" )">
-					<div class="ability-key">R</div>
-					<div class="ability-name">@( Player.AbilityR?.AbilityName ?? "–" )</div>
-					@if ( !IsRReady )
-					{
-						<div class="ability-cd">@( Player.AbilityR?.CooldownRemaining.ToString("0.0") )s</div>
-					}
-				</div>
+				@RenderAbilitySlot( "Q", Player.AbilityQ )
+				@RenderAbilitySlot( "E", Player.AbilityE )
+				@RenderAbilitySlot( "R", Player.AbilityR )
+				@RenderAbilitySlot( "F", Player.AbilityF )
+			</div>
+
+			@* Itens *@
+			<div class="item-slots">
+				@RenderItemSlot( "1", Player.ItemSlot1 )
+				@RenderItemSlot( "2", Player.ItemSlot2 )
 			</div>
 
 			@* Galeões *@
@@ -87,6 +79,12 @@
 			</div>
 		}
 
+		@* ── Burning indicator ────────────────────────────────────── *@
+		@if ( Player.BurningEndTime > Time.Now )
+		{
+			<div class="status-effect burning">BURNING</div>
+		}
+
 		@* ── Crosshair ────────────────────────────────────────────── *@
 		<div class="crosshair">
 			<div class="cross-h"></div>
@@ -108,16 +106,11 @@
 	RoundManager Round => RoundManager.Instance;
 
 	float HealthPercent => Player != null
-		? (float)Player.Health / WizardPlayer.MaxHealth * 100f
-		: 0f;
-
+		? (float)Player.Health / WizardPlayer.MaxHealth * 100f : 0f;
 	float ShieldPercent => Player != null
-		? (float)Player.Shield / WizardPlayer.MaxShield * 100f
-		: 0f;
-
-	bool IsQReady => Player?.AbilityQ?.IsReady ?? true;
-	bool IsEReady => Player?.AbilityE?.IsReady ?? true;
-	bool IsRReady => Player?.AbilityR?.IsReady ?? true;
+		? (float)Player.Shield / WizardPlayer.MaxShield * 100f : 0f;
+	float Mana => Player?.ManaSystem?.Mana ?? 0f;
+	float ManaPercent => Mana / ManaSystem.MaxMana * 100f;
 
 	HorcruxSite PlantedHorcrux => Game.ActiveScene
 		.GetAllComponents<HorcruxSite>()
@@ -137,17 +130,35 @@
 		}
 	}
 
-	string GetStateLabel()
+	string GetStateLabel() => Round?.State switch
 	{
-		return Round?.State switch
-		{
-			RoundState.BuyPhase => "FASE DE COMPRA",
-			RoundState.Combat => "COMBATE",
-			RoundState.PostRound => "FIM DE ROUND",
-			RoundState.MatchEnd => "PARTIDA ENCERRADA",
-			_ => ""
-		};
-	}
+		RoundState.BuyPhase  => "FASE DE COMPRA",
+		RoundState.Combat    => "COMBATE",
+		RoundState.PostRound => "FIM DE ROUND",
+		RoundState.MatchEnd  => "PARTIDA ENCERRADA",
+		_ => ""
+	};
+
+	RenderFragment RenderAbilitySlot( string key, BaseAbility ability ) => __builder =>
+	{
+		bool ready = ability?.IsReady ?? true;
+		<div class="ability-slot @( ready ? "ready" : "cooling" )">
+			<div class="ability-key">@key</div>
+			<div class="ability-name">@( ability?.AbilityName ?? "–" )</div>
+			@if ( !ready )
+			{
+				<div class="ability-cd">@( ability?.CooldownRemaining.ToString( "0.0" ) )s</div>
+			}
+		</div>
+	};
+
+	RenderFragment RenderItemSlot( string key, BaseConsumable item ) => __builder =>
+	{
+		<div class="item-slot @( item?.IsUsed == true ? "item-used" : "" )">
+			<div class="item-key">@key</div>
+			<div class="item-name">@( item?.ItemName ?? "–" )</div>
+		</div>
+	};
 
 	protected override int BuildHash() => System.HashCode.Combine(
 		Player?.Health,

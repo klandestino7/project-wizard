@@ -1,0 +1,110 @@
+.scoreboard {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 640px;
+	background-color: rgba(8, 6, 18, 0.95);
+	border: 1px solid rgba(180, 140, 40, 0.5);
+	border-radius: 8px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+.sb-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	padding-bottom: 10px;
+}
+
+.sb-title {
+	color: #e8c84a;
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: 3px;
+}
+
+.sb-round {
+	color: #888;
+	font-size: 12px;
+	letter-spacing: 1px;
+}
+
+.sb-team {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.sb-team-header {
+	display: flex;
+	justify-content: space-between;
+	padding: 4px 8px;
+	border-radius: 4px;
+
+	.team-name {
+		font-size: 11px;
+		font-weight: bold;
+		letter-spacing: 2px;
+	}
+
+	.team-score {
+		font-size: 18px;
+		font-weight: bold;
+	}
+}
+
+.auror-team .sb-team-header {
+	background-color: rgba(79, 195, 247, 0.12);
+	.team-name { color: #4fc3f7; }
+	.team-score { color: #4fc3f7; }
+}
+
+.comensal-team .sb-team-header {
+	background-color: rgba(129, 199, 132, 0.12);
+	.team-name { color: #81c784; }
+	.team-score { color: #81c784; }
+}
+
+.sb-columns {
+	display: grid;
+	grid-template-columns: 1fr 40px 40px 70px 50px;
+	padding: 2px 8px;
+	font-size: 10px;
+	color: #555;
+	letter-spacing: 1px;
+}
+
+.sb-row {
+	display: grid;
+	grid-template-columns: 1fr 40px 40px 70px 50px;
+	padding: 5px 8px;
+	border-radius: 3px;
+	font-size: 13px;
+	color: #ddd;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.04);
+	}
+
+	&.sb-dead {
+		opacity: 0.4;
+	}
+}
+
+.sb-name {
+	font-weight: 600;
+}
+
+.sb-gold {
+	color: #f5c542;
+}
+
+.sb-hp {
+	color: #4fc3f7;
+}
