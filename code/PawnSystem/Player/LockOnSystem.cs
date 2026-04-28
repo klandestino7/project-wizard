@@ -12,13 +12,13 @@ public sealed class LockOnSystem : Component
 
 	[Sync] public bool IsLockedOn { get; private set; } = false;
 
-	public WizardPlayer LockedTarget { get; private set; }
+	public PlayerPawn LockedTarget { get; private set; }
 
-	private WizardPlayer Player { get; set; }
+	private PlayerPawn Player { get; set; }
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	protected override void OnUpdate()
@@ -57,7 +57,7 @@ public sealed class LockOnSystem : Component
 			SetLockOn( target );
 	}
 
-	public void SetLockOn( WizardPlayer target )
+	public void SetLockOn( PlayerPawn target )
 	{
 		LockedTarget = target;
 		IsLockedOn = target != null;
@@ -72,7 +72,7 @@ public sealed class LockOnSystem : Component
 	// ─── Aiming ───────────────────────────────────────────────────────
 	private void AimTowardsTarget()
 	{
-		var targetPos = LockedTarget.WorldPosition + Vector3.Up * WizardPlayer.EyeHeight;
+		var targetPos = LockedTarget.WorldPosition + Vector3.Up * PlayerPawn.EyeHeight;
 		var toTarget = (targetPos - Player.EyePosition).Normal;
 		var desiredAngles = Rotation.LookAt( toTarget ).Angles();
 
@@ -90,7 +90,7 @@ public sealed class LockOnSystem : Component
 	{
 		if ( IsLockedOn && LockedTarget.IsValid() )
 		{
-			var toTarget = (LockedTarget.WorldPosition + Vector3.Up * WizardPlayer.EyeHeight
+			var toTarget = (LockedTarget.WorldPosition + Vector3.Up * PlayerPawn.EyeHeight
 				- Player.EyePosition).Normal;
 			return toTarget;
 		}
@@ -101,18 +101,18 @@ public sealed class LockOnSystem : Component
 	public Vector3? GetAimTarget()
 	{
 		if ( IsLockedOn && LockedTarget.IsValid() )
-			return LockedTarget.WorldPosition + Vector3.Up * WizardPlayer.EyeHeight * 0.8f;
+			return LockedTarget.WorldPosition + Vector3.Up * PlayerPawn.EyeHeight * 0.8f;
 		return null;
 	}
 
 	// ─── Find ─────────────────────────────────────────────────────────
-	private WizardPlayer FindBestTarget()
+	private PlayerPawn FindBestTarget()
 	{
-		WizardPlayer best = null;
+		PlayerPawn best = null;
 		float bestScore = float.MaxValue;
 		var camForward = Player.EyeAngles.ToRotation().Forward;
 
-		foreach ( var p in Scene.GetAllComponents<WizardPlayer>() )
+		foreach ( var p in Scene.GetAllComponents<PlayerPawn>() )
 		{
 			if ( p == Player || !p.IsAlive || p.Team == Player.Team ) continue;
 

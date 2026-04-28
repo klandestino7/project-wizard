@@ -29,11 +29,11 @@ public sealed class SpellProjectile : Component
 	[Property, Sync] public string SourceSpellClass { get; set; } = "";
 
 	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
-	public static WizardPlayer PendingShooter { get; set; }
+	public static PlayerPawn PendingShooter { get; set; }
 
 	private const float Lifetime = 3f;
 
-	private WizardPlayer _shooter;
+	private PlayerPawn _shooter;
 	private float _spawnTime;
 	private bool _hit = false;
 
@@ -96,7 +96,7 @@ public sealed class SpellProjectile : Component
 
 	private void OnHit( SceneTraceResult tr )
 	{
-		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
+		var victim = tr.GameObject?.Components.Get<PlayerPawn>();
 
 		if ( victim != null && victim.Team != ShooterTeam )
 		{
@@ -148,7 +148,7 @@ public sealed class SpellProjectile : Component
 	}
 
 	/// <summary>Aplica bônus de dano pelo CombatState do alvo (+50% Airborne, +25% Stunned).</summary>
-	private static int ApplyStateBonuses( int damage, WizardPlayer victim )
+	private static int ApplyStateBonuses( int damage, PlayerPawn victim )
 	{
 		if ( victim.CombatState == CombatState.Airborne )
 			return (int)(damage * 1.5f);

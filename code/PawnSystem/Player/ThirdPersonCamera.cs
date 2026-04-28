@@ -2,7 +2,7 @@ namespace Warlocks;
 
 /// <summary>
 /// Câmera em terceira pessoa com spring arm (Hogwarts Legacy style).
-/// Coloque este componente no mesmo GameObject que o WizardPlayer.
+/// Coloque este componente no mesmo GameObject que o PlayerPawn.
 /// A CameraComponent deve ser filha do GameObject do player.
 /// Offset padrão: 50u à direita, 80u acima, 220u atrás.
 /// </summary>
@@ -16,12 +16,12 @@ public sealed class ThirdPersonCamera : Component
 	[Property] public float PitchMax { get; set; } = 70f;
 	[Property] public float LookSensitivity { get; set; } = 1f;
 
-	private WizardPlayer Player { get; set; }
+	private PlayerPawn Player { get; set; }
 	private Angles _lookAngles;
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	protected override void OnUpdate()
@@ -52,7 +52,7 @@ public sealed class ThirdPersonCamera : Component
 	private Vector3 CalculateCameraPosition()
 	{
 		var rot = Rotation.From( _lookAngles );
-		var pivot = Player.WorldPosition + Vector3.Up * WizardPlayer.EyeHeight * 0.8f;
+		var pivot = Player.WorldPosition + Vector3.Up * PlayerPawn.EyeHeight * 0.8f;
 
 		// Offset em espaço local da câmera
 		var desiredPos = pivot

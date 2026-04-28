@@ -3,9 +3,9 @@ namespace Warlocks;
 /// <summary>
 /// Estado persistente do escudo Protego: sync de rede, VFX e absorção de dano.
 /// Separado de ProtegoSpell (que define custo/cooldown como BaseSpell).
-/// Consultado por WizardPlayer.TakeDamage() para absorver dano.
+/// Consultado por PlayerPawn.TakeDamage() para absorver dano.
 ///
-/// Adicione no mesmo GameObject do WizardPlayer.
+/// Adicione no mesmo GameObject do PlayerPawn.
 /// </summary>
 public sealed class ProtegoComponent : Component
 {
@@ -27,11 +27,11 @@ public sealed class ProtegoComponent : Component
 	public bool IsPerfectBlockWindow => ShieldActive && Time.Now < ActivatedAt + PerfectBlockWindow;
 	private float ReflectFraction => _activatedTier >= 2 ? 0.3f : 0f;
 
-	private WizardPlayer _player;
+	private PlayerPawn _player;
 
 	protected override void OnStart()
 	{
-		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
+		_player = Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
 	}
 
 	protected override void OnUpdate()
@@ -59,14 +59,14 @@ public sealed class ProtegoComponent : Component
 		ShowEffect();
 	}
 
-	// ─── Absorção de dano (chamada por WizardPlayer.TakeDamage) ───────
+	// ─── Absorção de dano (chamada por PlayerPawn.TakeDamage) ───────
 
 	/// <summary>
 	/// Processa dano recebido com Protego ativo.
 	/// Perfect block: stuna o atacante + reflete 100%.
 	/// Retorna (dano que passa, dano refletido).
 	/// </summary>
-	public (int passthrough, int reflected) AbsorbDamage( int incoming, WizardPlayer attacker = null )
+	public (int passthrough, int reflected) AbsorbDamage( int incoming, PlayerPawn attacker = null )
 	{
 		if ( !IsShieldUp ) return (incoming, 0);
 

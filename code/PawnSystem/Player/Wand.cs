@@ -9,7 +9,7 @@ namespace Warlocks;
 ///   → incrementa contador [Sync]
 ///   → host detecta mudança em OnUpdate → Spell.Execute(this)
 ///
-/// Adicione no mesmo GameObject do WizardPlayer.
+/// Adicione no mesmo GameObject do PlayerPawn.
 /// </summary>
 public sealed class Wand : Component
 {
@@ -23,14 +23,14 @@ public sealed class Wand : Component
 
 	private int _lastBasic, _lastSlot0, _lastSlot1, _lastSlot2, _lastSlot3;
 
-	private WizardPlayer _player;
+	private PlayerPawn _player;
 	private SpellsDeck _deck;
 
-	public WizardPlayer Player => _player;
+	public PlayerPawn Player => _player;
 
 	protected override void OnStart()
 	{
-		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
+		_player = Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
 		_deck = Components.Get<SpellsDeck>( FindMode.EverythingInSelf );
 	}
 
@@ -53,7 +53,7 @@ public sealed class Wand : Component
 		spell.Execute( this );
 	}
 
-	// ─── API pública (chamada por WizardPlayer.HandleAbilityInput) ────
+	// ─── API pública (chamada por PlayerPawn.HandleAbilityInput) ────
 
 	/// <summary>Ataque básico (clique principal, sem mana).</summary>
 	public void TryCastBasic()

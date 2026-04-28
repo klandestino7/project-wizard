@@ -2,7 +2,7 @@ namespace Warlocks;
 
 /// <summary>
 /// Mantém a varinha na mão direita do player e gerencia animações de holdtype.
-/// Adicione no mesmo GameObject que WizardPlayer e AnimationHelper.
+/// Adicione no mesmo GameObject que PlayerPawn e AnimationHelper.
 ///
 /// Setup:
 ///   - PlayerRenderer → SkinnedModelRenderer do corpo
@@ -33,7 +33,7 @@ public sealed class WandHolder : Component
 	[Sync] private int _castCount { get; set; } = 0;
 
 	// ─── Internos ─────────────────────────────────────────────────────
-	private WizardPlayer _player;
+	private PlayerPawn _player;
 	private GameObject _wand;
 	private GameObject _muzzle;
 	private int _lastCastCount;
@@ -41,7 +41,7 @@ public sealed class WandHolder : Component
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
 	{
-		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
+		_player = Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
 		AttachWand();
 	}
 

@@ -30,7 +30,7 @@ public sealed class EpiskeySpell : BaseSpell
 		if ( Tier >= 2 )
 			wand.Player.Health = Math.Min(
 				wand.Player.Health + TempHpByTier[t],
-				WizardPlayer.MaxHealth + TempHpByTier[t]
+				PlayerPawn.MaxHealth + TempHpByTier[t]
 			);
 	}
 }

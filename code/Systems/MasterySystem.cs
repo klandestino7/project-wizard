@@ -1,7 +1,7 @@
 /// <summary>
 /// Rastreia quantas vezes cada feitiço acertou durante a partida.
 /// Ao atingir o threshold, faz upgrade automático gratuito.
-/// Adicione no mesmo GameObject que WizardPlayer.
+/// Adicione no mesmo GameObject que PlayerPawn.
 /// </summary>
 public sealed class MasterySystem : Component
 {
@@ -20,11 +20,11 @@ public sealed class MasterySystem : Component
 	// Contagem acumulada por tipo (nome da classe → hits)
 	private readonly Dictionary<string, int> _hits = new();
 
-	private WizardPlayer Player { get; set; }
+	private PlayerPawn Player { get; set; }
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	/// <summary>

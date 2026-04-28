@@ -52,12 +52,12 @@ public sealed class SpellsDeck : Component
 
 	public BasicCastSpell BasicCast { get; } = new();
 
-	private WizardPlayer _player;
+	private PlayerPawn _player;
 
 	// ─── Lifecycle ─────────────────────────────────────────────────
 	protected override void OnStart()
 	{
-		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
+		_player = Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
 	}
 
 	protected override void OnUpdate()

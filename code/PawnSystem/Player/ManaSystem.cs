@@ -2,7 +2,7 @@ namespace Warlocks;
 
 /// <summary>
 /// Gerencia mana do jogador: máx 100, regen 15/s após 2s sem usar magia.
-/// Adicione no mesmo GameObject que WizardPlayer.
+/// Adicione no mesmo GameObject que PlayerPawn.
 /// </summary>
 public sealed class ManaSystem : Component
 {

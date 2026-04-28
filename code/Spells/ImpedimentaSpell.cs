@@ -50,7 +50,7 @@ public sealed class ImpedimentaProjectile : Component
 	[Property, Sync] public float AoERadius    { get; set; }
 	[Property, Sync] public Color SpellColor   { get; set; }
 
-	public WizardPlayer Shooter { get; set; }
+	public PlayerPawn Shooter { get; set; }
 
 	private const float Speed    = 1600f;
 	private const float Lifetime = 3f;
@@ -125,7 +125,7 @@ public sealed class ImpedimentaProjectile : Component
 		if ( AoERadius <= 0f )
 		{
 			// Single target: usa o objeto que parou o trace
-			foreach ( var p in Scene.GetAllComponents<WizardPlayer>() )
+			foreach ( var p in Scene.GetAllComponents<PlayerPawn>() )
 			{
 				if ( p.Team == OwnerTeam || !p.IsAlive ) continue;
 				if ( p.WorldPosition.Distance( hitPos ) < 50f )
@@ -138,7 +138,7 @@ public sealed class ImpedimentaProjectile : Component
 		}
 
 		// AoE
-		foreach ( var p in Scene.GetAllComponents<WizardPlayer>() )
+		foreach ( var p in Scene.GetAllComponents<PlayerPawn>() )
 		{
 			if ( p.Team == OwnerTeam || !p.IsAlive ) continue;
 			if ( p.WorldPosition.Distance( hitPos ) <= AoERadius )

@@ -36,11 +36,11 @@
 </root>
 
 @code {
-	WizardPlayer Player => WizardPlayer.Local;
+	PlayerPawn Player => PlayerPawn.Local;
 	float HealthPercent => Player != null
-		? (float)Player.Health / WizardPlayer.MaxHealth * 100f : 0f;
+		? (float)Player.Health / PlayerPawn.MaxHealth * 100f : 0f;
 	float ShieldPercent => Player != null
-		? (float)Player.Shield / WizardPlayer.MaxShield * 100f : 0f;
+		? (float)Player.Shield / PlayerPawn.MaxShield * 100f : 0f;
 	float Mana => Player?.ManaSystem?.Mana ?? 0f;
 	float ManaPercent => Mana / ManaSystem.MaxMana * 100f;
 

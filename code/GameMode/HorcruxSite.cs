@@ -23,7 +23,7 @@ public sealed class HorcruxSite : Component
 	[Sync] public float InteractProgress { get; private set; } = 0f;  // 0..1
 	[Sync] public bool IsBeingInteracted { get; private set; } = false;
 
-	private WizardPlayer _interactingPlayer;
+	private PlayerPawn _interactingPlayer;
 	private float _interactStartTime;
 
 	public float TimeUntilExplosion => IsPlanted 
@@ -63,7 +63,7 @@ public sealed class HorcruxSite : Component
 	}
 
 	// ─── API pública ──────────────────────────────────────────────────
-	public void TryInteract( WizardPlayer player )
+	public void TryInteract( PlayerPawn player )
 	{
 		if ( !Networking.IsHost ) return;
 		if ( IsDefused || HasExploded ) return;
@@ -79,7 +79,7 @@ public sealed class HorcruxSite : Component
 			StartInteraction( player );
 	}
 
-	public void StopInteract( WizardPlayer player )
+	public void StopInteract( PlayerPawn player )
 	{
 		if ( _interactingPlayer == player )
 			CancelInteraction();
@@ -97,7 +97,7 @@ public sealed class HorcruxSite : Component
 	}
 
 	// ─── Interação ────────────────────────────────────────────────────
-	private void StartInteraction( WizardPlayer player )
+	private void StartInteraction( PlayerPawn player )
 	{
 		IsBeingInteracted = true;
 		_interactingPlayer = player;
@@ -128,7 +128,7 @@ public sealed class HorcruxSite : Component
 		_interactingPlayer = null;
 	}
 
-	private void Plant( WizardPlayer planter )
+	private void Plant( PlayerPawn planter )
 	{
 		IsPlanted = true;
 		ExplosionTime = Time.Now + ExplosionDelay;
@@ -142,7 +142,7 @@ public sealed class HorcruxSite : Component
 		Log.Info( $"[Horcrux] Plantada no Site {SiteName}!" );
 	}
 
-	private void Defuse( WizardPlayer defuser )
+	private void Defuse( PlayerPawn defuser )
 	{
 		IsDefused = true;
 

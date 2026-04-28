@@ -21,7 +21,7 @@ public sealed class BasicCastSpell : BaseSpell
 
 		if ( !tr.Hit ) return;
 
-		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
+		var victim = tr.GameObject?.Components.Get<PlayerPawn>();
 		if ( victim == null || victim.Team == wand.Player.Team ) return;
 
 		bool headshot = tr.Hitbox?.Tags.Has( "head" ) ?? false;

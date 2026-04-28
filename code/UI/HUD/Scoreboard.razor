@@ -65,8 +65,8 @@
 
 	bool IsVisible => Input.Down( "Score" );
 
-	IEnumerable<WizardPlayer> GetTeam( Team team ) =>
-		Game.ActiveScene.GetAllComponents<WizardPlayer>()
+	IEnumerable<PlayerPawn> GetTeam( Team team ) =>
+		Game.ActiveScene.GetAllComponents<PlayerPawn>()
 			.Where( p => p.Team == team )
 			.OrderByDescending( p => p.Kills );
 

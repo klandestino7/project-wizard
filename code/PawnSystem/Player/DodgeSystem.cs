@@ -4,7 +4,7 @@ namespace Warlocks;
 /// Esquiva direcional com i-frames (Hogwarts Legacy style).
 /// Stamina: 100 max, regen 20/s. Cada dodge custa 25.
 /// Pressione "Dodge" (Space) para ativar na direção do movimento.
-/// Adicione no mesmo GameObject que WizardPlayer.
+/// Adicione no mesmo GameObject que PlayerPawn.
 /// </summary>
 public sealed class DodgeSystem : Component
 {
@@ -18,14 +18,14 @@ public sealed class DodgeSystem : Component
 	[Property, Sync] public float Stamina { get; set; } = MaxStamina;
 	public float StaminaPercent => Stamina / MaxStamina;
 
-	private WizardPlayer Player { get; set; }
+	private PlayerPawn Player { get; set; }
 	private float _dodgeEndTime = 0f;
 	private float _nextDodgeTime = 0f;
 	private bool _isDodging = false;
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	// ─── Regen de stamina ─────────────────────────────────────────────

@@ -24,11 +24,11 @@ public sealed class SectumsempraSpell : BaseSpell
 
 		if ( !tr.Hit ) return;
 
-		var victim = tr.GameObject?.Components.Get<WizardPlayer>();
+		var victim = tr.GameObject?.Components.Get<PlayerPawn>();
 		if ( victim == null || victim.Team == wand.Player.Team ) return;
 
 		float hitHeight = tr.EndPosition.z - victim.WorldPosition.z;
-		bool  isHeadshot = hitHeight > WizardPlayer.EyeHeight * 0.75f;
+		bool  isHeadshot = hitHeight > PlayerPawn.EyeHeight * 0.75f;
 		float mult = isHeadshot ? HeadshotMultByTier[t] : 1f;
 		int   dmg  = (int)(DamageByTier[t] * mult);
 

@@ -1,11 +1,20 @@
 namespace Warlocks;
 
+/// <summary>
+/// A component that has a team on it.
+/// </summary>
+public interface ITeam : IValid
+{
+	public Team Team { get; set; }
+}
+
 public enum Team
 {
 	None = 0,
 	Aurors = 1,         // Defenders - Ministério da Magia
 	DarkFollowers = 2   // Attackers - Comensais
 }
+
 
 public enum RoundState
 {

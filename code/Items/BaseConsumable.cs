@@ -2,7 +2,7 @@ namespace Warlocks;
 
 /// <summary>
 /// Base para itens consumíveis (poções, equipamentos de 1 uso).
-/// Adicione como componente no mesmo GameObject que WizardPlayer.
+/// Adicione como componente no mesmo GameObject que PlayerPawn.
 /// </summary>
 public abstract class BaseConsumable : Component
 {
@@ -10,11 +10,11 @@ public abstract class BaseConsumable : Component
 	[Property] public int PurchaseCost { get; set; } = 500;
 	[Property, Sync] public bool IsUsed { get; set; } = false;
 
-	protected WizardPlayer Player { get; private set; }
+	protected PlayerPawn Player { get; private set; }
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<WizardPlayer>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	public void TryUse()
@@ -36,6 +36,6 @@ public abstract class BaseConsumable : Component
 
 	protected virtual void OnRoundReset() { }
 
-	public bool CanBuy( WizardPlayer player ) =>
+	public bool CanBuy( PlayerPawn player ) =>
 		!IsUsed && player.Galleons >= PurchaseCost;
 }

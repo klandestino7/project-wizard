@@ -147,7 +147,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 		RespawnTeam( GetAlivePlayers( Team.DarkFollowers ), ComensalSpawns );
 	}
 
-	private void RespawnTeam( List<WizardPlayer> players, List<GameObject> spawns )
+	private void RespawnTeam( List<PlayerPawn> players, List<GameObject> spawns )
 	{
 		for ( int i = 0; i < players.Count; i++ )
 		{
@@ -175,7 +175,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	}
 
 	// ─── Eventos de round ─────────────────────────────────────────────
-	public void OnPlayerDied( WizardPlayer victim, WizardPlayer killer )
+	public void OnPlayerDied( PlayerPawn victim, PlayerPawn killer )
 	{
 		if ( !Networking.IsHost || State != RoundState.Combat ) return;
 		if ( killer != null && killer.Team != victim.Team )
@@ -240,11 +240,11 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	}
 
 	// ─── Helpers ──────────────────────────────────────────────────────
-	private List<WizardPlayer> GetAllPlayers() =>
-		Scene.GetAllComponents<WizardPlayer>().ToList();
+	private List<PlayerPawn> GetAllPlayers() =>
+		Scene.GetAllComponents<PlayerPawn>().ToList();
 
-	private List<WizardPlayer> GetAlivePlayers( Team team ) =>
-		Scene.GetAllComponents<WizardPlayer>()
+	private List<PlayerPawn> GetAlivePlayers( Team team ) =>
+		Scene.GetAllComponents<PlayerPawn>()
 			.Where( p => p.Team == team && p.IsAlive )
 			.ToList();
 
@@ -263,7 +263,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 			: Vector3.Zero;
 
 		var go = PlayerPrefab.Clone( spawnPos );
-		var player = go.Components.Get<WizardPlayer>( FindMode.EverythingInSelfAndDescendants );
+		var player = go.Components.Get<PlayerPawn>( FindMode.EverythingInSelfAndDescendants );
 		if ( player != null ) player.Team = newTeam;
 		go.NetworkSpawn( connection );
 	}
