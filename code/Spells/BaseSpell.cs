@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Classe base para todos os feitiços. NÃO é Component — apenas define comportamento.
@@ -30,11 +31,11 @@ public abstract class BaseSpell
 	private float _cooldownEnd = 0f;
 	private int SafeTier => Math.Clamp( Tier, 0, 2 );
 
-	public bool  IsReady           => Time.Now >= _cooldownEnd;
-	public float CooldownEndTime   => _cooldownEnd;
+	public bool IsReady => Time.Now >= _cooldownEnd;
+	public float CooldownEndTime => _cooldownEnd;
 	public float CooldownRemaining => MathF.Max( 0f, _cooldownEnd - Time.Now );
-	public float CooldownDuration  => CooldownByTier[SafeTier];
-	public float CooldownFraction  => IsReady ? 1f : 1f - CooldownRemaining / CooldownDuration;
+	public float CooldownDuration => CooldownByTier[SafeTier];
+	public float CooldownFraction => IsReady ? 1f : 1f - CooldownRemaining / CooldownDuration;
 
 	public void StartCooldown() => _cooldownEnd = Time.Now + CooldownDuration;
 	public void ResetCooldown() => _cooldownEnd = 0f;

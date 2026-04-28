@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Estado persistente do escudo Protego: sync de rede, VFX e absorção de dano.
@@ -10,15 +11,15 @@ public sealed class ProtegoComponent : Component
 {
 	public const float PerfectBlockWindow = 0.3f;
 
-	private static readonly int[]   ShieldByTier   = { 100, 200, 350 };
+	private static readonly int[] ShieldByTier = { 100, 200, 350 };
 	private static readonly float[] DurationByTier = { 3f, 4f, 5f };
 
 	// ─── Estado sincronizado ──────────────────────────────────────────
-	[Sync] public bool  ShieldActive  { get; private set; } = false;
+	[Sync] public bool ShieldActive { get; private set; } = false;
 	[Sync] public float ShieldEndTime { get; private set; } = 0f;
-	[Sync] public float ActivatedAt   { get; private set; } = 0f;
-	[Sync] public int   ShieldHP      { get; private set; } = 0;
-	[Sync] private int  _activatedTier { get; set; } = 0;
+	[Sync] public float ActivatedAt { get; private set; } = 0f;
+	[Sync] public int ShieldHP { get; private set; } = 0;
+	[Sync] private int _activatedTier { get; set; } = 0;
 
 	[Sync] private GameObject ShieldFx { get; set; }
 
@@ -48,10 +49,10 @@ public sealed class ProtegoComponent : Component
 
 		int t = Math.Clamp( tier, 0, 2 );
 		_activatedTier = t;
-		ShieldActive   = true;
-		ShieldHP       = ShieldByTier[t];
-		ShieldEndTime  = Time.Now + DurationByTier[t];
-		ActivatedAt    = Time.Now;
+		ShieldActive = true;
+		ShieldHP = ShieldByTier[t];
+		ShieldEndTime = Time.Now + DurationByTier[t];
+		ActivatedAt = Time.Now;
 
 		_player.ApplyShield( ShieldHP );
 		_player.SetCombatState( CombatState.Shielded, DurationByTier[t] );
@@ -84,7 +85,7 @@ public sealed class ProtegoComponent : Component
 		if ( ShieldHP <= 0 )
 			DeactivateShield();
 
-		int reflected   = (int)(absorbed * ReflectFraction);
+		int reflected = (int)(absorbed * ReflectFraction);
 		int passthrough = incoming - absorbed;
 		return (passthrough, reflected);
 	}
@@ -112,10 +113,10 @@ public sealed class ProtegoComponent : Component
 		ShieldFx = new GameObject( true, "ProtegoFX" );
 		ShieldFx.SetParent( _player.GameObject, true );
 		ShieldFx.Transform.LocalPosition = Vector3.Up * 40f;
-		ShieldFx.Transform.LocalScale    = 1.5f;
+		ShieldFx.Transform.LocalScale = 1.5f;
 
 		var renderer = ShieldFx.Components.Create<ModelRenderer>();
-		renderer.Model            = Model.Load( "models/dev/sphere.vmdl" );
+		renderer.Model = Model.Load( "models/dev/sphere.vmdl" );
 		renderer.MaterialOverride = Material.Load( "materials/protego/unlit_translucent.vmat" );
 	}
 

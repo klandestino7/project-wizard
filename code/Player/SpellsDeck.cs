@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Gerencia feitiços do jogador: compra, posse, slots ativos e cooldowns.
@@ -15,7 +16,7 @@
 public sealed class SpellsDeck : Component
 {
 	// ─── Estado owned ──────────────────────────────────────────────
-	[Sync] public int OwnedMask  { get; set; } = 0;   // bitmask de owned
+	[Sync] public int OwnedMask { get; set; } = 0;   // bitmask de owned
 	[Sync] public int TierPacked { get; set; } = 0;   // 2 bits por spell
 
 	// ─── Slots ativos ──────────────────────────────────────────────
@@ -31,7 +32,7 @@ public sealed class SpellsDeck : Component
 	[Sync] public float SlotCD3 { get; set; } = 0f;
 
 	// ─── Fila de ação cliente→servidor ────────────────────────────
-	[Sync] public int ActionId   { get; set; } = 0;
+	[Sync] public int ActionId { get; set; } = 0;
 	[Sync] public int ActionType { get; set; } = 0; // 0=buy 1=assign 2=unassign 3=sell 4=upgrade
 	[Sync] public int ActionArg0 { get; set; } = 0; // catalog index
 	[Sync] public int ActionArg1 { get; set; } = 0; // slot ou tier
@@ -97,7 +98,7 @@ public sealed class SpellsDeck : Component
 		if ( !Networking.IsHost ) return;
 		for ( int i = 0; i < _owned.Length; i++ ) _owned[i] = null;
 		for ( int i = 0; i < 4; i++ ) _slots[i] = null;
-		OwnedMask  = 0;
+		OwnedMask = 0;
 		TierPacked = 0;
 		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = -1;
 	}
@@ -140,8 +141,10 @@ public sealed class SpellsDeck : Component
 
 	public int GetSlotIdx( int slot ) => slot switch
 	{
-		0 => Slot0Idx, 1 => Slot1Idx,
-		2 => Slot2Idx, 3 => Slot3Idx,
+		0 => Slot0Idx,
+		1 => Slot1Idx,
+		2 => Slot2Idx,
+		3 => Slot3Idx,
 		_ => -1,
 	};
 
@@ -149,8 +152,10 @@ public sealed class SpellsDeck : Component
 	{
 		float end = slot switch
 		{
-			0 => SlotCD0, 1 => SlotCD1,
-			2 => SlotCD2, 3 => SlotCD3,
+			0 => SlotCD0,
+			1 => SlotCD1,
+			2 => SlotCD2,
+			3 => SlotCD3,
 			_ => 0f,
 		};
 		return MathF.Max( 0f, end - Time.Now );
@@ -162,10 +167,10 @@ public sealed class SpellsDeck : Component
 	{
 		switch ( type )
 		{
-			case 0: ServerBuy( arg0 );       break;
+			case 0: ServerBuy( arg0 ); break;
 			case 1: ServerAssign( arg1, arg0 ); break;
-			case 2: ServerUnassign( arg1 );  break;
-			case 3: ServerSell( arg0 );      break;
+			case 2: ServerUnassign( arg1 ); break;
+			case 3: ServerSell( arg0 ); break;
 			case 4: ServerUpgrade( arg0, arg1 ); break;
 		}
 	}
@@ -246,7 +251,7 @@ public sealed class SpellsDeck : Component
 			mask |= (1 << i);
 			tiers |= (_owned[i].Tier & 0x3) << (i * 2);
 		}
-		OwnedMask  = mask;
+		OwnedMask = mask;
 		TierPacked = tiers;
 	}
 

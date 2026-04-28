@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Poção Vigorizante (600G): regenera 50 HP instantâneo.

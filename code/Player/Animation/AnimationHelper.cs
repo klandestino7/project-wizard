@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 public sealed class AnimationHelper : Component
 {

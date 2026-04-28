@@ -1,8 +1,4 @@
-global using Sandbox;
-global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Threading.Tasks;
+namespace Warlocks;
 
 /// <summary>
 /// Site de plant/defuse do Horcrux (equivalente ao bomb site do CS/Valorant).

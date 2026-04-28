@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Base para itens consumíveis (poções, equipamentos de 1 uso).

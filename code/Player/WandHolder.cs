@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Mantém a varinha na mão direita do player e gerencia animações de holdtype.
@@ -15,14 +16,14 @@ public sealed class WandHolder : Component
 {
 	// ─── Referências (setar no editor) ────────────────────────────────
 	[Property] public SkinnedModelRenderer PlayerRenderer { get; set; }
-	[Property] public AnimationHelper AnimHelper           { get; set; }
+	[Property] public AnimationHelper AnimHelper { get; set; }
 
 	/// <summary>Prefab da varinha (deve ter filhos "muzzle" e "base_hand").</summary>
 	[Property] public GameObject WandPrefab { get; set; }
 
 	// ─── Ajuste de attach ────────────────────────────────────────────
 	[Property, Group( "Attachment" )] public Vector3 AttachOffset { get; set; } = Vector3.Zero;
-	[Property, Group( "Attachment" )] public Angles  AttachAngles { get; set; } = Angles.Zero;
+	[Property, Group( "Attachment" )] public Angles AttachAngles { get; set; } = Angles.Zero;
 
 	// ─── Estado sincronizado ─────────────────────────────────────────
 	/// <summary>True enquanto o jogador segura Attack2 (modo mira).</summary>
@@ -33,9 +34,9 @@ public sealed class WandHolder : Component
 
 	// ─── Internos ─────────────────────────────────────────────────────
 	private WizardPlayer _player;
-	private GameObject   _wand;
-	private GameObject   _muzzle;
-	private int          _lastCastCount;
+	private GameObject _wand;
+	private GameObject _muzzle;
+	private int _lastCastCount;
 
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
@@ -103,7 +104,7 @@ public sealed class WandHolder : Component
 		}
 
 		_wand = WandPrefab.Clone();
-		_wand.Parent        = handBone;
+		_wand.Parent = handBone;
 		_wand.LocalPosition = AttachOffset;
 		_wand.LocalRotation = AttachAngles.ToRotation();
 
@@ -130,8 +131,8 @@ public sealed class WandHolder : Component
 		if ( AnimHelper == null || !_player.IsValid() ) return;
 
 		// HoldType: HoldItem em idle, Pistol quando mirando
-		AnimHelper.HoldType   = IsAiming ? AnimationHelper.HoldTypes.Pistol
-		                                 : AnimationHelper.HoldTypes.HoldItem;
+		AnimHelper.HoldType = IsAiming ? AnimationHelper.HoldTypes.Pistol
+										 : AnimationHelper.HoldTypes.HoldItem;
 		AnimHelper.Handedness = AnimationHelper.Hand.Right;
 
 		// Direção de mira do corpo

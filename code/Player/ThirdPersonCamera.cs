@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Câmera em terceira pessoa com spring arm (Hogwarts Legacy style).

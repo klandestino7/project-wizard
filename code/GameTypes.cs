@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 public enum Team
 {

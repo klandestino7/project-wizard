@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Gerencia mana do jogador: máx 100, regen 15/s após 2s sem usar magia.

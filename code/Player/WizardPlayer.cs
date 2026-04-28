@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Componente principal do jogador. Adicione em um GameObject junto com
@@ -55,7 +56,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	[Property] public WandHolder WandHolder { get; set; }
 
 	// ─── Sistema de feitiços ──────────────────────────────────────────
-	[Property] public Wand       Wand       { get; set; }
+	[Property] public Wand Wand { get; set; }
 	[Property] public SpellsDeck SpellsDeck { get; set; }
 
 	// ─── Itens consumíveis ────────────────────────────────────────────
@@ -74,12 +75,12 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		// 3ª pessoa: corpo visível no cliente local também
 		if ( !IsProxy && BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
-	
-    	LockOnSystem = Components.Get<LockOnSystem>();
-	
+
+		LockOnSystem = Components.Get<LockOnSystem>();
+
 		WandHolder = Components.Get<WandHolder>();
-		Camera     = Scene.Get<CameraComponent>();
-		Wand       = Components.Get<Wand>();
+		Camera = Scene.Get<CameraComponent>();
+		Wand = Components.Get<Wand>();
 		SpellsDeck = Components.Get<SpellsDeck>();
 	}
 
@@ -398,9 +399,9 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 	{
 		// 1. Pegamos a posição e a rotação da câmera
 		var camPos = Camera.WorldPosition;
-		
+
 		// O SEGREDO: Pegamos o Forward da rotação para virar um Vector3 de direção
-		var camForward = Camera.WorldRotation.Forward; 
+		var camForward = Camera.WorldRotation.Forward;
 
 		var tr = Scene.Trace
 			.Ray( camPos, camPos + camForward * 10000f ) // Agora é Vector3 + (Vector3 * float)
@@ -418,7 +419,7 @@ public sealed class WizardPlayer : Component, Component.INetworkListener
 		else
 		{
 			// Se não bater em nada, projeta um ponto no "infinito" à frente da câmera
-			aimPoint = camPos + camForward * 5000f; 
+			aimPoint = camPos + camForward * 5000f;
 		}
 
 		// 3. Retorna a direção do muzzle até esse ponto de impacto

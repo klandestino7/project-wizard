@@ -1,4 +1,3 @@
-
 /// <summary>
 /// Rastreia quantas vezes cada feitiço acertou durante a partida.
 /// Ao atingir o threshold, faz upgrade automático gratuito.

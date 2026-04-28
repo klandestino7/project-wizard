@@ -1,3 +1,5 @@
+namespace Warlocks;
+
 /// <summary>
 /// Gerencia rounds, economia e vitória da partida.
 /// Adicione em um GameObject vazio na cena. Requer referências a SpawnPoints

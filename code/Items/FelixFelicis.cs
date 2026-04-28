@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Felix Felicis (800G): próximo feitiço sem cooldown nem custo de mana.

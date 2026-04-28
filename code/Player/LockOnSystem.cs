@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Soft lock-on (Hogwarts Legacy style).

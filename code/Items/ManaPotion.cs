@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Poção de Mana (500G): restaura 60 mana instantaneamente.

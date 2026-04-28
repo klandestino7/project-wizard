@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Executor único de feitiços. É o único ponto de criação de projéteis no jogo.
@@ -30,7 +31,7 @@ public sealed class Wand : Component
 	protected override void OnStart()
 	{
 		_player = Components.Get<WizardPlayer>( FindMode.EverythingInSelf );
-		_deck   = Components.Get<SpellsDeck>( FindMode.EverythingInSelf );
+		_deck = Components.Get<SpellsDeck>( FindMode.EverythingInSelf );
 	}
 
 	// ─── Host: detecta casts e executa ───────────────────────────────
@@ -111,7 +112,7 @@ public sealed class Wand : Component
 		float slowDuration = 0f )
 	{
 		var origin = _player.GetSpellMuzzle();
-		var dir    = _player.GetSpellDirection( origin );
+		var dir = _player.GetSpellDirection( origin );
 
 		var go = new GameObject( true, $"{sourceClass}_Projectile" );
 		go.WorldPosition = origin;
@@ -120,17 +121,17 @@ public sealed class Wand : Component
 
 		SpellProjectile.PendingShooter = _player;
 		var proj = go.Components.Create<SpellProjectile>();
-		proj.ShooterTeam     = _player.Team;
-		proj.Damage          = damage;
-		proj.Speed           = speed;
-		proj.SpellColor      = color;
-		proj.StunDuration    = stun;
-		proj.PierceShield    = pierceShield;
-		proj.LaunchAirborne  = launchAirborne;
-		proj.BurningDPS      = burnDPS;
+		proj.ShooterTeam = _player.Team;
+		proj.Damage = damage;
+		proj.Speed = speed;
+		proj.SpellColor = color;
+		proj.StunDuration = stun;
+		proj.PierceShield = pierceShield;
+		proj.LaunchAirborne = launchAirborne;
+		proj.BurningDPS = burnDPS;
 		proj.BurningDuration = burnDuration;
-		proj.SlowFraction    = slowFraction;
-		proj.SlowDuration    = slowDuration;
+		proj.SlowFraction = slowFraction;
+		proj.SlowDuration = slowDuration;
 		proj.SourceSpellClass = sourceClass;
 
 		go.NetworkSpawn();
@@ -143,7 +144,7 @@ public sealed class Wand : Component
 	public SceneTraceResult FireHitscan( float range = 5000f )
 	{
 		var origin = _player.GetSpellMuzzle();
-		var dir    = _player.GetSpellDirection( origin );
+		var dir = _player.GetSpellDirection( origin );
 
 		return Scene.Trace
 			.Ray( origin, origin + dir * range )

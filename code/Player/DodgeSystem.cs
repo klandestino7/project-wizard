@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Esquiva direcional com i-frames (Hogwarts Legacy style).
@@ -70,10 +71,10 @@ public sealed class DodgeSystem : Component
 		var yaw = Rotation.FromYaw( Player.EyeAngles.yaw );
 		var dir = Vector3.Zero;
 
-		if ( Input.Down( "Forward" ) )  dir += yaw.Forward;
+		if ( Input.Down( "Forward" ) ) dir += yaw.Forward;
 		if ( Input.Down( "Backward" ) ) dir -= yaw.Forward;
-		if ( Input.Down( "Left" ) )     dir -= yaw.Right;
-		if ( Input.Down( "Right" ) )    dir += yaw.Right;
+		if ( Input.Down( "Left" ) ) dir -= yaw.Right;
+		if ( Input.Down( "Right" ) ) dir += yaw.Right;
 
 		if ( dir.IsNearlyZero() )
 			dir = -yaw.Forward; // dodge para trás se sem input
