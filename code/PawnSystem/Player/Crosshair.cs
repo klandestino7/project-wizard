@@ -99,47 +99,15 @@ public partial class Crosshair : Component
 					color = Color.Transparent;
 			}
 
-			// var equipment = player.CurrentEquipment;
-
-			// if ( equipment.IsValid() )
-			// {
-			// 	type = equipment.CrosshairType;
-			// 	if ( !equipment.UseCrosshair ) return;
-
-			// 	var recoil = equipment.GetComponentInChildren<ShootRecoil>( true );
-			// 	if ( recoil.IsValid() )
-			// 	{
-			// 		gap += recoil.Current.AsVector3().Length * 175f * scale;
-			// 	}
-			// }
-
-			// hasAmmo = !player.HasEquipmentTag( "no_ammo" );
-
-			// if ( UseDynamicCrosshair )
-			// 	gap += player.Spread * 150f * scale;
-
-			// if ( player.CurrentEquipment.IsValid() && player.CurrentEquipment.HasTag( "aiming" ) && !isThirdPerson )
-			// {
-			// 	mainAlpha = 0;
-			// 	linesAlpha = 0;
-			// }
 		}
 
 		hud.SetBlendMode( BlendMode.Lighten );
 
-		// if ( player.IsValid() && player.HasEquipmentTag( "reloading" ) )
-		// {
-		// 	linesTarget = 0.25f;
-		// }
 
 		color = color.WithAlpha( mainAlpha );
 
 		var linesCol = color;
-		// if ( !hasAmmo )
-		// {
-		// 	linesCol = Color.Red;
-		// 	linesTarget *= 0.25f;
-		// }
+
 
 		if ( player.IsValid() && player.IsSprinting )
 		{

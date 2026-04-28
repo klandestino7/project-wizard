@@ -1,0 +1,97 @@
+@namespace Warlocks.UI
+@using Sandbox.Events
+@inherits PanelComponent
+@implements IGameEventHandler<OnScoreAddedEvent>
+
+@if (!IsHudEnabled)
+    return;
+
+@{
+    var isValidPlayer = Client.Viewer.IsValid() && Client.Viewer.Pawn.IsValid();
+}
+
+<root>
+    @if ( isValidPlayer )
+    {
+        <ScreenProtectionOverlay />
+        <DamageOverlay />
+    }
+
+    <canvas>
+        <Toast />
+
+        <div class="hud with-deadzone bottom-left gap-sm flex column skew-left">
+            <RoundStateDisplay />
+            <Minimap />
+        </div>
+
+        @if ( isValidPlayer )
+        {   
+            <Spectating />
+            <Deathcam />
+            <DefuseKitDisplay />
+            <DamageIndicator />
+            <KillFeed @ref="KillFeed" />
+        }
+
+
+        <div class="right">
+            <div class="flex-grow" />
+            <Voices />
+        </div>
+
+        @if ( isValidPlayer )
+        {
+            @* <Radio /> *@
+            <ScoringSystem @ref="ScoringSystem" />
+        }
+
+        @if ( !isValidPlayer )
+        {
+            <RespawnScreen />
+        }
+    </canvas>
+    
+    @if ( isValidPlayer )
+    {
+        <!-- Full-screen overlays -->
+        <BuyMenu />
+        <MarkerSystem />
+
+        <PlayAreaOverlay />
+        <DeployedPawnOverlay />
+    }
+
+    <Scoreboard />
+</root>
+
+@code 
+{
+    [ConVar( "cl_drawhud" )]
+    public static bool IsHudEnabled { get; set; } = true;
+
+    [DeveloperCommand( "Toggle HUD", "Visuals" )]
+    private static void Command_ToggleHUD()
+    {
+        IsHudEnabled = !IsHudEnabled;
+    }
+
+    public ScoringSystem ScoringSystem { get; set; }
+
+    public KillFeed KillFeed { get; set; }
+
+    void IGameEventHandler<OnScoreAddedEvent>.OnGameEvent( OnScoreAddedEvent eventArgs )
+    {
+        if ( !ScoringSystem.IsValid() )
+        {
+            return;
+        }
+
+        ScoringSystem.OnScore( eventArgs.Score, eventArgs.Reason );
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(IsHudEnabled, Client.Viewer.IsValid(), Client.Viewer.IsValid() && Client.Viewer.Pawn.IsValid() );
+    }
+}

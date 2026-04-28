@@ -237,20 +237,11 @@ public sealed class CameraController : PawnCameraController, IGameEventHandler<D
 		ChromaticAberration.Scale = shortDamageUi * 1f;
 		Pixelate.Scale = shortDamageUi * 0.2f;
 
-		if ( Player.HasEquipmentTag( "scoped" ) )
-		{
-			depthOfFieldScale = depthOfFieldScale.LerpTo( 1, Time.Delta * 3f );
-			DepthOfField.Enabled = true;
-			DepthOfField.BlurSize = depthOfFieldScale.Remap( 0, 1, 0, 25 );
-		}
-		else
-		{
-			depthOfFieldScale = depthOfFieldScale.LerpTo( 0, Time.Delta * 15f );
-			DepthOfField.BlurSize = depthOfFieldScale.Remap( 0, 1, 0, 25 );
+		depthOfFieldScale = depthOfFieldScale.LerpTo( 0, Time.Delta * 15f );
+		DepthOfField.BlurSize = depthOfFieldScale.Remap( 0, 1, 0, 25 );
 
-			if ( depthOfFieldScale.AlmostEqual( 0, 0.1f ) )
-				DepthOfField.Enabled = false;
-		}
+		if ( depthOfFieldScale.AlmostEqual( 0, 0.1f ) )
+			DepthOfField.Enabled = false;
 	}
 
 	void OnModeChanged()

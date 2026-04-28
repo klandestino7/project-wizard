@@ -1,0 +1,59 @@
+/* ─── Variáveis SCSS (compiladas em build, sem :root) ───────────── */
+$hp-color:      #4fc3f7;
+$shield-color:  #b39ddb;
+$mana-color:    #7c4dff;
+$ability-bg:    rgba(10, 10, 20, 0.75);
+$ability-ready: #e8c84a;
+$gold-color:    #f5c542;
+$text-main:     #e0dfe8;
+$text-dim:      #8888aa;
+$danger:        #ef5350;
+$bar-track:     rgba(255,255,255,0.1);
+$overlay-bg:    rgba(8, 8, 18, 0.72);
+
+/* ─── Status bars ───────────────────────────────────────────────── */
+.status-bars {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 160px;
+}
+
+.bar-label {
+	font-size: 9px;
+	letter-spacing: 2px;
+	color: $text-dim;
+}
+
+.shield-label { color: #9c89c4; }
+
+.bar-track {
+	width: 150px;
+	height: 8px;
+	background-color: $bar-track;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.bar-fill {
+	height: 100%;
+	border-radius: 4px;
+	transition: width 0.15s ease;
+}
+
+.hp-fill     { background-color: $hp-color; }
+.shield-fill { background-color: $shield-color; }
+.mana-fill   { background-color: $mana-color; }
+.mana-label  { color: #9c7ef5; }
+
+.bar-value {
+	font-size: 12px;
+	font-weight: 600;
+	color: $text-main;
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes pulse {
+	from { opacity: 1.0; }
+	to   { opacity: 0.5; }
+}

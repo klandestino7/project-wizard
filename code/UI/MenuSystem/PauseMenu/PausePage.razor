@@ -1,0 +1,40 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Navigation;
+
+@inherits Panel
+@implements INavigatorPage
+@namespace Warlocks.UI
+
+<root class="hc1">
+    <Page>
+        <Body>
+            <div class="inset column layout with-background" style="width: 15%;">
+                <VerticalDivider />
+                <div class="layout padding-extra with-gap column">
+                    <a class="button standard" onclick=@(()=>GameUtils.ReturnToMainMenu())><i>play_circle_outline</i>Disconnect</a>
+
+                    <a class="button standard" href="/settings">
+                        <i>settings</i>
+                        Settings
+                    </a>
+
+                    <div class="button standard" onclick=@(()=>Quit())>
+                        <i>power_settings_new</i>
+                        Quit
+                    </div>
+                </div>
+
+                <VerticalDivider />
+            </div>
+        </Body>
+    </Page>
+</root>
+
+@code
+{
+    void Quit()
+    {
+        Game.Close();
+    }
+}

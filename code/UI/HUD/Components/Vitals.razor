@@ -1,51 +1,43 @@
-@using Sandbox;
-@using Sandbox.UI;
-
+﻿@using System.Text;
 @namespace Warlocks.UI
 @inherits Panel
 @attribute [StyleSheet]
 
+@if ( !Pawn.IsValid() || !HealthComponent.IsValid() ) return;
 
-<root>
-	@if ( Player != null && Player.IsAlive )
-	{
-        @* HP + Shield + Mana *@
-        <div class="status-bars">
-            <div class="bar-label">HP</div>
-            <div class="bar-track">
-                <div class="bar-fill hp-fill" style="width: @( HealthPercent )%"></div>
-            </div>
-            <div class="bar-value">@Player.Health</div>
+<root class="@BuildClass()">
 
-            @if ( Player.Shield > 0 )
-            {
-                <div class="bar-label shield-label">SHIELD</div>
-                <div class="bar-track">
-                    <div class="bar-fill shield-fill" style="width: @( ShieldPercent )%"></div>
-                </div>
-                <div class="bar-value">@Player.Shield</div>
-            }
+    <div class="inner with-padding flex row gap justify-start">
 
-            <div class="bar-label mana-label">MANA</div>
-            <div class="bar-track">
-                <div class="bar-fill mana-fill" style="width: @( ManaPercent )%"></div>
-            </div>
-            <div class="bar-value">@( (int)(Mana) )</div>
+        <div class="flex column">
+            <ProgressBar Value="@(Health)" width="128" />
+            <span class="flex row align-center gap-sm">
+                <Icon file="/ui/health.png" size="24" />
+                <label class="vital">@Health</label>
+            </span>
         </div>
-	}
+    </div>
+
 </root>
 
-@code {
-	PlayerPawn Player => PlayerPawn.Local;
-	float HealthPercent => Player != null
-		? (float)Player.Health / PlayerPawn.MaxHealth * 100f : 0f;
-	float ShieldPercent => Player != null
-		? (float)Player.Shield / PlayerPawn.MaxShield * 100f : 0f;
-	float Mana => Player?.ManaSystem?.Mana ?? 0f;
-	float ManaPercent => Mana / ManaSystem.MaxMana * 100f;
+@code
+{
+    public Pawn Pawn => Client.Viewer.Pawn;
+    public HealthComponent HealthComponent => Pawn.HealthComponent;
+    public int Health => HealthComponent?.Health.CeilToInt() ?? 0;
 
-	protected override int BuildHash() => System.HashCode.Combine(
-		Player?.Health,
-		Player?.Shield
-	);
+    protected override int BuildHash()
+    {
+        return !Pawn.IsValid() ? 0 : HashCode.Combine( Health, Pawn.HealthComponent?.State );
+    }
+
+    private string BuildClass()
+    {
+        var sb = new StringBuilder();
+        
+        if ( Health < 30f )
+            sb.Append( "low-health" );
+        
+        return sb.ToString();
+    }
 }

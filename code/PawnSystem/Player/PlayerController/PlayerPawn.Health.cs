@@ -58,18 +58,18 @@ public partial class PlayerPawn : IGameEventHandler<DamageGivenEvent>, IGameEven
 		// Headshot effects
 		if ( damageInfo.Hitbox.HasFlag( HitboxTags.Head ) )
 		{
-			// Non-local viewer
-			if ( !IsViewer )
-			{
-				var go = damageInfo.HasHelmet ? HeadshotWithHelmetEffect?.Clone( position ) : HeadshotEffect?.Clone( position );
-			}
+			// // Non-local viewer
+			// if ( !IsViewer )
+			// {
+			// 	var go = damageInfo.HasHelmet ? HeadshotWithHelmetEffect?.Clone( position ) : HeadshotEffect?.Clone( position );
+			// }
 
-			var headshotSound = damageInfo.HasHelmet ? HeadshotWithHelmetSound : HeadshotSound;
-			if ( headshotSound is not null )
-			{
-				var handle = Sound.Play( headshotSound, position );
-				handle.SpacialBlend = (attacker.IsViewer || victim.IsViewer) ? 0 : handle.SpacialBlend;
-			}
+			// var headshotSound = damageInfo.HasHelmet ? HeadshotWithHelmetSound : HeadshotSound;
+			// if ( headshotSound is not null )
+			// {
+			// 	var handle = Sound.Play( headshotSound, position );
+			// 	handle.SpacialBlend = (attacker.IsViewer || victim.IsViewer) ? 0 : handle.SpacialBlend;
+			// }
 		}
 		else
 		{

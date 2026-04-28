@@ -1,0 +1,35 @@
+@using Sandbox.Menu
+@using Sandbox.UI;
+@using Sandbox.UI.Navigation;
+
+@inherits NavigationHost
+@namespace Warlocks.UI
+
+<root>
+	<div @ref="BackgroundPanel" class="background @( HasBlur ? "blur" : "") " />
+    <div class="navigator-canvas" slot="navigator-canvas" />
+</root>
+
+@code
+{
+	public static MainMenuRoot Instance { get; set; }
+
+	public MainMenuRoot()
+	{
+		Instance = this;
+		DefaultUrl = "/";
+		AddDestination( "/", typeof( LandingPage ) );
+		AddDestination( "/lobbies", typeof( LobbyList ) );
+		AddDestination( "/new", typeof( CreateLobbyPage ) );
+		AddDestination( "/settings", typeof( SettingsPage ) );
+	}
+
+	public bool HasBlur { get; set; }
+	public Panel BackgroundPanel { get; set; }
+
+	public void SetBlur( bool doBlur )
+	{
+		HasBlur = doBlur;
+		BackgroundPanel.StateHasChanged();
+	}
+}

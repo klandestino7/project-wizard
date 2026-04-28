@@ -13,7 +13,7 @@ public partial class PlayerPawn
 	private static void Command_HurtTenHead()
 	{
 		var player = Client.Local.PlayerPawn;
-		if ( player is null ) return;
+		if ( player is null ) return; 
 		player.HealthComponent.TakeDamage( new DamageInfo( player as Component, 10, Hitbox: HitboxTags.Head ) );
 	}
 

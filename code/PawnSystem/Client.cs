@@ -78,7 +78,7 @@ public partial class Client : Component, ITeam
 	/// <summary>
 	/// The pawn this player is currently in possession of (synced - unless the pawn is not networked)
 	/// </summary>
-	[Sync] public PlayerPawn PlayerPawn { get; set; }
+	[Sync] public Pawn Pawn { get; set; }
 
 	public void HostInit()
 	{
@@ -123,7 +123,7 @@ public partial class Client : Component, ITeam
 		Network.Owner.Kick( reason );
 	}
 
-	public static void OnPossess( PlayerPawn pawn )
+	public static void OnPossess( Pawn pawn )
 	{
 		if ( !pawn.IsValid() )
 		{
@@ -137,9 +137,9 @@ public partial class Client : Component, ITeam
 			return;
 		}
 
-		// called from PlayerPawn when one is newly possessed, update Local and Viewer, invoke RPCs for observers
+		// called from Pawn when one is newly possessed, update Local and Viewer, invoke RPCs for observers
 
-		Local.PlayerPawn = pawn;
+		Local.Pawn = pawn;
 
 		if ( pawn.Network.Active )
 		{
@@ -169,7 +169,7 @@ public partial class Client : Component, ITeam
 
 	public void Possess()
 	{
-		if ( PlayerPawn is null || IsLocalPlayer )
+		if ( Pawn is null || IsLocalPlayer )
 		{
 			if ( PlayerPawn.IsValid() )
 			{
@@ -181,7 +181,7 @@ public partial class Client : Component, ITeam
 		{
 			// A remote player is possessing this player (spectating)
 			// So enter the latest known pawn this player has possessed
-			PlayerPawn.Possess();
+			Pawn.Possess();
 		}
 	}
 

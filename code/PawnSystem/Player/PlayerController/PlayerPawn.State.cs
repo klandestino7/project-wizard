@@ -11,11 +11,6 @@ public record OnPlayerRagdolledEvent : IGameEvent
 public partial class PlayerPawn
 {
 	/// <summary>
-	/// The player's health component
-	/// </summary>
-	[RequireComponent] public ArmorComponent ArmorComponent { get; private set; }
-
-	/// <summary>
 	/// The player's inventory, items, etc.
 	/// </summary>
 	[RequireComponent] public PlayerInventory Inventory { get; private set; }
@@ -29,9 +24,6 @@ public partial class PlayerPawn
 	{
 		if ( Networking.IsHost )
 		{
-			ArmorComponent.HasHelmet = false;
-			ArmorComponent.Armor = 0f;
-
 			var defaultRespawnState = Scene.GetAllComponents<DefaultRespawnState>().FirstOrDefault();
 			if ( defaultRespawnState.IsValid() )
 			{
@@ -92,12 +84,6 @@ public partial class PlayerPawn
 		if ( Body is not null )
 		{
 			Body.DamageTakenForce = Vector3.Zero;
-		}
-
-		if ( HealthComponent.State != LifeState.Alive )
-		{
-			ArmorComponent.HasHelmet = false;
-			ArmorComponent.Armor = 0f;
 		}
 
 		HealthComponent.Health = HealthComponent.MaxHealth;

@@ -2,7 +2,7 @@ using Sandbox.Events;
 
 namespace Warlocks;
 
-public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
+public partial class PlayerPawn
 {
 	/// <summary>
 	/// Called when the player jumps.
@@ -162,7 +162,8 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 	private void OnUpdateMovement()
 	{
 		var cc = CharacterController;
-		CurrentHoldType = CurrentEquipment.IsValid() ? CurrentEquipment.GetHoldType() : AnimationHelper.HoldTypes.None;
+		// CurrentHoldType = CurrentEquipment.IsValid() ? CurrentEquipment.GetHoldType() : AnimationHelper.HoldTypes.None;
+		CurrentHoldType = AnimationHelper.HoldTypes.None;
 
 		if ( !IsLocallyControlled )
 		{
@@ -197,7 +198,8 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 				helper.MoveStyle = AnimationHelper.MoveStyles.Run;
 				helper.DuckLevel = (MathF.Abs( _smoothEyeHeight ) / 32.0f);
 				helper.HoldType = CurrentHoldType;
-				helper.Handedness = CurrentEquipment.IsValid() ? CurrentEquipment.Handedness : AnimationHelper.Hand.Both;
+				helper.Handedness = AnimationHelper.Hand.Left;
+				// helper.Handedness = CurrentEquipment.IsValid() ? CurrentEquipment.Handedness : AnimationHelper.Hand.Both;
 			}
 		}
 
@@ -265,23 +267,19 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 		cc.Move();
 	}
 
-	private bool WantsToSprint => Input.Down( "Run" ) && !IsSlowWalking && !HasEquipmentTag( "no_sprint" ) && (WishMove.x > 0.2f || (MathF.Abs( WishMove.y ) > 0.2f && WishMove.x >= 0f));
+	private bool WantsToSprint => Input.Down( "Run" ) && !IsSlowWalking && (WishMove.x > 0.2f || (MathF.Abs( WishMove.y ) > 0.2f && WishMove.x >= 0f));
 	TimeSince TimeSinceSprintChanged { get; set; } = 100;
 
 	private void OnSprintChanged( bool before, bool after )
 	{
 		TimeSinceSprintChanged = 0;
 	}
-	public bool HasEquipmentTag( string flag )
-	{
-		return CurrentEquipment.IsValid() && CurrentEquipment.HasTag( flag );
-	}
 
 	private void BuildInput()
 	{
 		bool wasSprinting = IsSprinting;
 
-		IsSlowWalking = Input.Down( "Walk" ) || HasEquipmentTag( "aiming" );
+		IsSlowWalking = Input.Down( "Walk" );
 		IsSprinting = WantsToSprint;
 
 		if ( wasSprinting != IsSprinting )
@@ -293,9 +291,9 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 		IsUsing = Input.Down( "Use" );
 
 		// Check if our current weapon has the planting tag and if so force us to crouch.
-		var currentWeapon = CurrentEquipment;
-		if ( currentWeapon.IsValid() && currentWeapon.Tags.Has( "planting" ) )
-			IsCrouching = true;
+		// var currentWeapon = CurrentEquipment;
+		// if ( currentWeapon.IsValid() && currentWeapon.Tags.Has( "planting" ) )
+		// 	IsCrouching = true;
 
 		if ( Input.Pressed( "Noclip" ) && Game.IsEditor )
 		{
@@ -461,10 +459,10 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 		cc.Move();
 	}
 
-	void IGameEventHandler<WeaponShotEvent>.OnGameEvent( WeaponShotEvent ev )
-	{
-		TimeSinceLastInput = 0;
-	}
+	// void IGameEventHandler<WeaponShotEvent>.OnGameEvent( WeaponShotEvent ev )
+	// {
+	// 	TimeSinceLastInput = 0;
+	// }
 
 	private void BuildWishInput()
 	{
@@ -523,9 +521,10 @@ public partial class PlayerPawn : IGameEventHandler<WeaponShotEvent>
 
 	private float GetSpeedPenalty()
 	{
-		var wpn = CurrentEquipment;
-		if ( !wpn.IsValid() ) return 0;
-		return wpn.SpeedPenalty;
+		// var wpn = CurrentEquipment;
+		// if ( !wpn.IsValid() ) return 0;
+		// return wpn.SpeedPenalty;
+		return 0;
 	}
 
 	public float GetWishSpeed()

@@ -4,7 +4,7 @@ namespace Warlocks;
 /// Componente principal do jogador. Adicione em um GameObject junto com
 /// CharacterController. Crie um filho "Camera" com CameraComponent.
 /// </summary>
-public sealed class PlayerPawn : Component, Component.INetworkListener, IRespawnable, ITeam
+public sealed class PlayerPawnOld : Component
 {
 	// // ─── Constantes ───────────────────────────────────────────────────
 	// public const int MaxHealth = 150;

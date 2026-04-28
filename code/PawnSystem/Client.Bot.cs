@@ -1,9 +1,9 @@
 
 using System.Text.Json.Serialization;
 
-namespace Facepunch;
+namespace Warlocks;
 
-public partial class Client 
+public partial class Client
 {
 	/// <summary>
 	/// Unique ID of this Bot

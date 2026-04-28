@@ -1,4 +1,4 @@
-using Facepunch.UI;
+using Warlocks.UI;
 using Sandbox.Diagnostics;
 
 namespace Warlocks;
@@ -32,7 +32,7 @@ public partial class Client : IScore
 		return GameMode.Instance?.UnlimitedMoney is not true;
 	}
 
-	public void SetCash( int amount )	
+	public void SetCash( int amount )
 	{
 		using var _ = Rpc.FilterInclude( Connection.Host );
 		SetCashHost( amount );

@@ -1,0 +1,51 @@
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Warlocks.UI
+@inherits Panel
+@attribute [StyleSheet]
+
+
+<root>
+	@if ( Player != null && Player.IsAlive )
+	{
+        @* HP + Shield + Mana *@
+        <div class="status-bars">
+            <div class="bar-label">HP</div>
+            <div class="bar-track">
+                <div class="bar-fill hp-fill" style="width: @( HealthPercent )%"></div>
+            </div>
+            <div class="bar-value">@Player.Health</div>
+
+            @if ( Player.Shield > 0 )
+            {
+                <div class="bar-label shield-label">SHIELD</div>
+                <div class="bar-track">
+                    <div class="bar-fill shield-fill" style="width: @( ShieldPercent )%"></div>
+                </div>
+                <div class="bar-value">@Player.Shield</div>
+            }
+
+            <div class="bar-label mana-label">MANA</div>
+            <div class="bar-track">
+                <div class="bar-fill mana-fill" style="width: @( ManaPercent )%"></div>
+            </div>
+            <div class="bar-value">@( (int)(Mana) )</div>
+        </div>
+	}
+</root>
+
+@code {
+	PlayerPawn Player => PlayerPawn.Local;
+	float HealthPercent => Player != null
+		? (float)Player.Health / PlayerPawn.MaxHealth * 100f : 0f;
+	float ShieldPercent => Player != null
+		? (float)Player.Shield / PlayerPawn.MaxShield * 100f : 0f;
+	float Mana => Player?.ManaSystem?.Mana ?? 0f;
+	float ManaPercent => Mana / ManaSystem.MaxMana * 100f;
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Player?.Health,
+		Player?.Shield
+	);
+}
