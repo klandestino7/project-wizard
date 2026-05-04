@@ -1,4 +1,4 @@
-namespace Warlocks;
+// namespace Warlocks;
 
 /// <summary>
 /// Componente principal do jogador. Adicione em um GameObject junto com

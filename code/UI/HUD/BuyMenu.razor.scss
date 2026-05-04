@@ -1,118 +1,429 @@
-.buy-menu {
+// ─── BuyMenu — Deadlock-inspired dark layout ────────────────────────────────
+
+.buy-overlay {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 480px;
-	background-color: rgba(10, 8, 20, 0.92);
-	border: 1px solid rgba(180, 140, 40, 0.6);
-	border-radius: 6px;
-	padding: 20px;
-	display: none;
+	width: 900px;
+	height: 580px;
+	background-color: rgba(8, 7, 18, 0.97);
+	border: 1px solid rgba(180, 140, 40, 0.35);
+	border-radius: 4px;
+	display: flex;
 	flex-direction: column;
-	gap: 16px;
 	font-family: 'Roboto Mono', monospace;
-
-	&.visible {
-		display: flex;
-	}
+	overflow: hidden;
 }
+
+// ─── Header ──────────────────────────────────────────────────────────────────
 
 .buy-header {
 	display: flex;
-	justify-content: space-between;
+	flex-direction: row;
 	align-items: center;
-	border-bottom: 1px solid rgba(180, 140, 40, 0.4);
-	padding-bottom: 10px;
+	gap: 16px;
+	padding: 10px 16px;
+	background-color: rgba(0, 0, 0, 0.4);
+	border-bottom: 1px solid rgba(180, 140, 40, 0.25);
 }
 
 .buy-title {
 	color: #e8c84a;
-	font-size: 18px;
+	font-size: 15px;
 	font-weight: bold;
-	letter-spacing: 2px;
+	letter-spacing: 3px;
+	flex: 1;
 }
 
 .buy-galleons {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 6px;
 	color: #f5d060;
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: bold;
 }
 
-.buy-slots {
+.gal-icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: #e8c84a;
+	color: #1a1400;
+	font-size: 12px;
+	font-weight: bold;
 	display: flex;
-	gap: 12px;
-}
-
-.buy-slot {
-	flex: 1;
-	background-color: rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 4px;
-	padding: 12px;
-	display: flex;
-	flex-direction: column;
 	align-items: center;
-	gap: 6px;
-	min-height: 120px;
+	justify-content: center;
 }
 
-.slot-key {
-	color: #aaa;
+.buy-hint-close {
+	color: rgba(255, 255, 255, 0.3);
 	font-size: 11px;
 	letter-spacing: 1px;
 }
 
-.slot-name {
-	color: #fff;
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+.buy-body {
+	display: flex;
+	flex-direction: row;
+	flex: 1;
+	overflow: hidden;
+}
+
+// ─── Catalog panel (left) ─────────────────────────────────────────────────────
+
+.catalog-panel {
+	flex: 1;
+	overflow-y: scroll;
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.catalog-category {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.cat-label {
+	color: rgba(255, 255, 255, 0.3);
+	font-size: 10px;
+	letter-spacing: 2px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.cat-spells {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+// ─── Spell card ───────────────────────────────────────────────────────────────
+
+.spell-card {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding: 8px 10px;
+	border-radius: 3px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	background-color: rgba(255, 255, 255, 0.03);
+	cursor: pointer;
+	transition: background-color 0.1s, border-color 0.1s;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.07);
+		border-color: rgba(255, 255, 255, 0.18);
+	}
+
+	&.owned {
+		border-color: rgba(232, 200, 74, 0.3);
+		background-color: rgba(232, 200, 74, 0.05);
+
+		&:hover {
+			background-color: rgba(232, 200, 74, 0.1);
+		}
+	}
+
+	&.selected {
+		border-color: rgba(232, 200, 74, 0.7);
+		background-color: rgba(232, 200, 74, 0.12);
+	}
+}
+
+.sc-name {
+	color: #ffffff;
 	font-size: 13px;
 	font-weight: bold;
+}
+
+.spell-card.owned .sc-name {
+	color: #f5d060;
+}
+
+.sc-meta {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	align-items: center;
+}
+
+.sc-cost {
+	color: rgba(245, 208, 96, 0.8);
+	font-size: 11px;
+}
+
+.sc-cd {
+	color: rgba(255, 255, 255, 0.3);
+	font-size: 10px;
+}
+
+.sc-pips {
+	display: flex;
+	flex-direction: row;
+	gap: 3px;
+	margin-top: 2px;
+}
+
+.pip {
+	width: 16px;
+	height: 3px;
+	border-radius: 2px;
+	background-color: rgba(255, 255, 255, 0.12);
+
+	&.lit {
+		background-color: #e8c84a;
+	}
+}
+
+// ─── Right panel ──────────────────────────────────────────────────────────────
+
+.right-panel {
+	width: 280px;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+// ─── Detail panel ─────────────────────────────────────────────────────────────
+
+.detail-panel {
+	flex: 1;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	overflow-y: scroll;
+}
+
+.detail-empty {
+	align-items: center;
+	justify-content: center;
+	color: rgba(255, 255, 255, 0.18);
+	font-size: 12px;
+	letter-spacing: 1px;
+}
+
+.det-name {
+	color: #f5d060;
+	font-size: 17px;
+	font-weight: bold;
+}
+
+.det-cat {
+	color: rgba(255, 255, 255, 0.35);
+	font-size: 10px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+.det-desc {
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 12px;
+	line-height: 1.6;
+	padding: 8px 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.06);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.det-stats {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.stat-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	font-size: 11px;
+
+	span:first-child {
+		color: rgba(255, 255, 255, 0.4);
+	}
+
+	span:last-child {
+		color: rgba(255, 255, 255, 0.85);
+	}
+}
+
+.det-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: auto;
+	padding-top: 8px;
+}
+
+.det-maxed {
+	text-align: center;
+	color: #e8c84a;
+	font-size: 11px;
+	letter-spacing: 2px;
+	padding: 6px;
+	border: 1px solid rgba(232, 200, 74, 0.3);
+	border-radius: 3px;
+}
+
+// ─── Action buttons ───────────────────────────────────────────────────────────
+
+.btn-buy,
+.btn-upgrade,
+.btn-sell {
+	width: 100%;
+	padding: 8px 0;
+	border-radius: 3px;
+	font-family: inherit;
+	font-size: 11px;
+	letter-spacing: 1px;
+	font-weight: bold;
+	cursor: pointer;
 	text-align: center;
 }
 
-.slot-tier {
-	color: #7ec8e3;
-	font-size: 11px;
-}
-
-.slot-maxed {
-	color: #e8c84a;
-	font-size: 11px;
-	margin-top: auto;
-}
-
-.slot-empty {
-	color: #444;
-	font-size: 18px;
-	margin: auto;
-}
-
-.btn-upgrade {
-	margin-top: auto;
-	width: 100%;
-	padding: 6px 0;
+.btn-buy {
 	background-color: rgba(232, 200, 74, 0.15);
 	border: 1px solid rgba(232, 200, 74, 0.5);
-	border-radius: 3px;
 	color: #e8c84a;
-	font-size: 11px;
-	font-family: inherit;
-	cursor: pointer;
 
 	&:hover {
-		background-color: rgba(232, 200, 74, 0.3);
+		background-color: rgba(232, 200, 74, 0.28);
 	}
 
 	&.disabled {
-		opacity: 0.35;
+		opacity: 0.3;
 		cursor: default;
 		pointer-events: none;
 	}
 }
 
-.buy-hint {
-	text-align: center;
-	color: #555;
+.btn-upgrade {
+	background-color: rgba(100, 180, 255, 0.1);
+	border: 1px solid rgba(100, 180, 255, 0.35);
+	color: #88ccff;
+
+	&:hover {
+		background-color: rgba(100, 180, 255, 0.2);
+	}
+
+	&.disabled {
+		opacity: 0.3;
+		cursor: default;
+		pointer-events: none;
+	}
+}
+
+.btn-sell {
+	background-color: rgba(255, 80, 80, 0.08);
+	border: 1px solid rgba(255, 80, 80, 0.25);
+	color: rgba(255, 120, 120, 0.7);
+
+	&:hover {
+		background-color: rgba(255, 80, 80, 0.16);
+		color: rgba(255, 120, 120, 1.0);
+	}
+}
+
+// ─── Deck panel ───────────────────────────────────────────────────────────────
+
+.deck-panel {
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.deck-label {
+	color: rgba(255, 255, 255, 0.25);
+	font-size: 10px;
+	letter-spacing: 2px;
+}
+
+.deck-slots {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+// ─── Deck slot ────────────────────────────────────────────────────────────────
+
+.deck-slot {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 10px;
+	border-radius: 3px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	background-color: rgba(255, 255, 255, 0.02);
+	cursor: pointer;
+	min-height: 36px;
+
+	&:hover {
+		border-color: rgba(255, 255, 255, 0.18);
+	}
+
+	&.filled {
+		border-color: rgba(232, 200, 74, 0.25);
+		background-color: rgba(232, 200, 74, 0.04);
+	}
+
+	&.pending {
+		border-color: rgba(100, 200, 255, 0.5);
+		background-color: rgba(100, 200, 255, 0.06);
+		animation: slot-pulse 0.8s ease-in-out infinite alternate;
+	}
+}
+
+@keyframes slot-pulse {
+	from { border-color: rgba(100, 200, 255, 0.3); }
+	to   { border-color: rgba(100, 200, 255, 0.75); }
+}
+
+.ds-key {
+	min-width: 20px;
+	color: rgba(255, 255, 255, 0.35);
 	font-size: 11px;
+	font-weight: bold;
 	letter-spacing: 1px;
+}
+
+.ds-name {
+	flex: 1;
+	color: #f5d060;
+	font-size: 12px;
+}
+
+.ds-tier {
+	color: rgba(255, 255, 255, 0.35);
+	font-size: 10px;
+}
+
+.ds-empty {
+	flex: 1;
+	color: rgba(255, 255, 255, 0.2);
+	font-size: 11px;
+	letter-spacing: 0.5px;
+}
+
+.ds-remove {
+	color: rgba(255, 80, 80, 0.5);
+	font-size: 12px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0 2px;
+
+	&:hover {
+		color: rgba(255, 80, 80, 1.0);
+	}
 }

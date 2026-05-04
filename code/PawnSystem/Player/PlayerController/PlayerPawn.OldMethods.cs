@@ -328,6 +328,8 @@ public partial class PlayerPawn
 		CombatState = CombatState.Normal;
 		IsInvincible = false;
 
+		SpellsDeck?.ClearOwned();
+
 		var rm = Scene.GetAllComponents<RoundManager>().FirstOrDefault();
 		rm?.OnPlayerDied( this, killer );
 
