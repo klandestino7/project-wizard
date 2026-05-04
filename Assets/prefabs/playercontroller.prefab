@@ -464,6 +464,38 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.HumanOutfitter",
+        "__guid": "bb0c4319-14e5-41c6-9c42-f014866f8fff",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PlayerPawn": {
+          "_type": "component",
+          "component_id": "12e9d256-643a-41cc-ab66-dd03cf9bc171",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "PlayerPawn"
+        },
+        "Renderer": {
+          "_type": "component",
+          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "TeamBaseModels": {
+          "Aurors": {
+            "Models": []
+          },
+          "DarkFollowers": {
+            "Models": []
+          }
+        }
       }
     ],
     "Children": [
@@ -2339,7 +2371,7 @@
             ]
           },
           {
-            "__guid": "4e80808d-3ac2-4fde-a419-f808d224cc34",
+            "__guid": "63a8a61b-4d59-470e-96d1-ae654571d8e2",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -2356,7 +2388,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "7f381d54-7d12-430b-b565-ba8dfaa6baab",
+                "__guid": "4987370b-c69e-4f21-b268-3989ece4298c",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2408,7 +2440,7 @@
             "Children": []
           },
           {
-            "__guid": "e440c5f0-2dd0-43c5-841a-1f7223baa92b",
+            "__guid": "bfc8f786-c82d-46a2-8934-6abebfe491c6",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -2425,7 +2457,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "c18605aa-aab8-4ec5-bab6-13f8e733fc42",
+                "__guid": "abd56a22-4abb-4287-9967-a320831c85da",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2477,7 +2509,7 @@
             "Children": []
           },
           {
-            "__guid": "d3e59751-ebbe-4eeb-b393-cf19732627d9",
+            "__guid": "f38a695c-002b-48d0-a970-46d6e0fb2244",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -2494,7 +2526,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "371c50cf-3a72-40ed-b354-02a26050bfec",
+                "__guid": "54334852-993e-448b-990e-31723df37953",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2546,7 +2578,7 @@
             "Children": []
           },
           {
-            "__guid": "fe28f44e-2633-470b-8dff-69211c6c74d5",
+            "__guid": "13efb289-9978-4f4a-b4bd-9266d8b3ed3f",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -2563,7 +2595,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "201590f7-7dbe-4255-a8d6-946dea6df219",
+                "__guid": "9e73c3fa-05e7-4c44-abc9-53ffd73865a5",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2615,7 +2647,7 @@
             "Children": []
           },
           {
-            "__guid": "c56f5396-a0d5-43e8-9e4b-ba36fcfc1f72",
+            "__guid": "dc0f2a25-8bd3-444e-92e7-5d1f96ccf448",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -2632,7 +2664,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "7d5c00a9-eb02-49f6-a0ad-7300652b890f",
+                "__guid": "17f7a406-b803-4ef2-a6b6-ba4e167dda5f",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,

@@ -6373,7 +6373,7 @@
         "b4ca6d36-f647-49b3-9151-8ef4c63aeddd": "c3d37ae4-8a0e-4bce-bed4-3d04533932d1",
         "50de49ef-0287-435d-b570-e48047718014": "763e6fa6-a202-45b5-bbea-9d82eedd998a",
         "4dc414cd-ed6d-4fcd-bd26-0c4c340b5301": "9558a8af-a8fd-48e9-ab59-c37582c938bb",
-        "3f9508b9-766d-416b-9a0b-dca5085fecd5": "1647eaef-7271-4d95-a1c7-90baaf3c9420"
+        "13034405-ad46-461f-aa9b-6222eb4d010a": "5b330ec0-3c5b-450b-96f6-be1a02e5ea4e"
       }
     },
     {
@@ -6476,12 +6476,12 @@
         "5b253708-de7c-4c86-8893-b86fb4822642": "28eea75e-0524-4316-8ed3-aee9aca11b7b",
         "c167e62e-6407-4edf-9ac5-dffe5f0688c1": "edfc86a1-ffd8-41fb-a669-0901e97ff04d",
         "49109783-18b2-44e7-8f29-0dcddd0a6da9": "06dbe3df-9541-4279-ae33-4630a5c9ad93",
-        "babafc9a-165f-4f46-89ea-a66b8e75d1ac": "e2c32476-1c0b-4d2a-b832-ecb002cd8e19",
+        "b0fcc7c4-4cda-40ae-8857-b1cdcb90a1f3": "980ad595-2cdf-4b2d-ba4d-2e34babbb6ea",
         "c82d52b1-a9e2-4e71-9bbe-496694888959": "245cf061-9d1e-4be8-813e-fd329fd979f0",
         "83a62c25-6c75-4ee0-abb7-7d7f1d033fe6": "9c97ec19-db4b-4b76-a566-0e05c098d5a9",
         "c041252e-1262-42a4-b630-c032cce27ace": "12d78807-3fb5-44d6-901c-85168b176a81",
         "2d5f9694-5062-485f-9ea2-0ca6c18d167d": "0b314106-6512-4aba-a5fc-7ece54cb8021",
-        "621e394c-708b-40a3-9b04-9ab1ef72ab11": "636d456c-69ad-4087-b63c-5919555621cc",
+        "a2853531-f3f9-47f2-b8db-dbacdcf8456e": "af30375b-3733-44b7-bb06-021421314c83",
         "91ab47da-c178-479c-8af6-c7515eba5759": "1d939730-c4c2-4d20-8284-fc66c1e4197c",
         "fec41e74-67b6-4ce4-9d93-31e46c97da45": "24fecfd6-7667-4d7c-972d-94b1f44be2f1",
         "e3523077-dc7e-4d0a-a45f-e8598919832a": "e56eaf5d-292f-434a-b2c0-4d5367b0f92e",
@@ -6545,8 +6545,98 @@
         "35f22135-8476-417b-b33c-fea8b2524a75": "8fa2fdcc-f92f-4437-a280-56e3fe644bb9",
         "ec32f16b-5053-4522-8948-4eaef65a809a": "f91348cf-ba3c-4b18-8728-94b8290ed9ac",
         "7e1e5a0a-7cef-4388-aa2f-44ac5088662e": "8446a516-b995-442d-906b-2d3b26462e56",
-        "8bde0154-3b19-45e1-ad18-41e875cf1f13": "3c17c80c-ecba-4eb8-b35e-9f6888c7adde"
+        "4df5e73f-81ab-45b0-bc92-eb53f20eba93": "08db9b42-84ba-4123-89e4-b91b271dd4d7"
       }
+    },
+    {
+      "__guid": "03109cba-0234-4418-8296-b12d0cd6cd49",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Object",
+      "Position": "512.555908,197.012726,-0.000869750977",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "TeamSpawnPoint",
+          "__guid": "1ad08c2e-85aa-4d30-8600-8153a6be6d01",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "DarkFollowers"
+        },
+        {
+          "__type": "Sandbox.SpawnPoint",
+          "__guid": "3eac7537-d0d2-4884-9043-52b18531e548",
+          "__enabled": true,
+          "Flags": 0,
+          "Color": "0.8902,0.31765,0.05098,1",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "200eb67e-8c7b-4f7a-a9c6-a522de4d4a48",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Object",
+      "Position": "409.769257,12.8386078,-0.00378417969",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.SpawnPoint",
+          "__guid": "0fbeef2d-13cd-40a9-83e2-4fcca493cf6a",
+          "__enabled": true,
+          "Flags": 0,
+          "Color": "0.8902,0.31765,0.05098,1",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        },
+        {
+          "__type": "TeamSpawnPoint",
+          "__guid": "f04001e7-087c-40f7-876e-5746fb7ba8ca",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Aurors"
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
@@ -6571,19 +6661,30 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "31d8f56b-e24c-415c-bb8a-8f1e320e733f"
         }
       },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
+        }
       }
     }
   },
   "ResourceVersion": 3,
   "Title": "minimal",
   "Description": null,
-  "__references": [],
+  "__references": [
+    "facepunch.concrete_simple#18632",
+    "facepunch.floor_grass_a#18648",
+    "facepunch.floor_gravel_sand_a#18656",
+    "facepunch.metal_brushed#18749",
+    "facepunch.wooden_door_frame_single_01b#43550"
+  ],
   "__version": 3
 }

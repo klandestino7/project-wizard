@@ -26,12 +26,12 @@ public sealed class HumanOutfitter : Component,
 	[Rpc.Broadcast( NetFlags.HostOnly )]
 	public void UpdateFromTeam( Team team )
 	{
-		if ( !TeamBaseModels.TryGetValue( team, out var model ) )
-		{
-			model = TeamBaseModels[Team.DarkFollowers];
-		}
+		// if ( !TeamBaseModels.TryGetValue( team, out var model ) )
+		// {
+			// model = TeamBaseModels[Team.DarkFollowers];
+		// }
 
-		Renderer.Model = Game.Random.FromList( model.Models );
-		PlayerPawn.Body.Refresh();
+		// Renderer.Model = Game.Random.FromList( model.Models );
+		// PlayerPawn.Body.Refresh();
 	}
 }
