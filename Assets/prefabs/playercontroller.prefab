@@ -416,7 +416,12 @@
         "__guid": "f0948f54-da72-4872-a3e5-9b5cd75d1731",
         "__enabled": true,
         "Flags": 0,
-        "AnimHelper": null,
+        "AnimHelper": {
+          "_type": "component",
+          "component_id": "79a042a4-463c-4b24-87af-6135754b7827",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "AnimationHelper"
+        },
         "AttachAngles": "0,0,0",
         "AttachOffset": "0,0,0",
         "OnComponentDestroy": null,
@@ -425,8 +430,16 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "PlayerRenderer": null,
-        "WandPrefab": null
+        "PlayerRenderer": {
+          "_type": "component",
+          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "WandPrefab": {
+          "_type": "gameobject",
+          "prefab": "prefabs/wand/wandbase_default.prefab"
+        }
       },
       {
         "__type": "Warlocks.Wand",

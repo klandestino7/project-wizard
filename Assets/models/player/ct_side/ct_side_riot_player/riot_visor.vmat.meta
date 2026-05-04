@@ -1,0 +1,23 @@
+{
+  "publish": {
+    "Enabled": false,
+    "ProjectConfig": {
+      "Title": "Riot Visor",
+      "Type": "material",
+      "Org": "local",
+      "Ident": "riotvisor",
+      "Schema": 0,
+      "IncludeSourceFiles": false,
+      "Resources": null,
+      "PackageReferences": null,
+      "EditorReferences": [
+        "penguins.hanging_picture#12034"
+      ],
+      "Mounts": null,
+      "IsStandaloneOnly": false,
+      "Metadata": {
+        "SingleAssetSource": "models/player/ct_side/ct_side_riot_player/riot_visor.vmat"
+      }
+    }
+  }
+}

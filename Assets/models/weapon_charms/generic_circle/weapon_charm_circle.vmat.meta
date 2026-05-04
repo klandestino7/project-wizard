@@ -1,0 +1,23 @@
+{
+  "publish": {
+    "Enabled": false,
+    "ProjectConfig": {
+      "Title": "Weapon Charm Circle",
+      "Type": "material",
+      "Org": "local",
+      "Ident": "weaponcharmcircle",
+      "Schema": 0,
+      "IncludeSourceFiles": false,
+      "Resources": null,
+      "PackageReferences": null,
+      "EditorReferences": [
+        "additionproject.picture_frame1#12740"
+      ],
+      "Mounts": null,
+      "IsStandaloneOnly": false,
+      "Metadata": {
+        "SingleAssetSource": "models/weapon_charms/generic_circle/weapon_charm_circle.vmat"
+      }
+    }
+  }
+}
