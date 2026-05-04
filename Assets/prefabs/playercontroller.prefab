@@ -193,54 +193,200 @@
         "WorkshopItems": []
       },
       {
-        "__type": "WizardPlayer",
-        "__guid": "37b315dc-bc2d-4f70-ac19-0317ac301a6a",
+        "__type": "Warlocks.PlayerPawn",
+        "__guid": "12e9d256-643a-41cc-ab66-dd03cf9bc171",
         "__enabled": true,
         "Flags": 0,
-        "BodyRenderer": null,
-        "Camera": null,
-        "CharacterController": null,
+        "Balance": 0,
+        "BloodEffect": null,
+        "BloodImpactSound": null,
+        "Body": {
+          "_type": "component",
+          "component_id": "5f8dc107-2648-48b8-9832-3e3d522ddbda",
+          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
+          "component_type": "PlayerBody"
+        },
         "Deaths": 0,
         "DodgeSystem": {
           "_type": "component",
-          "component_id": "94f51409-6209-4af3-97f8-20f6be682d0a",
+          "component_id": "3e6f0770-61d9-4ca2-b796-8749c8f50d16",
           "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
           "component_type": "DodgeSystem"
         },
-        "EyeAngles": "0,0,0",
-        "Galleons": 0,
+        "FallDamageScale": 0.2,
+        "Head": null,
+        "HeadshotEffect": null,
+        "HeadshotSound": null,
         "Health": 150,
+        "HealthComponent": null,
+        "Height": 64,
+        "HoldGameObject": null,
         "IsAlive": true,
         "ItemSlot1": null,
         "ItemSlot2": null,
         "Kills": 0,
+        "LandSound": null,
         "LockOnSystem": {
           "_type": "component",
-          "component_id": "607776c9-6bcd-456b-8564-f1bf6c5d49ca",
+          "component_id": "4ff1f5a8-4ee8-47b1-9664-c39250c8cbda",
           "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
           "component_type": "LockOnSystem"
         },
         "ManaSystem": {
           "_type": "component",
-          "component_id": "74318a57-52a2-4f7f-bf5f-9b1e71d450af",
+          "component_id": "8006a487-009f-4490-a7a4-ff43248ed005",
           "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
           "component_type": "ManaSystem"
         },
+        "MinimumFallSoundVelocity": 300,
+        "MinimumFallVelocity": 500,
+        "NoclipSpeed": 1000,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
+        "OnJump": null,
+        "OutOfPlayAreaKillTime": 5,
+        "PlayerBoxCollider": null,
         "Shield": 0,
-        "SpellsDeck": null,
-        "Team": "None",
-        "Wand": null,
-        "WandHolder": null
+        "SpellsDeck": {
+          "_type": "component",
+          "component_id": "c53e5159-ac43-4cee-8c7d-d24c70cdc410",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "SpellsDeck"
+        },
+        "SprintMovementDampening": 0.35,
+        "Team": "Unassigned",
+        "UseDistance": 72,
+        "Wand": {
+          "_type": "component",
+          "component_id": "6c8f592e-8868-4ae6-98c7-99527a92e4a4",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "Wand"
+        },
+        "WandHolder": {
+          "_type": "component",
+          "component_id": "f0948f54-da72-4872-a3e5-9b5cd75d1731",
+          "go": "f1e24379-ea60-42ac-9495-0baf374bac1c",
+          "component_type": "WandHolder"
+        }
       },
       {
-        "__type": "DodgeSystem",
-        "__guid": "94f51409-6209-4af3-97f8-20f6be682d0a",
+        "__type": "Warlocks.TagBinder",
+        "__guid": "056f1fe6-a67c-426c-83de-2e18f72180da",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.CharacterController",
+        "__guid": "2d08c8f8-c794-4b28-ab37-e615047a18d8",
+        "__enabled": true,
+        "Flags": 0,
+        "Acceleration": 10,
+        "Bounciness": 0.3,
+        "GroundAngle": 45,
+        "Height": 64,
+        "IgnoreLayers": "",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Radius": 16,
+        "StepHeight": 18,
+        "UseCollisionRules": false
+      },
+      {
+        "__type": "Warlocks.CameraController",
+        "__guid": "d7506f47-7cc7-495e-8420-799d3bb44aa4",
+        "__enabled": true,
+        "Flags": 0,
+        "AimFovOffset": -5,
+        "Boom": null,
+        "CameraObject": null,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Player": null,
+        "RespawnProtectionSaturation": 0.25,
+        "ShouldViewBob": true,
+        "ThirdPersonDistance": 64
+      },
+      {
+        "__type": "Sandbox.HighlightOutline",
+        "__guid": "4fa488be-867d-4744-becb-2684ed9fcc1c",
+        "__enabled": true,
+        "Flags": 0,
+        "Color": "1,1,1,1",
+        "InsideColor": "0,0,0,0",
+        "InsideObscuredColor": "0,0,0,0",
+        "Material": null,
+        "ObscuredColor": "0,0,0,0.4",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OverrideTargets": false,
+        "Targets": null,
+        "Width": 0.25
+      },
+      {
+        "__type": "Warlocks.Spotter",
+        "__guid": "e0b2aab3-d6d7-461c-9f49-b5c7622dcd31",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Player": null
+      },
+      {
+        "__type": "Warlocks.Spottable",
+        "__guid": "f056d306-38b2-46a8-91cd-76ec87cb688f",
+        "__enabled": true,
+        "Flags": 0,
+        "Height": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Static": false
+      },
+      {
+        "__type": "Warlocks.ManaSystem",
+        "__guid": "8006a487-009f-4490-a7a4-ff43248ed005",
+        "__enabled": true,
+        "Flags": 0,
+        "Mana": 100,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.DodgeSystem",
+        "__guid": "3e6f0770-61d9-4ca2-b796-8749c8f50d16",
         "__enabled": true,
         "Flags": 0,
         "OnComponentDestroy": null,
@@ -252,8 +398,8 @@
         "Stamina": 100
       },
       {
-        "__type": "LockOnSystem",
-        "__guid": "607776c9-6bcd-456b-8564-f1bf6c5d49ca",
+        "__type": "Warlocks.LockOnSystem",
+        "__guid": "4ff1f5a8-4ee8-47b1-9664-c39250c8cbda",
         "__enabled": true,
         "Flags": 0,
         "MaxRange": 1200,
@@ -266,69 +412,25 @@
         "SwitchTargetRange": 400
       },
       {
-        "__type": "ManaSystem",
-        "__guid": "74318a57-52a2-4f7f-bf5f-9b1e71d450af",
+        "__type": "Warlocks.WandHolder",
+        "__guid": "f0948f54-da72-4872-a3e5-9b5cd75d1731",
         "__enabled": true,
         "Flags": 0,
-        "Mana": 100,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null
-      },
-      {
-        "__type": "ThirdPersonCamera",
-        "__guid": "d6932239-16d1-4e13-b2d1-c6dd7e91f92c",
-        "__enabled": true,
-        "Flags": 0,
-        "Camera": null,
-        "LookSensitivity": 1,
-        "Offset": "-50,80,-220",
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "PitchMax": 70,
-        "PitchMin": -26.780031,
-        "SpringArmLength": 190.54996
-      },
-      {
-        "__type": "WandHolder",
-        "__guid": "9afefd91-5ef1-4d31-9501-35b24adf67ab",
-        "__enabled": true,
-        "Flags": 0,
-        "AnimHelper": {
-          "_type": "component",
-          "component_id": "79a042a4-463c-4b24-87af-6135754b7827",
-          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
-          "component_type": "AnimationHelper"
-        },
+        "AnimHelper": null,
         "AttachAngles": "0,0,0",
-        "AttachOffset": "4,-2,-3",
+        "AttachOffset": "0,0,0",
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "PlayerRenderer": {
-          "_type": "component",
-          "component_id": "a9a6f460-2542-42e0-96e9-0770d2b9571c",
-          "go": "93a3f523-f697-486f-a010-e08627ea28a7",
-          "component_type": "SkinnedModelRenderer"
-        },
-        "WandPrefab": {
-          "_type": "gameobject",
-          "prefab": "prefabs/wand/wandbase_default.prefab"
-        }
+        "PlayerRenderer": null,
+        "WandPrefab": null
       },
       {
-        "__type": "Wand",
-        "__guid": "961daafa-dead-40e1-b985-fb0fe3be75d1",
+        "__type": "Warlocks.Wand",
+        "__guid": "6c8f592e-8868-4ae6-98c7-99527a92e4a4",
         "__enabled": true,
         "Flags": 0,
         "OnComponentDestroy": null,
@@ -339,20 +441,8 @@
         "OnComponentUpdate": null
       },
       {
-        "__type": "SpellsDeck",
-        "__guid": "bde4e625-42e1-424e-927f-0fa91f25e6e4",
-        "__enabled": true,
-        "Flags": 0,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null
-      },
-      {
-        "__type": "ProtegoComponent",
-        "__guid": "c5484f28-0e53-4012-aa42-c11b1fc9dc62",
+        "__type": "Warlocks.SpellsDeck",
+        "__guid": "c53e5159-ac43-4cee-8c7d-d24c70cdc410",
         "__enabled": true,
         "Flags": 0,
         "OnComponentDestroy": null,
@@ -426,7 +516,7 @@
             "UseAnimGraph": true
           },
           {
-            "__type": "AnimationHelper",
+            "__type": "Warlocks.AnimationHelper",
             "__guid": "79a042a4-463c-4b24-87af-6135754b7827",
             "__enabled": true,
             "Flags": 0,
@@ -460,6 +550,23 @@
               "go": "93a3f523-f697-486f-a010-e08627ea28a7",
               "component_type": "SkinnedModelRenderer"
             }
+          },
+          {
+            "__type": "Warlocks.PlayerBody",
+            "__guid": "5f8dc107-2648-48b8-9832-3e3d522ddbda",
+            "__enabled": true,
+            "Flags": 0,
+            "AnimationHelpers": [],
+            "FirstPersonBody": null,
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "Physics": null,
+            "Player": null,
+            "Renderer": null
           }
         ],
         "Children": [
@@ -2219,7 +2326,7 @@
             ]
           },
           {
-            "__guid": "33085862-46db-493e-be62-f498ff625c9b",
+            "__guid": "4e80808d-3ac2-4fde-a419-f808d224cc34",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -2236,7 +2343,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "41c7a337-563f-4ae7-ba58-9add6f57507f",
+                "__guid": "7f381d54-7d12-430b-b565-ba8dfaa6baab",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2288,7 +2395,7 @@
             "Children": []
           },
           {
-            "__guid": "63e2960e-1917-4013-adc7-9b87f98496bc",
+            "__guid": "e440c5f0-2dd0-43c5-841a-1f7223baa92b",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_tshirt",
@@ -2305,7 +2412,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "da0ea365-fb64-48cf-abbe-16963a4836b7",
+                "__guid": "c18605aa-aab8-4ec5-bab6-13f8e733fc42",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2357,7 +2464,7 @@
             "Children": []
           },
           {
-            "__guid": "e0c0e238-77c3-4e9c-9ff8-4da6fc846d12",
+            "__guid": "d3e59751-ebbe-4eeb-b393-cf19732627d9",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -2374,7 +2481,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "d79714fa-e113-489b-9144-e29d81f72a89",
+                "__guid": "371c50cf-3a72-40ed-b354-02a26050bfec",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2426,7 +2533,7 @@
             "Children": []
           },
           {
-            "__guid": "b9d63dc6-69c9-4f75-bcf2-a2a461aa304c",
+            "__guid": "fe28f44e-2633-470b-8dff-69211c6c74d5",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -2443,7 +2550,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "69c803c4-d9c0-4cea-bb7c-8cf02484d022",
+                "__guid": "201590f7-7dbe-4255-a8d6-946dea6df219",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -2495,7 +2602,7 @@
             "Children": []
           },
           {
-            "__guid": "afe6e784-7a12-43e2-8832-cffb3abe5bf6",
+            "__guid": "c56f5396-a0d5-43e8-9e4b-ba36fcfc1f72",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - modern_watch",
@@ -2512,7 +2619,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "04a26c2e-e910-48ee-86a7-664ed8fe4c99",
+                "__guid": "7d5c00a9-eb02-49f6-a0ad-7300652b890f",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
