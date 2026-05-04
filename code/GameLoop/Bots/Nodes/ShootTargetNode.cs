@@ -5,6 +5,8 @@ namespace Warlocks;
 /// </summary>
 public class ShootTargetNode : BaseBehaviorNode
 {
+	protected override NodeResult OnEvaluate( BotContext context ) => NodeResult.Failure;
+
 	// private const string CURRENT_TARGET_KEY = "current_target";
 	// private readonly RangedFloat _burstRange;
 	// private readonly float _burstBreakTime;

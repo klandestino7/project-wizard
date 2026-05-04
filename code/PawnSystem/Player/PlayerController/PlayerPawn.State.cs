@@ -42,7 +42,7 @@ public partial class PlayerPawn
 
 		Client.OnKill( damageInfo );
 
-		Holster();
+		// Holster(); // removido - sem sistema de armas
 
 		_previousVelocity = Vector3.Zero;
 		CameraController.Mode = CameraMode.ThirdPerson;

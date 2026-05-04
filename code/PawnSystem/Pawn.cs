@@ -85,7 +85,7 @@ public abstract class Pawn : Component, IRespawnable, ITeam
 	/// Possess the pawn.
 	/// </summary>
 	public void Possess() => Possess( this );
-	public static void Possess( PlayerPawn pawn )
+	public static void Possess( Pawn pawn )
 	{
 		if ( pawn.IsPossessed )
 			return;
@@ -107,7 +107,7 @@ public abstract class Pawn : Component, IRespawnable, ITeam
 	/// De possesses the pawn.
 	/// </summary>
 	public void DePossess() => DePossess( this );
-	public static void DePossess( PlayerPawn pawn )
+	public static void DePossess( Pawn pawn )
 	{
 		bool wasPossessed = pawn.IsValid() && pawn.IsPossessed;
 		Current = null;

@@ -32,7 +32,7 @@ public partial class PlayerPawn
 	/// </summary>
 	[Property] public float NoclipSpeed { get; set; } = 1000f;
 
-	public PlayerGlobals Global => GetGlobal<PlayerGlobals>();
+	public PlayerGlobals Global => GlobalGameNamespace.GetGlobal<PlayerGlobals>();
 
 	/// <summary>
 	/// Look direction of this player. Smoothly interpolated for networked players.

@@ -261,8 +261,8 @@ public sealed class CameraController : PawnCameraController, IGameEventHandler<D
 			Player.Body.SetFirstPersonView( firstPersonPOV );
 		}
 
-		if ( firstPersonPOV )
-			Player.CreateViewModel( false );
+		// if ( firstPersonPOV )
+		// 	Player.CreateViewModel( false );
 		// else
 			// Player.ClearViewModel();;
 	}

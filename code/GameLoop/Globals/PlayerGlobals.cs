@@ -128,8 +128,6 @@ public class PlayerGlobals : GlobalComponent, IGameEventHandler<ModifyDamageGlob
 			return;
 		}
 
-		var resource = (eventArgs.DamageInfo.Inflictor)?.Resource;
-
 		GetDamageModifications(
 			eventArgs.DamageInfo.Flags, eventArgs.DamageInfo.Hitbox,
 			Hitboxes,

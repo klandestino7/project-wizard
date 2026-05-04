@@ -1,24 +1,10 @@
-﻿@namespace Warlocks.UI
-@inherits Panel
+@namespace Warlocks.UI
+@inherits PanelComponent
 
-@if ( !Player.IsValid() ) return;
-
-<root class="hud with-deadzone with-padding column bottom-right">
-    @if (HasKit)
-    {
-        <Icon File="/ui/defusekit.png" size="32" />
-    }
-</root>
+@* DefuseKit removed - não existe mais no projeto *@
+<root></root>
 
 @code
 {
-    public PlayerPawn Player => Client.Viewer.PlayerPawn;
-    public PlayerInventory Inventory => Player.Inventory;
-
-    public bool HasKit => Inventory.HasDefuseKit;
-
-    protected override int BuildHash()
-    {
-        return !Player.IsValid() ? 0 : HashCode.Combine(HasKit);
-    }
+	protected override int BuildHash() => 0;
 }
