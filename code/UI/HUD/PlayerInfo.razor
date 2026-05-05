@@ -32,7 +32,8 @@
 		bool ready = spell?.IsReady ?? true;
 		<div class="ability-slot @( ready ? "ready" : "cooling" )">
 			<div class="ability-key">@key</div>
-			<div class="ability-name">@( spell?.SpellName ?? "–" )</div>
+			<div class="ability-image" style="background: url(@spell?.Image)"> </div>
+			<!-- <div class="ability-name">@( spell?.SpellName ?? "–" )</div> -->
 			@if ( !ready )
 			{
 				<div class="ability-cd">@( spell?.CooldownRemaining.ToString( "0.0" ) )s</div>
