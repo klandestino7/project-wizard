@@ -3,11 +3,12 @@
 @using Sandbox.UI;
 
 @inherits Panel
+@implements IDisposable
 @namespace Warlocks.UI
 
-@if ( IsVisible )
-{
-	<root class="match-accept-overlay">
+<root class="match-accept-overlay @(IsVisible ? "visible" : "hidden")">
+	@if ( IsVisible )
+	{
 		<div class="match-accept-box">
 
 			@* Header *@
@@ -58,8 +59,8 @@
 			</div>
 
 		</div>
-	</root>
-}
+	}
+</root>
 
 @code
 {
@@ -73,6 +74,11 @@
 	{
 		if ( !firstTime ) return;
 		MatchmakingSystem.OnStateChanged += OnMatchStateChanged;
+	}
+
+	public void Dispose()
+	{
+		MatchmakingSystem.OnStateChanged -= OnMatchStateChanged;
 	}
 
 	private void OnMatchStateChanged()
