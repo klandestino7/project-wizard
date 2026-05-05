@@ -278,6 +278,8 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			type = "lobby.register",
 			lobbyId = hostSteamId
 		} );
+
+		StartHostedMatch();
 	}
 
 	private Task ConnectToLobby( string hostSteamIdStr )
@@ -294,6 +296,26 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 
 		Networking.TryConnectSteamId( hostSteamId );
 		return Task.CompletedTask;
+	}
+
+	private void StartHostedMatch()
+	{
+		var selectedMap = GameUtils.GetAvailableMaps().FirstOrDefault();
+		if ( selectedMap is null )
+		{
+			Log.Warning( "MatchmakingSystem: No playable map was found for matchmaking." );
+			SetState( SearchState.Idle );
+			return;
+		}
+
+		var selectedGameMode = GameMode.GetAll( selectedMap ).FirstOrDefault();
+		if ( selectedGameMode is not null )
+		{
+			GameMode.SetCurrent( selectedGameMode );
+		}
+
+		Log.Info( $"MatchmakingSystem: Loading hosted match scene {selectedMap.ResourcePath}" );
+		Game.ActiveScene.Load( selectedMap );
 	}
 
 	private async Task TickCountdown()
