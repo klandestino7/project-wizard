@@ -6,35 +6,42 @@
 @implements INavigatorPage
 @namespace Warlocks.UI
 
-<root class="hc1">
-    <Page>
-        <Body>
-            <div class="inset column layout with-background line-left" style="width: 15%;">
-                <VerticalDivider />
-                <div class="layout padding-extra with-gap column">
-                    <a class="button standard" href="/new"><i>play_circle_outline</i> Create Game</a>
-                    <a class="button standard" href="/lobbies"><i>dns</i> Session List</a>
+<root class="hc1 landing-page">
+	<div class="landing-left">
 
-                    <a class="button standard" href="/settings">
-                        <i>settings</i>
-                        Settings
-                    </a>
+		@* Game logo / title *@
+		<div class="landing-logo">
+			<label class="landing-game-title">WARLOCKS</label>
+			<label class="landing-game-subtitle">WIZARDING WARFARE</label>
+		</div>
 
-                    <div class="button standard" onclick=@(()=>Quit())>
-                        <i>power_settings_new</i>
-                        Quit
-                    </div>
-                </div>
-                <VerticalDivider />
-            </div>
-        </Body>
-    </Page>
+		@* Navigation items *@
+		<nav class="landing-nav">
+			<a class="landing-nav-item" href="/play">PLAY</a>
+
+			<div class="landing-nav-item soon">
+				SPELLS
+				<label class="soon-badge">SOON</label>
+			</div>
+
+			<div class="landing-nav-item soon">
+				COMO JOGAR
+				<label class="soon-badge">SOON</label>
+			</div>
+
+			<a class="landing-nav-item" href="/settings">SETTINGS</a>
+		</nav>
+
+		@* Exit game — separated visually *@
+		<div class="landing-exit" onclick=@Quit>EXIT GAME</div>
+
+	</div>
 </root>
 
 @code
 {
-    void Quit()
-    {
-        DialogModal.Show("Are you sure you want to quit?", "Quit", "Cancel", () => Game.Close() );
-    }
+	void Quit()
+	{
+		DialogModal.Show( "Tem certeza que quer sair?", "Sair", "Cancelar", () => Game.Close() );
+	}
 }

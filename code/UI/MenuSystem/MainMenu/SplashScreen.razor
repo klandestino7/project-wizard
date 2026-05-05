@@ -1,0 +1,30 @@
+@using Sandbox.UI;
+
+@inherits Panel
+@namespace Warlocks.UI
+
+<root class="splash-screen @( Dismissed ? "dismissed" : "" )" onclick=@Dismiss>
+	<div class="splash-content">
+		<div class="splash-logo">
+			<label class="splash-title">WARLOCKS</label>
+			<label class="splash-subtitle">WIZARDING WARFARE</label>
+		</div>
+
+		<label class="splash-press-key">PRESS ANY KEY TO START</label>
+	</div>
+</root>
+
+@code
+{
+	public bool Dismissed { get; private set; }
+
+	public Action OnDismissed { get; set; }
+
+	public void Dismiss()
+	{
+		if ( Dismissed ) return;
+		Dismissed = true;
+		StateHasChanged();
+		OnDismissed?.Invoke();
+	}
+}

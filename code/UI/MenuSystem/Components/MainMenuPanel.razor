@@ -2,11 +2,42 @@
 @inherits PanelComponent
 
 <root>
-    <MarkerSystem />
-    <MainMenuRoot />
-    <Toast />
+	<MarkerSystem />
+
+	@if ( !_splashDismissed )
+	{
+		<SplashScreen @ref="_splash" OnDismissed=@DismissSplash />
+	}
+	else
+	{
+		<MainMenuRoot />
+	}
+
+	<Toast />
 </root>
 
 @code
 {
+	private bool _splashDismissed = false;
+	private SplashScreen _splash;
+
+	protected override void OnUpdate()
+	{
+		// Detect "any key" to dismiss splash screen.
+		// Checks primary mouse button, spacebar (jump), and interact key.
+		if ( !_splashDismissed )
+		{
+			if ( Input.Pressed( "attack1" ) || Input.Pressed( "jump" ) || Input.Pressed( "use" ) )
+			{
+				DismissSplash();
+			}
+		}
+	}
+
+	private void DismissSplash()
+	{
+		if ( _splashDismissed ) return;
+		_splashDismissed = true;
+		StateHasChanged();
+	}
 }
