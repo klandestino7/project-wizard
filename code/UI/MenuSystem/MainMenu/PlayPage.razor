@@ -30,15 +30,19 @@
 					{
 						<label class="play-mode-desc searching">Looking for a match...</label>
 					}
-					else if ( IsInLobby )
+					else if ( IsMatchProposed )
 					{
 						<label class="play-mode-desc searching">
-							Waiting for players... @MatchmakingSystem.CurrentPlayerCount.ToString("N0") / @MaxPlayers.ToString("N0")
+							Players accepted: @MatchmakingSystem.AcceptedCount.ToString("N0") / @MatchmakingSystem.TotalPlayers.ToString("N0")
 						</label>
 					}
-					else if ( IsJoinedLobby )
+					else if ( IsStartingMatch )
 					{
-						<label class="play-mode-desc searching">In lobby, waiting for the match to start...</label>
+						<label class="play-mode-desc searching">Starting match...</label>
+					}
+					else if ( IsWaitingForLobby )
+					{
+						<label class="play-mode-desc searching">Waiting for the host lobby...</label>
 					}
 				</div>
 
@@ -92,12 +96,15 @@
 {
 	private int MaxPlayers => MatchmakingSystem.Instance.IsValid() ? MatchmakingSystem.Instance.MaxPlayers : 10;
 
-	private bool IsIdle      => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Idle;
-	private bool IsSearching => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Searching;
-	private bool IsInLobby   => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.InLobby;
-	private bool IsJoinedLobby => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.JoinedLobby;
+	private bool IsIdle => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Idle;
+	private bool IsSearching =>
+		MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Connecting ||
+		MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Queued;
+	private bool IsMatchProposed => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed;
+	private bool IsWaitingForLobby => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.WaitingForLobby;
+	private bool IsStartingMatch => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Starting;
 
-	private string ActiveClass => IsSearching || IsInLobby || IsJoinedLobby ? "active" : "";
+	private string ActiveClass => !IsIdle ? "active" : "";
 	private string LockedClass => !IsIdle ? "locked" : "";
 
 	public void OnNavigationOpen()
@@ -135,7 +142,7 @@
 
 	private void CancelSearch()
 	{
-		if (IsInLobby || IsSearching)
+		if ( !IsIdle )
 			MatchmakingSystem.CancelSearch();
 	}
 

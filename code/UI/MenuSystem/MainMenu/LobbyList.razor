@@ -73,10 +73,8 @@
         var lobby = Lobby.Value;
         if ( lobby.IsFull ) return;
 
-        if ( await Networking.TryConnectSteamId( lobby.LobbyId ) )
-		{
-			Log.Info( "joined lobby!" );
-		}
+        Networking.TryConnectSteamId( lobby.LobbyId );
+		Log.Info( "joining lobby..." );
     }
 
     public void OnNavigationOpen()
