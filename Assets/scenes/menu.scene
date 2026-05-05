@@ -983,6 +983,40 @@
           "Children": []
         }
       ]
+    },
+    {
+      "__guid": "aa739b71-a171-4dfd-9915-1dbbba31849b",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "MatchmakingSystem",
+      "Position": "-346.557587,-499.350159,1067.44421",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Warlocks.MatchmakingSystem",
+          "__guid": "a7f84a30-283d-4b5a-9ddf-3aaf183cd776",
+          "__enabled": true,
+          "Flags": 0,
+          "GameScene": "scenes/maps/depot/depot.scene",
+          "MaxPlayers": 10,
+          "MinPlayers": 2,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {

@@ -10,11 +10,6 @@ namespace Warlocks;
 public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 {
 	/// <summary>
-	/// Tag used to identify Warlocks matchmaking lobbies.
-	/// </summary>
-	private const string MatchTag = "warlocks-match";
-
-	/// <summary>
 	/// Minimum players required to auto-start a match.
 	/// </summary>
 	[Property] public int MinPlayers { get; set; } = 2;
@@ -36,6 +31,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	public static bool IsMultiplayerSession { get; set; } = true;
 
 	private bool _isSearching = false;
+	private bool _cancelled = false;
 	private bool _isHost = false;
 	private Action<int, int> _lobbyCreatedCallback;
 
@@ -43,9 +39,8 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	/// Finds an available match or creates a new lobby and waits.
 	/// </summary>
 	public static async Task FindOrCreateMatch(
-		Action<Lobby> onMatchFound,
-		Action<int, int> onLobbyCreated,
-		CancellationToken cancellationToken = default )
+		Action<LobbyInformation> onMatchFound,
+		Action<int, int> onLobbyCreated )
 	{
 		if ( !Instance.IsValid() )
 		{
@@ -53,7 +48,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			return;
 		}
 
-		await Instance.RunMatchmaking( onMatchFound, onLobbyCreated, cancellationToken );
+		await Instance.RunMatchmaking( onMatchFound, onLobbyCreated );
 	}
 
 	/// <summary>
@@ -76,29 +71,28 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	}
 
 	private async Task RunMatchmaking(
-		Action<Lobby> onMatchFound,
-		Action<int, int> onLobbyCreated,
-		CancellationToken cancellationToken )
+		Action<LobbyInformation> onMatchFound,
+		Action<int, int> onLobbyCreated )
 	{
 		_isSearching = true;
+		_cancelled = false;
 		_isHost = false;
 
 		IsMultiplayerSession = true;
 
-		// Step 1: Query existing lobbies for an available Warlocks match
+		// Step 1: Query existing lobbies for an available match
 		Log.Info( "MatchmakingSystem: Searching for available matches..." );
 
-		Lobby? foundLobby = null;
+		LobbyInformation? foundLobby = null;
 
 		try
 		{
-			// NOTE: If Networking.QueryLobbies() does not exist, replace with the
-			// correct S&Box lobby query API (e.g. Sandbox.Services.Lobbies.GetAsync()).
 			var lobbies = await Networking.QueryLobbies();
 
 			foundLobby = lobbies
-				.Where( l => l.GetData( "type" ) == MatchTag && !l.IsFull )
-				.OrderByDescending( l => l.MemberCount )
+				.Where( l => !l.IsFull )
+				.OrderByDescending( l => l.Members )
+				.Cast<LobbyInformation?>()
 				.FirstOrDefault();
 		}
 		catch ( Exception e )
@@ -106,12 +100,12 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			Log.Warning( $"MatchmakingSystem: Lobby query failed: {e.Message}" );
 		}
 
-		cancellationToken.ThrowIfCancellationRequested();
+		if ( _cancelled ) return;
 
 		// Step 2a: Found an existing lobby — join it
 		if ( foundLobby.HasValue )
 		{
-			Log.Info( $"MatchmakingSystem: Found a lobby, joining..." );
+			Log.Info( "MatchmakingSystem: Found a lobby, joining..." );
 			onMatchFound?.Invoke( foundLobby.Value );
 
 			var joined = await Networking.TryConnectSteamId( foundLobby.Value.LobbyId );
@@ -126,7 +120,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			}
 		}
 
-		cancellationToken.ThrowIfCancellationRequested();
+		if ( _cancelled ) return;
 
 		// Step 2b: No lobby found — create one and wait for players
 		Log.Info( "MatchmakingSystem: No lobby found, creating a new one..." );
@@ -138,17 +132,13 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			MaxPlayers = MaxPlayers,
 		} );
 
-		// Set lobby metadata so others can find and filter it
-		Networking.SetData( "type", MatchTag );
-
 		onLobbyCreated?.Invoke( 1, MaxPlayers );
 
-		// Wait until enough players have joined or cancellation is requested
-		while ( _isSearching && !cancellationToken.IsCancellationRequested )
+		// Poll until enough players join or search is cancelled
+		while ( _isSearching && !_cancelled )
 		{
 			var playerCount = Connection.All.Count();
 
-			// Update host callback with current count
 			_lobbyCreatedCallback?.Invoke( playerCount, MaxPlayers );
 
 			if ( playerCount >= MinPlayers )
@@ -159,15 +149,13 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 				return;
 			}
 
-			// Poll every second
 			await Task.DelayRealtimeSeconds( 1f );
 		}
-
-		cancellationToken.ThrowIfCancellationRequested();
 	}
 
 	private void DoCancel()
 	{
+		_cancelled = true;
 		_isSearching = false;
 		_isHost = false;
 		_lobbyCreatedCallback = null;
@@ -182,7 +170,6 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	{
 		if ( GameScene is null )
 		{
-			// Fallback: find any scene tagged as visible in menu
 			GameScene = GameUtils.GetAvailableMaps().FirstOrDefault();
 		}
 

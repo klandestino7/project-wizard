@@ -28,16 +28,16 @@
 					}
 					else if ( State == MatchState.Searching )
 					{
-						<label class="play-mode-desc searching">Procurando partida...</label>
+						<label class="play-mode-desc searching">Looking for a match...</label>
 						<label class="play-mode-queue">@QueueMessage</label>
 					}
 					else if ( State == MatchState.InLobby )
 					{
-						<label class="play-mode-desc searching">Aguardando jogadores... (@LobbyPlayerCount / @LobbyMaxPlayers)</label>
+						<label class="play-mode-desc searching">Waiting for players... (@LobbyPlayerCount / @LobbyMaxPlayers)</label>
 						<div class="play-mode-actions">
 							@if ( IsHost )
 							{
-								<div class="button standard smaller" onclick=@ForceStart>Iniciar Partida</div>
+								<div class="button standard smaller" onclick=@ForceStart>Start Match</div>
 							}
 						</div>
 					}
@@ -45,7 +45,7 @@
 
 				@if ( State == MatchState.Searching || State == MatchState.InLobby )
 				{
-					<div class="button standard smaller cancel-btn" onclick=@CancelSearch>Cancelar</div>
+					<div class="button standard smaller cancel-btn" onclick=@CancelSearch>Cancel</div>
 				}
 			</div>
 
@@ -53,7 +53,7 @@
 			<div class="play-mode-item @( State != MatchState.Idle ? "locked" : "" )" onclick=@OnClickSandbox>
 				<div class="play-mode-item-inner">
 					<label class="play-mode-title">Sandbox Mode</label>
-					<label class="play-mode-desc">Teste suas habilidades e construções de forma livre. Disponível para jogadores solo.</label>
+					<label class="play-mode-desc">Test your skills and build in freeform. Available for solo players.</label>
 				</div>
 			</div>
 		</div>
@@ -64,7 +64,7 @@
 				<label>Party</label>
 				@if ( HasParty )
 				{
-					<div class="button standard smaller" onclick=@InviteFriend>+ Convidar</div>
+					<div class="button standard smaller" onclick=@InviteFriend>+ Invite</div>
 				}
 			</div>
 			<div class="party-members">
@@ -79,8 +79,8 @@
 				}
 				else
 				{
-					<label class="party-empty">Sem party. Convide amigos para jogar juntos!</label>
-					<div class="button standard smaller" onclick=@InviteFriend>Convidar Amigo</div>
+					<label class="party-empty">No party. Invite friends to play together!</label>
+					<div class="button standard smaller" onclick=@InviteFriend>Invite friends</div>
 				}
 			</div>
 		</div>
@@ -103,8 +103,6 @@
 
 	public bool HasParty => false; // TODO: PartyRoom.Current?.Members?.Count > 1
 	public IEnumerable<string> PartyMembers => Enumerable.Empty<string>(); // TODO: PartyRoom.Current?.Members
-
-	private CancellationTokenSource _searchCts;
 
 	public void OnNavigationOpen()
 	{
@@ -152,18 +150,12 @@
 	private async Task FindOrCreateMatch()
 	{
 		State = MatchState.Searching;
-		QueueMessage = "Conectando...";
+		QueueMessage = "Connecting...";
 		StateHasChanged();
-
-		_searchCts = new CancellationTokenSource();
 
 		try
 		{
-			await MatchmakingSystem.FindOrCreateMatch( OnMatchFound, OnLobbyCreated, _searchCts.Token );
-		}
-		catch ( OperationCanceledException )
-		{
-			Log.Info( "PlayPage: Matchmaking cancelled." );
+			await MatchmakingSystem.FindOrCreateMatch( OnMatchFound, OnLobbyCreated );
 		}
 		catch ( Exception e )
 		{
@@ -173,11 +165,11 @@
 		}
 	}
 
-	private void OnMatchFound( Lobby lobby )
+	private void OnMatchFound( LobbyInformation lobby )
 	{
 		// Successfully joined an existing lobby — transition should happen automatically
 		// as the host will load the scene and clients follow
-		QueueMessage = "Partida encontrada! Conectando...";
+		QueueMessage = "Match found! Connecting...";
 		StateHasChanged();
 	}
 
@@ -187,7 +179,7 @@
 		IsHost = true;
 		LobbyPlayerCount = playerCount;
 		LobbyMaxPlayers = maxPlayers;
-		QueueMessage = $"Aguardando jogadores... ({playerCount}/{maxPlayers})";
+		QueueMessage = $"Waiting for players... ({playerCount}/{maxPlayers})";
 		StateHasChanged();
 	}
 
@@ -199,8 +191,6 @@
 
 	private void CancelSearch()
 	{
-		_searchCts?.Cancel();
-		_searchCts = null;
 		MatchmakingSystem.CancelSearch();
 		State = MatchState.Idle;
 		IsHost = false;
