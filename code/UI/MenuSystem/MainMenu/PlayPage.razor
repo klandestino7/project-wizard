@@ -16,101 +16,96 @@
 		</div>
 
 		<div class="play-mode-list">
-			@* Play Warlocks *@
-			<div class="play-mode-item @( State == MatchState.Searching || State == MatchState.InLobby ? "active" : "" ) @( State != MatchState.Idle ? "locked" : "" )"
-				onclick=@OnClickPlayWarlocks>
-				<div class="play-mode-item-inner">
+
+			@* ── Play Warlocks ── *@
+			<div class="play-mode-item @ActiveClass @LockedClass" >
+				<div class="play-mode-item-inner" onclick=@OnClickPlayWarlocks>
 					<label class="play-mode-title">Play Warlocks</label>
 
-					@if ( State == MatchState.Idle )
+					@if ( IsIdle )
 					{
 						<label class="play-mode-desc">Queue up for a standard match against other players online.</label>
 					}
-					else if ( State == MatchState.Searching )
+					else if ( IsSearching )
 					{
 						<label class="play-mode-desc searching">Looking for a match...</label>
-						<label class="play-mode-queue">@QueueMessage</label>
 					}
-					else if ( State == MatchState.InLobby )
+					else if ( IsInLobby )
 					{
-						<label class="play-mode-desc searching">Waiting for players... (@LobbyPlayerCount / @LobbyMaxPlayers)</label>
-						<div class="play-mode-actions">
-							@if ( IsHost )
-							{
-								<div class="button standard smaller" onclick=@ForceStart>Start Match</div>
-							}
-						</div>
+						<label class="play-mode-desc searching">
+							Waiting for players... @MatchmakingSystem.CurrentPlayerCount.ToString("N0") / @MaxPlayers.ToString("N0")
+						</label>
+					}
+					else if ( IsJoinedLobby )
+					{
+						<label class="play-mode-desc searching">Match found! Waiting for host to start...</label>
 					}
 				</div>
 
-				@if ( State == MatchState.Searching || State == MatchState.InLobby )
+				@if ( !IsIdle )
 				{
 					<div class="button standard smaller cancel-btn" onclick=@CancelSearch>Cancel</div>
 				}
 			</div>
 
-			@* Sandbox Mode *@
-			<div class="play-mode-item @( State != MatchState.Idle ? "locked" : "" )" onclick=@OnClickSandbox>
+			@* ── Sandbox Mode ── *@
+			<div class="play-mode-item @LockedClass" onclick=@OnClickSandbox>
 				<div class="play-mode-item-inner">
 					<label class="play-mode-title">Sandbox Mode</label>
 					<label class="play-mode-desc">Test your skills and build in freeform. Available for solo players.</label>
 				</div>
 			</div>
+
 		</div>
 
-		@* Party panel *@
+		@* ── Party panel ── *@
 		<div class="party-panel">
 			<div class="party-header">
 				<label>Party</label>
-				@if ( HasParty )
-				{
-					<div class="button standard smaller" onclick=@InviteFriend>+ Invite</div>
-				}
+				<div class="button standard smaller" onclick=@InviteFriend>+ Invite</div>
 			</div>
 			<div class="party-members">
-				@if ( HasParty )
+				@if ( Connection.All.Count() > 1 )
 				{
-					@foreach ( var member in PartyMembers )
+					@foreach ( var conn in Connection.All )
 					{
 						<div class="party-member">
-							<label>@member</label>
+							<label>@conn.DisplayName</label>
 						</div>
 					}
 				}
 				else
 				{
 					<label class="party-empty">No party. Invite friends to play together!</label>
-					<div class="button standard smaller" onclick=@InviteFriend>Invite friends</div>
 				}
 			</div>
 		</div>
 	</div>
 
-	@* Right area: background art (kept empty, scene renders behind) *@
 	<div class="play-page-right" />
+
+	<MatchAcceptPopup />
 
 </root>
 
 @code
 {
-	public enum MatchState { Idle, Searching, InLobby }
+	private int MaxPlayers => MatchmakingSystem.Instance.IsValid() ? MatchmakingSystem.Instance.MaxPlayers : 10;
 
-	public MatchState State { get; private set; } = MatchState.Idle;
-	public string QueueMessage { get; private set; } = "";
-	public int LobbyPlayerCount { get; private set; } = 1;
-	public int LobbyMaxPlayers { get; private set; } = 10;
-	public bool IsHost { get; private set; } = false;
+	private bool IsIdle      => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Idle;
+	private bool IsSearching => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Searching;
+	private bool IsInLobby   => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.InLobby;
+	private bool IsJoinedLobby => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.JoinedLobby;
 
-	public bool HasParty => false; // TODO: PartyRoom.Current?.Members?.Count > 1
-	public IEnumerable<string> PartyMembers => Enumerable.Empty<string>(); // TODO: PartyRoom.Current?.Members
+	private string ActiveClass => IsSearching || IsInLobby || IsJoinedLobby ? "active" : "";
+	private string LockedClass => !IsIdle ? "locked" : "";
 
 	public void OnNavigationOpen()
 	{
 		if ( MainMenuRoot.Instance.IsValid() )
 			MainMenuRoot.Instance.SetBlur( true );
 
-		State = MatchState.Idle;
-		StateHasChanged();
+		MatchmakingSystem.OnStateChanged += Refresh;
 	}
 
 	public void OnNavigationClose()
@@ -118,88 +113,35 @@
 		if ( MainMenuRoot.Instance.IsValid() )
 			MainMenuRoot.Instance.SetBlur( false );
 
-		CancelSearch();
+		MatchmakingSystem.OnStateChanged -= Refresh;
 	}
+
+	private void Refresh() => StateHasChanged();
 
 	private void OnClickPlayWarlocks()
 	{
-		if ( State != MatchState.Idle ) return;
-		_ = FindOrCreateMatch();
+		if ( !IsIdle ) return;
+		_ = MatchmakingSystem.FindOrCreateMatch();
 	}
 
 	private void OnClickSandbox()
 	{
-		if ( State != MatchState.Idle ) return;
-		LoadSandboxMode();
-	}
-
-	private void LoadSandboxMode()
-	{
-		var sandboxScene = ResourceLibrary.Get<SceneFile>( "scenes/minimal.scene" );
-		if ( sandboxScene is null )
-		{
-			Log.Warning( "PlayPage: Could not find minimal.scene for Sandbox Mode." );
-			return;
-		}
-
-		// Tell the network manager this is a local (non-multiplayer) session
+		if ( !IsIdle ) return;
 		MatchmakingSystem.IsMultiplayerSession = false;
-		Game.ActiveScene.Load( sandboxScene );
-	}
-
-	private async Task FindOrCreateMatch()
-	{
-		State = MatchState.Searching;
-		QueueMessage = "Connecting...";
-		StateHasChanged();
-
-		try
-		{
-			await MatchmakingSystem.FindOrCreateMatch( OnMatchFound, OnLobbyCreated );
-		}
-		catch ( Exception e )
-		{
-			Log.Warning( $"PlayPage: Matchmaking error: {e.Message}" );
-			State = MatchState.Idle;
-			StateHasChanged();
-		}
-	}
-
-	private void OnMatchFound( LobbyInformation lobby )
-	{
-		// Successfully joined an existing lobby — transition should happen automatically
-		// as the host will load the scene and clients follow
-		QueueMessage = "Match found! Connecting...";
-		StateHasChanged();
-	}
-
-	private void OnLobbyCreated( int playerCount, int maxPlayers )
-	{
-		State = MatchState.InLobby;
-		IsHost = true;
-		LobbyPlayerCount = playerCount;
-		LobbyMaxPlayers = maxPlayers;
-		QueueMessage = $"Waiting for players... ({playerCount}/{maxPlayers})";
-		StateHasChanged();
-	}
-
-	private void ForceStart()
-	{
-		if ( !IsHost ) return;
-		MatchmakingSystem.ForceStartMatch();
+		var scene = ResourceLibrary.Get<SceneFile>( "scenes/minimal.scene" );
+		if ( scene is not null )
+			Game.ActiveScene.Load( scene );
 	}
 
 	private void CancelSearch()
 	{
-		MatchmakingSystem.CancelSearch();
-		State = MatchState.Idle;
-		IsHost = false;
-		StateHasChanged();
+		if (IsInLobby || IsSearching)
+			MatchmakingSystem.CancelSearch();
 	}
 
 	private void InviteFriend()
 	{
 		// TODO: PartyRoom.Current?.InviteFriend()
-		Log.Info( "PlayPage: Invite friend called." );
+		Log.Info( "PlayPage: InviteFriend called." );
 	}
 }

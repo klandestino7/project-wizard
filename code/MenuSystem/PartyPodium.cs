@@ -34,8 +34,9 @@ public sealed class PartyPodium : Component
 			for ( int i = 0; i < desiredCount; i++ )
 			{
 				var podium = Podiums[i];
-				podium.Renderer.Enabled = true;
-				podium.Friend = new Friend( Game.SteamId );
+				if (podium != null)
+					podium.Renderer.Enabled = true;
+					podium.Friend = new Friend( Game.SteamId );
 			}
 
 			lastCount = desiredCount;

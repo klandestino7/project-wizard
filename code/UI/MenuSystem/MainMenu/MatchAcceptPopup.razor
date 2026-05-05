@@ -1,0 +1,85 @@
+@using Sandbox;
+@using Sandbox.Network;
+@using Sandbox.UI;
+
+@inherits Panel
+@namespace Warlocks.UI
+
+@if ( IsVisible )
+{
+	<root class="match-accept-overlay">
+		<div class="match-accept-box">
+
+			@* Header *@
+			<div class="match-accept-header">
+				<label class="match-accept-title">PARTIDA ENCONTRADA</label>
+				<label class="match-accept-map">@MatchmakingSystem.ProposedMapTitle</label>
+			</div>
+
+			@* Countdown ring *@
+			<div class="match-accept-countdown">
+				<label class="countdown-number">@MatchmakingSystem.CountdownSeconds</label>
+				<label class="countdown-label">segundos</label>
+			</div>
+
+			@* Player list *@
+			<div class="match-accept-players">
+				<label class="players-header">JOGADORES (@MatchmakingSystem.CurrentPlayerCount)</label>
+				<div class="players-list">
+					@foreach ( var conn in Connection.All )
+					{
+						<div class="player-row">
+							@* <label class="player-name">@conn.DisplayName</label> *@
+							<label class="player-ready">✓</label>
+						</div>
+					}
+				</div>
+			</div>
+
+			@* Actions *@
+			<div class="match-accept-actions">
+				@if ( Networking.IsHost )
+				{
+					<div class="button standard action match-accept-btn" onclick=@Accept>
+						INICIAR AGORA
+					</div>
+				}
+				else
+				{
+					<div class="match-accept-waiting">
+						<label>Aguardando host iniciar...</label>
+					</div>
+				}
+
+				<div class="button standard match-decline-btn" onclick=@Decline>
+					SAIR DA FILA
+				</div>
+			</div>
+
+		</div>
+	</root>
+}
+
+@code
+{
+	private bool IsVisible => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed
+	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Starting;
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( !firstTime ) return;
+		MatchmakingSystem.OnStateChanged += Refresh;
+	}
+
+	private void Refresh() => StateHasChanged();
+
+	private void Accept()
+	{
+		MatchmakingSystem.ForceStartMatch();
+	}
+
+	private void Decline()
+	{
+		MatchmakingSystem.CancelSearch();
+	}
+}

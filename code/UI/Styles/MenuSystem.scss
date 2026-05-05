@@ -571,6 +571,7 @@ SplashScreen
     {
         cursor: default;
         opacity: 0.6;
+        pointer-events: none;
     }
 }
 
@@ -681,4 +682,182 @@ SplashScreen
     color: rgba( white, 0.3 );
     white-space: normal;
     margin-bottom: 8px;
+}
+
+.match-accept-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	// background: rgba(10, 12, 16, 0.85);
+	// backdrop-filter: blur(8px);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+	z-index: 1000;
+    width: 100%;
+    height: 100%;
+}
+
+.match-accept-box {
+	width: 420px;
+	background: linear-gradient(180deg, #1b1f26 0%, #14171c 100%);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: 12px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	font-family: "Rajdhani", "Segoe UI", sans-serif;
+}
+
+.match-accept-header {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	.match-accept-title {
+		font-size: 18px;
+		font-weight: 700;
+		letter-spacing: 1px;
+		color: #e6e9ef;
+	}
+
+	.match-accept-map {
+		font-size: 13px;
+		color: #7f8a99;
+	}
+}
+
+.match-accept-countdown {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 0;
+
+	.countdown-number {
+		font-size: 48px;
+		font-weight: 800;
+		color: #f0b35a; // laranja CS
+		text-shadow: 0 0 20px rgba(240, 179, 90, 0.25);
+	}
+
+	.countdown-label {
+		font-size: 12px;
+		color: #6b7280;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+}
+
+.match-accept-players {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	.players-header {
+		font-size: 12px;
+		color: #6b7280;
+		letter-spacing: 1px;
+	}
+
+	.players-list {
+		display: flex;
+		flex-direction: row;
+		gap: 6px;
+		max-height: 140px;
+		overflow-y: auto;
+	}
+
+	.player-row {
+        background:#274130;
+        color: white;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: rgba(255, 255, 255, 0.03);
+		padding: 8px 10px;
+		border-radius: 6px;
+		transition: all 0.15s ease;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.06);
+		}
+
+		.player-name {
+			font-size: 13px;
+			color: #d1d5db;
+		}
+
+		.player-ready {
+			font-size: 14px;
+			color: #4ade80; // verde ready
+			font-weight: 700;
+		}
+	}
+}
+
+.match-accept-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 6px;
+}
+
+.button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	// user-select: none;
+}
+
+.match-accept-btn {
+	background: linear-gradient(180deg, #f0b35a 0%, #d9993f 100%);
+	color: #111;
+
+	&:hover {
+		filter: brightness(1.1);
+		box-shadow: 0 0 20px rgba(240, 179, 90, 0.25);
+	}
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+.match-decline-btn {
+	background: rgba(255, 255, 255, 0.05);
+	color: #cbd5e1;
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+.match-accept-waiting {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	background: rgba(255, 255, 255, 0.03);
+	border-radius: 6px;
+
+	label {
+		font-size: 13px;
+		color: #9aa4b2;
+	}
 }
