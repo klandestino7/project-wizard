@@ -16,44 +16,45 @@
 				<label class="match-accept-map">@MatchmakingSystem.ProposedMapTitle</label>
 			</div>
 
-			@* Countdown ring *@
+			@* Countdown *@
 			<div class="match-accept-countdown">
 				<label class="countdown-number">@MatchmakingSystem.CountdownSeconds</label>
 				<label class="countdown-label">segundos</label>
 			</div>
 
-			@* Player list *@
+			@* Accept progress *@
 			<div class="match-accept-players">
-				<label class="players-header">JOGADORES (@MatchmakingSystem.CurrentPlayerCount)</label>
-				<div class="players-list">
-					@foreach ( var conn in Connection.All )
+				<label class="players-header">
+					PRONTOS @MatchmakingSystem.AcceptedCount / @MatchmakingSystem.CurrentPlayerCount
+				</label>
+				<div class="accept-pips">
+					@for ( int i = 0; i < MatchmakingSystem.CurrentPlayerCount; i++ )
 					{
-						<div class="player-row">
-							@* <label class="player-name">@conn.DisplayName</label> *@
-							<label class="player-ready">✓</label>
-						</div>
+						<div class="accept-pip @(i < MatchmakingSystem.AcceptedCount ? "ready" : "waiting")"></div>
 					}
 				</div>
 			</div>
 
 			@* Actions *@
 			<div class="match-accept-actions">
-				@if ( Networking.IsHost )
+				@if ( !_hasResponded )
 				{
 					<div class="button standard action match-accept-btn" onclick=@Accept>
-						INICIAR AGORA
+						ACEITAR
+					</div>
+					<div class="button standard match-decline-btn" onclick=@Decline>
+						RECUSAR
 					</div>
 				}
 				else
 				{
 					<div class="match-accept-waiting">
-						<label>Aguardando host iniciar...</label>
+						<label>Aguardando outros jogadores...</label>
+					</div>
+					<div class="button standard match-decline-btn" onclick=@Decline>
+						SAIR DA FILA
 					</div>
 				}
-
-				<div class="button standard match-decline-btn" onclick=@Decline>
-					SAIR DA FILA
-				</div>
 			</div>
 
 		</div>
@@ -65,21 +66,32 @@
 	private bool IsVisible => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed
 	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Starting;
 
+	private bool _hasResponded;
+
 	protected override void OnAfterTreeRender( bool firstTime )
 	{
 		if ( !firstTime ) return;
-		MatchmakingSystem.OnStateChanged += Refresh;
+		MatchmakingSystem.OnStateChanged += OnMatchStateChanged;
 	}
 
-	private void Refresh() => StateHasChanged();
+	private void OnMatchStateChanged()
+	{
+		// Reset response state when a new proposal arrives
+		if ( MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed )
+			_hasResponded = false;
+
+		StateHasChanged();
+	}
 
 	private void Accept()
 	{
-		MatchmakingSystem.ForceStartMatch();
+		if ( _hasResponded ) return;
+		_hasResponded = true;
+		MatchmakingSystem.AcceptMatch();
 	}
 
 	private void Decline()
 	{
-		MatchmakingSystem.CancelSearch();
+		MatchmakingSystem.DeclineMatch();
 	}
 }

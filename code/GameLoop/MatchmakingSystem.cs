@@ -4,19 +4,19 @@ using Sandbox.Network;
 namespace Warlocks;
 
 /// <summary>
-/// Manages the matchmaking flow: search → lobby → match proposal (15s) → game start.
-/// Add this SingletonComponent to a GameObject in the menu scene.
+/// CS2-style matchmaking: search → lobby → accept phase (all must confirm) → game start.
+/// The match only loads after every player accepts. Decliners are kicked and must re-queue.
 /// </summary>
 public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 {
 	public enum SearchState
 	{
 		Idle,
-		Searching,     // Querying for lobbies
-		InLobby,       // Host created lobby, waiting for players
-		JoinedLobby,   // Client joined a lobby, waiting for host to start
-		MatchProposed, // Enough players — countdown running
-		Starting,      // Loading game scene
+		Searching,       // Querying for / creating a lobby
+		InLobby,         // Host: lobby open, waiting for players
+		JoinedLobby,     // Client: waiting in lobby
+		MatchProposed,   // Accept popup active — everyone must confirm
+		Starting,        // Scene loading
 	}
 
 	[Property] public int MinPlayers { get; set; } = 2;
@@ -26,20 +26,23 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	/// <summary>Set to false before loading Sandbox Mode.</summary>
 	public static bool IsMultiplayerSession { get; set; } = true;
 
-	// ── Read-only state consumed by UI ───────────────────────────────────────
+	// ── UI-readable state ────────────────────────────────────────────────────
 
 	public static SearchState CurrentState { get; private set; } = SearchState.Idle;
 	public static int CountdownSeconds { get; private set; }
 	public static string ProposedMapTitle { get; private set; } = "";
 	public static int CurrentPlayerCount => Connection.All.Count();
+	public static int AcceptedCount { get; private set; }
 
-	/// <summary>Fires on every state/countdown change so UI can refresh.</summary>
+	/// <summary>Fires on every state/countdown change so the UI can refresh.</summary>
 	public static event Action OnStateChanged;
 
-	// ── Private fields ───────────────────────────────────────────────────────
+	// ── Private state ────────────────────────────────────────────────────────
 
 	private bool _cancelled;
-	private bool _isHost;
+	private bool _hasResponded;
+	private bool _proposalActive;
+	private readonly HashSet<ulong> _acceptedSteamIds = new();
 	private SceneFile _proposedMap;
 	private GameMode _proposedGameMode;
 
@@ -49,10 +52,9 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	{
 		if ( !Instance.IsValid() )
 		{
-			Log.Warning( "MatchmakingSystem: No instance in menu scene. Add the component to a GameObject." );
+			Log.Warning( "MatchmakingSystem: No instance found." );
 			return;
 		}
-
 		await Instance.RunMatchmaking();
 	}
 
@@ -62,27 +64,30 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		Instance.DoCancel();
 	}
 
-	/// <summary>Host only: skip countdown and start immediately.</summary>
-	public static void ForceStartMatch()
+	/// <summary>Called when the local player clicks Accept in the popup.</summary>
+	public static void AcceptMatch()
 	{
 		if ( !Instance.IsValid() ) return;
 		if ( CurrentState != SearchState.MatchProposed ) return;
-		if ( !Networking.IsHost ) return;
-
-		Instance.LoadGameScene();
+		Instance.DoAccept();
 	}
 
-	// ── State machine ────────────────────────────────────────────────────────
+	/// <summary>Called when the local player clicks Decline in the popup.</summary>
+	public static void DeclineMatch()
+	{
+		if ( !Instance.IsValid() ) return;
+		if ( CurrentState != SearchState.MatchProposed ) return;
+		Instance.DoDecline();
+	}
+
+	// ── Matchmaking flow ─────────────────────────────────────────────────────
 
 	private async Task RunMatchmaking()
 	{
 		_cancelled = false;
-		_isHost = false;
 		IsMultiplayerSession = true;
-
 		SetState( SearchState.Searching );
 
-		// Step 1 – Query for an open lobby
 		LobbyInformation? foundLobby = null;
 		try
 		{
@@ -100,28 +105,23 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 
 		if ( _cancelled ) return;
 
-		// Step 2a – Join existing lobby
 		if ( foundLobby.HasValue )
 		{
-			Log.Info( "MatchmakingSystem: Found a lobby, joining..." );
+			Log.Info( "MatchmakingSystem: Joining existing lobby..." );
 			var joined = await Networking.TryConnectSteamId( foundLobby.Value.LobbyId );
 			if ( joined )
 			{
 				SetState( SearchState.JoinedLobby );
-				// Client waits here. When host loads the scene, client follows automatically.
-				return;
+				return; // Host will broadcast when ready
 			}
-			Log.Warning( "MatchmakingSystem: Failed to join found lobby, creating a new one." );
+			Log.Warning( "MatchmakingSystem: Failed to join, creating new lobby." );
 		}
 
 		if ( _cancelled ) return;
 
-		// Step 2b – Create a new lobby and wait for players
-		_isHost = true;
 		Log.Info( "MatchmakingSystem: Creating new lobby..." );
 		Networking.CreateLobby( new LobbyConfig { MaxPlayers = MaxPlayers } );
 		SetState( SearchState.InLobby );
-
 		await WaitForPlayers();
 	}
 
@@ -145,30 +145,43 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 	{
 		if ( _cancelled ) return;
 
-		// Auto-select a random available map
 		var maps = GameUtils.GetAvailableMaps().ToList();
 		if ( maps.Count == 0 )
 		{
-			Log.Warning( "MatchmakingSystem: No maps found with IsVisibleInMenu=true metadata." );
+			Log.Warning( "MatchmakingSystem: No maps found." );
 			return;
 		}
 
 		_proposedMap = maps[Random.Shared.Next( maps.Count )];
 		_proposedGameMode = GameMode.GetAll( _proposedMap ).FirstOrDefault();
-		ProposedMapTitle = _proposedMap.GetMetadata( "Title", _proposedMap.ResourceName );
+		var mapTitle = _proposedMap.GetMetadata( "Title", _proposedMap.ResourceName );
 
+		_proposalActive = true;
+		_acceptedSteamIds.Clear();
+		AcceptedCount = 0;
+		_hasResponded = false;
+
+		// Update host state locally
+		ProposedMapTitle = mapTitle;
 		CountdownSeconds = AcceptTimeoutSeconds;
 		SetState( SearchState.MatchProposed );
 
-		Log.Info( $"MatchmakingSystem: Match proposed — '{ProposedMapTitle}', {AcceptTimeoutSeconds}s countdown." );
+		// Broadcast to clients
+		using ( Rpc.Broadcast() )
+			ClientOnMatchProposed( mapTitle, AcceptTimeoutSeconds );
 
-		while ( CountdownSeconds > 0 && !_cancelled )
+		Log.Info( $"MatchmakingSystem: Proposed '{mapTitle}', waiting for accepts ({AcceptTimeoutSeconds}s)..." );
+
+		// Host countdown loop
+		while ( CountdownSeconds > 0 && _proposalActive && !_cancelled )
 		{
-			// If a player left during countdown, reset
 			if ( Connection.All.Count() < MinPlayers )
 			{
-				Log.Info( "MatchmakingSystem: Player dropped out, resetting countdown." );
+				Log.Info( "MatchmakingSystem: Player dropped during accept phase." );
+				_proposalActive = false;
 				SetState( SearchState.InLobby );
+				using ( Rpc.Broadcast() )
+					ClientOnMatchCancelled();
 				await WaitForPlayers();
 				return;
 			}
@@ -178,16 +191,176 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			NotifyStateChanged();
 		}
 
-		if ( _cancelled ) return;
+		if ( !_proposalActive || _cancelled ) return;
 
-		LoadGameScene();
+		// Timeout — kick anyone who didn't accept
+		Log.Info( "MatchmakingSystem: Timeout, kicking non-acceptors." );
+		var nonAcceptors = Connection.All
+			.Where( c => !_acceptedSteamIds.Contains( c.SteamId ) )
+			.ToList();
+
+		foreach ( var conn in nonAcceptors )
+			conn.Kick();
+
+		var remaining = Connection.All.Count() - nonAcceptors.Count;
+		if ( remaining >= MinPlayers )
+		{
+			LoadGameScene();
+		}
+		else
+		{
+			_proposalActive = false;
+			SetState( SearchState.InLobby );
+			using ( Rpc.Broadcast() )
+				ClientOnMatchCancelled();
+			await WaitForPlayers();
+		}
 	}
+
+	// ── Accept / Decline (local player) ──────────────────────────────────────
+
+	private void DoAccept()
+	{
+		if ( _hasResponded ) return;
+		_hasResponded = true;
+
+		if ( Networking.IsHost )
+		{
+			HandleAccept( Connection.Local?.SteamId ?? 0 );
+		}
+		else
+		{
+			// Send to host
+			using ( Rpc.Owner() )
+				ServerAccept( Connection.Local?.SteamId ?? 0 );
+		}
+	}
+
+	private void DoDecline()
+	{
+		if ( _hasResponded ) return;
+		_hasResponded = true;
+
+		if ( Networking.IsHost )
+		{
+			_proposalActive = false;
+			SetState( SearchState.Idle );
+			using ( Rpc.Broadcast() )
+				ClientOnMatchCancelled();
+			if ( Networking.IsActive )
+				Networking.Disconnect();
+		}
+		else
+		{
+			// Notify host, then clean up locally
+			using ( Rpc.Owner() )
+				ServerDecline( Connection.Local?.SteamId ?? 0 );
+			SetState( SearchState.Idle );
+			if ( Networking.IsActive )
+				Networking.Disconnect();
+		}
+	}
+
+	// ── Server-side RPC receivers (called by clients via Rpc.Owner) ───────────
+
+	private void ServerAccept( ulong callerSteamId )
+	{
+		if ( !Networking.IsHost ) return;
+		if ( !_proposalActive ) return;
+		HandleAccept( callerSteamId );
+	}
+
+	private void ServerDecline( ulong callerSteamId )
+	{
+		if ( !Networking.IsHost ) return;
+		if ( !_proposalActive ) return;
+		var conn = Connection.All.FirstOrDefault( c => c.SteamId == callerSteamId );
+		if ( conn != null )
+			HandleDecline( conn );
+	}
+
+	// ── Client-side RPC receivers (called by host via Rpc.Broadcast) ──────────
+
+	private void ClientOnMatchProposed( string mapTitle, int timeoutSeconds )
+	{
+		ProposedMapTitle = mapTitle;
+		CountdownSeconds = timeoutSeconds;
+		AcceptedCount = 0;
+		_hasResponded = false;
+		SetState( SearchState.MatchProposed );
+		_ = ClientCountdown();
+	}
+
+	private void ClientOnAcceptCountUpdated( int count )
+	{
+		AcceptedCount = count;
+		NotifyStateChanged();
+	}
+
+	private void ClientOnMatchCancelled()
+	{
+		SetState( SearchState.JoinedLobby );
+	}
+
+	// ── Accept / Decline logic (host only) ────────────────────────────────────
+
+	private void HandleAccept( ulong steamId )
+	{
+		if ( steamId == 0 ) return;
+		_acceptedSteamIds.Add( steamId );
+		AcceptedCount = _acceptedSteamIds.Count;
+		int total = Connection.All.Count();
+
+		using ( Rpc.Broadcast() )
+			ClientOnAcceptCountUpdated( AcceptedCount );
+
+		Log.Info( $"MatchmakingSystem: {AcceptedCount}/{total} accepted." );
+
+		if ( _acceptedSteamIds.Count >= total )
+		{
+			_proposalActive = false;
+			Log.Info( "MatchmakingSystem: All accepted! Starting match." );
+			LoadGameScene();
+		}
+	}
+
+	private void HandleDecline( Connection conn )
+	{
+		Log.Info( $"MatchmakingSystem: {conn.DisplayName} declined." );
+		conn.Kick();
+		_acceptedSteamIds.Remove( conn.SteamId );
+
+		var remaining = Connection.All.Count() - 1;
+		if ( remaining < MinPlayers )
+		{
+			_proposalActive = false;
+			SetState( SearchState.InLobby );
+			using ( Rpc.Broadcast() )
+				ClientOnMatchCancelled();
+			_ = WaitForPlayers();
+		}
+	}
+
+	// ── Client countdown ─────────────────────────────────────────────────────
+
+	private async Task ClientCountdown()
+	{
+		while ( CurrentState == SearchState.MatchProposed && CountdownSeconds > 0 )
+		{
+			await Task.DelayRealtimeSeconds( 1f );
+			if ( CurrentState != SearchState.MatchProposed ) return;
+			CountdownSeconds--;
+			NotifyStateChanged();
+		}
+	}
+
+	// ── Shared helpers ────────────────────────────────────────────────────────
 
 	private void DoCancel()
 	{
-		Log.Info(" DoCancel ");
+		Log.Info( "MatchmakingSystem: DoCancel" );
 		_cancelled = true;
-		_isHost = false;
+		_proposalActive = false;
 		SetState( SearchState.Idle );
 
 		if ( Networking.IsActive )
@@ -201,7 +374,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		if ( _proposedGameMode.IsValid() )
 			GameMode.SetCurrent( _proposedGameMode );
 
-		Log.Info( $"MatchmakingSystem: Loading scene '{ProposedMapTitle}'" );
+		Log.Info( $"MatchmakingSystem: Loading '{ProposedMapTitle}'" );
 		Game.ActiveScene.Load( _proposedMap );
 	}
 
