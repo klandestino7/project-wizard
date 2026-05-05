@@ -81,6 +81,38 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		IsMultiplayerSession = true;
 		SetState( SearchState.Connecting );
 
+		var healthUrl = ServerUrl
+			.Replace( "ws://", "http://" )
+			.Replace( "wss://", "https://" )
+			.Replace( "/ws", "/health" );
+
+		try
+		{
+			var healthUri = new Uri( healthUrl );
+			if ( !Http.IsAllowed( healthUri ) )
+			{
+				Log.Warning( $"MatchmakingSystem: Health check URL is not allowed: {healthUrl}" );
+				SetState( SearchState.Idle );
+				return;
+			}
+
+			var response = await Http.RequestStringAsync( healthUrl );
+			var document = JsonDocument.Parse( response );
+			var active = document.RootElement.GetProperty( "active" ).GetBoolean();
+			if ( !active )
+			{
+				Log.Warning( "MatchmakingSystem: Server is not accepting queues." );
+				SetState( SearchState.Idle );
+				return;
+			}
+		}
+		catch ( Exception e )
+		{
+			Log.Warning( $"MatchmakingSystem: Health check failed - {e.Message}" );
+			SetState( SearchState.Idle );
+			return;
+		}
+
 		_socket = new WebSocket();
 		_socket.OnMessageReceived += OnMessage;
 		_socket.OnDisconnected += OnDisconnected;
