@@ -159,17 +159,10 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		_proposalActive = true;
 		_acceptedSteamIds.Clear();
 		AcceptedCount = 0;
-		_hasResponded = false;
-
-		// Update host state locally
-		ProposedMapTitle = mapTitle;
 		CountdownSeconds = AcceptTimeoutSeconds;
-		SetState( SearchState.MatchProposed );
 
-		// Broadcast to clients
-		using ( Rpc.Broadcast() )
-			ClientOnMatchProposed( mapTitle, AcceptTimeoutSeconds );
-
+		// Fires on host + all clients via [Broadcast]
+		RpcMatchProposed( mapTitle, AcceptTimeoutSeconds );
 		Log.Info( $"MatchmakingSystem: Proposed '{mapTitle}', waiting for accepts ({AcceptTimeoutSeconds}s)..." );
 
 		// Host countdown loop
@@ -179,9 +172,8 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			{
 				Log.Info( "MatchmakingSystem: Player dropped during accept phase." );
 				_proposalActive = false;
+				RpcMatchCancelled();
 				SetState( SearchState.InLobby );
-				using ( Rpc.Broadcast() )
-					ClientOnMatchCancelled();
 				await WaitForPlayers();
 				return;
 			}
@@ -200,7 +192,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			.ToList();
 
 		foreach ( var conn in nonAcceptors )
-			conn.Kick();
+			conn.Kick( "Did not accept in time" );
 
 		var remaining = Connection.All.Count() - nonAcceptors.Count;
 		if ( remaining >= MinPlayers )
@@ -210,14 +202,13 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		else
 		{
 			_proposalActive = false;
+			RpcMatchCancelled();
 			SetState( SearchState.InLobby );
-			using ( Rpc.Broadcast() )
-				ClientOnMatchCancelled();
 			await WaitForPlayers();
 		}
 	}
 
-	// ── Accept / Decline (local player) ──────────────────────────────────────
+	// ── Accept / Decline ─────────────────────────────────────────────────────
 
 	private void DoAccept()
 	{
@@ -230,9 +221,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		}
 		else
 		{
-			// Send to host
-			using ( Rpc.Owner() )
-				ServerAccept( Connection.Local?.SteamId ?? 0 );
+			RpcAccept(); // [Authority] → executes on host
 		}
 	}
 
@@ -244,66 +233,19 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		if ( Networking.IsHost )
 		{
 			_proposalActive = false;
-			SetState( SearchState.Idle );
-			using ( Rpc.Broadcast() )
-				ClientOnMatchCancelled();
-			if ( Networking.IsActive )
-				Networking.Disconnect();
+			RpcMatchCancelled(); // [Broadcast] → notifies all clients
+			DoCancel();
 		}
 		else
 		{
-			// Notify host, then clean up locally
-			using ( Rpc.Owner() )
-				ServerDecline( Connection.Local?.SteamId ?? 0 );
+			RpcDecline(); // [Authority] → host kicks this client
 			SetState( SearchState.Idle );
 			if ( Networking.IsActive )
 				Networking.Disconnect();
 		}
 	}
 
-	// ── Server-side RPC receivers (called by clients via Rpc.Owner) ───────────
-
-	private void ServerAccept( ulong callerSteamId )
-	{
-		if ( !Networking.IsHost ) return;
-		if ( !_proposalActive ) return;
-		HandleAccept( callerSteamId );
-	}
-
-	private void ServerDecline( ulong callerSteamId )
-	{
-		if ( !Networking.IsHost ) return;
-		if ( !_proposalActive ) return;
-		var conn = Connection.All.FirstOrDefault( c => c.SteamId == callerSteamId );
-		if ( conn != null )
-			HandleDecline( conn );
-	}
-
-	// ── Client-side RPC receivers (called by host via Rpc.Broadcast) ──────────
-
-	private void ClientOnMatchProposed( string mapTitle, int timeoutSeconds )
-	{
-		ProposedMapTitle = mapTitle;
-		CountdownSeconds = timeoutSeconds;
-		AcceptedCount = 0;
-		_hasResponded = false;
-		SetState( SearchState.MatchProposed );
-		_ = ClientCountdown();
-	}
-
-	private void ClientOnAcceptCountUpdated( int count )
-	{
-		AcceptedCount = count;
-		NotifyStateChanged();
-	}
-
-	private void ClientOnMatchCancelled()
-	{
-		SetState( SearchState.JoinedLobby );
-	}
-
-	// ── Accept / Decline logic (host only) ────────────────────────────────────
-
+	/// <summary>Records an accept. Host only.</summary>
 	private void HandleAccept( ulong steamId )
 	{
 		if ( steamId == 0 ) return;
@@ -311,9 +253,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		AcceptedCount = _acceptedSteamIds.Count;
 		int total = Connection.All.Count();
 
-		using ( Rpc.Broadcast() )
-			ClientOnAcceptCountUpdated( AcceptedCount );
-
+		RpcUpdateAcceptCount( AcceptedCount );
 		Log.Info( $"MatchmakingSystem: {AcceptedCount}/{total} accepted." );
 
 		if ( _acceptedSteamIds.Count >= total )
@@ -324,21 +264,69 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		}
 	}
 
+	/// <summary>Kicks a decliner and re-evaluates. Host only.</summary>
 	private void HandleDecline( Connection conn )
 	{
 		Log.Info( $"MatchmakingSystem: {conn.DisplayName} declined." );
-		conn.Kick();
+		conn.Kick( "Declined the match" );
 		_acceptedSteamIds.Remove( conn.SteamId );
 
 		var remaining = Connection.All.Count() - 1;
 		if ( remaining < MinPlayers )
 		{
 			_proposalActive = false;
+			RpcMatchCancelled();
 			SetState( SearchState.InLobby );
-			using ( Rpc.Broadcast() )
-				ClientOnMatchCancelled();
 			_ = WaitForPlayers();
 		}
+	}
+
+	// ── RPCs ─────────────────────────────────────────────────────────────────
+
+	/// <summary>Host → all: match proposed, show the accept popup.</summary>
+	[Broadcast]
+	private void RpcMatchProposed( string mapTitle, int timeoutSeconds )
+	{
+		ProposedMapTitle = mapTitle;
+		CountdownSeconds = timeoutSeconds;
+		AcceptedCount = 0;
+		_hasResponded = false;
+		SetState( SearchState.MatchProposed );
+
+		if ( !Networking.IsHost )
+			_ = ClientCountdown();
+	}
+
+	/// <summary>Host → all: X players have accepted so far.</summary>
+	[Broadcast]
+	private void RpcUpdateAcceptCount( int count )
+	{
+		AcceptedCount = count;
+		NotifyStateChanged();
+	}
+
+	/// <summary>Host → all: proposal cancelled, return to waiting.</summary>
+	[Broadcast]
+	private void RpcMatchCancelled()
+	{
+		if ( !Networking.IsHost )
+			SetState( SearchState.JoinedLobby );
+	}
+
+	/// <summary>Client → host: I accept.</summary>
+	[Authority]
+	private void RpcAccept()
+	{
+		if ( !_proposalActive ) return;
+		HandleAccept( Rpc.Caller.SteamId );
+	}
+
+	/// <summary>Client → host: I decline.</summary>
+	[Authority]
+	private void RpcDecline()
+	{
+		if ( !_proposalActive ) return;
+		HandleDecline( Rpc.Caller );
 	}
 
 	// ── Client countdown ─────────────────────────────────────────────────────
@@ -354,7 +342,7 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		}
 	}
 
-	// ── Shared helpers ────────────────────────────────────────────────────────
+	// ── Helpers ───────────────────────────────────────────────────────────────
 
 	private void DoCancel()
 	{
