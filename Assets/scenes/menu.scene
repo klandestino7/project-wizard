@@ -3,7 +3,7 @@
   "GameObjects": [
     {
       "__guid": "a0f82916-8bfc-4864-b8cc-c0daec1dd2b4",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Scene Information",
       "Position": "0,0,0",
@@ -12,14 +12,16 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.SceneInformation",
           "__guid": "386cb853-e0dd-483f-9711-67f7fae02556",
           "__enabled": true,
+          "Flags": 0,
           "Author": null,
           "Changes": "",
           "Description": "",
@@ -39,23 +41,25 @@
     },
     {
       "__guid": "ff590321-7fa0-4089-8421-33cc01854ce0",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Main Menu",
-      "Position": "-4440.262,-1274.093,358.4633",
-      "Rotation": "-0.04697734,0.131926,0.3321497,0.9327729",
+      "Position": "-4440.26221,-1274.09302,358.463287",
+      "Rotation": "-0.0469773412,0.131926,0.332149714,0.932772875",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.ScreenPanel",
           "__guid": "dfc70fd4-d3d6-4808-9db1-1b6457b8144b",
           "__enabled": true,
+          "Flags": 0,
           "AutoScreenScale": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -70,9 +74,10 @@
           "ZIndex": 100
         },
         {
-          "__type": "Facepunch.UI.MainMenuPanel",
+          "__type": "Warlocks.UI.MainMenuPanel",
           "__guid": "520f73ed-1abc-403f-bfa3-be4160caa365",
           "__enabled": true,
+          "Flags": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -84,6 +89,7 @@
           "__type": "Sandbox.Audio.SoundEmitter",
           "__guid": "3ad5a571-d7fc-4af6-8b37-61805368f2fc",
           "__enabled": true,
+          "Flags": 0,
           "AutoStart": true,
           "DestroyOnFinish": false,
           "Follow": true,
@@ -115,9 +121,10 @@
           ]
         },
         {
-          "__type": "Facepunch.DialogRoot",
+          "__type": "Warlocks.DialogRoot",
           "__guid": "511f8e47-c7e7-47fd-adf9-8f51cb55bb79",
           "__enabled": true,
+          "Flags": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -130,23 +137,25 @@
     },
     {
       "__guid": "494229b8-4362-4d49-8ac8-e25bb88cfc99",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Object",
-      "Position": "-1159.925,-133.1735,38.5157",
+      "Position": "-1159.92505,-133.173492,38.5157013",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.MapInstance",
           "__guid": "e7c5f4e8-56a9-4bf9-bfa8-0afdec5fe6b1",
           "__enabled": true,
+          "Flags": 0,
           "__version": 1,
           "EnableCollision": true,
           "MapName": "facepunch.depot",
@@ -166,23 +175,25 @@
     },
     {
       "__guid": "bb4b1a17-92e7-4597-b035-7dad6e331396",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Spot Light",
-      "Position": "761.9642,82.8791,1076.421",
-      "Rotation": "-0.04149369,0.2854631,0.1377294,0.9475335",
+      "Position": "761.964172,82.879097,1076.42102",
+      "Rotation": "-0.0414936915,0.285463095,0.137729406,0.947533488",
       "Scale": "1,1,1",
       "Tags": "light_spot,light",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.SpotLight",
           "__guid": "ace0ebcc-60cf-4287-bf6f-4204688fe3ca",
           "__enabled": true,
+          "Flags": 0,
           "Attenuation": 1.01,
           "ConeInner": 37.5,
           "ConeOuter": 18.88,
@@ -197,6 +208,8 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 553.59985,
+          "ShadowBias": 0.0005,
+          "ShadowHardness": 0,
           "Shadows": true
         }
       ],
@@ -204,41 +217,45 @@
     },
     {
       "__guid": "42f0cceb-0a13-4e5c-8033-71e38944e337",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Boom",
-      "Position": "-48.0115,-497.7142,1096.915",
-      "Rotation": "0.04912866,0.0001033552,-0.9987903,0.00210122",
+      "Position": "-48.0115013,-497.714203,1096.91504",
+      "Rotation": "0.0491286591,0.000103355203,-0.998790324,0.00210121996",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [],
       "Children": [
         {
           "__guid": "200f87a4-2311-4c04-8f33-568012b4b150",
-          "__version": 1,
+          "__version": 2,
           "Flags": 0,
           "Name": "Camera",
-          "Position": "0.00000166893,-0.00004892051,-11.48488",
+          "Position": "1.66893005E-06,-4.89205086E-05,-11.4848804",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
           "Tags": "",
           "Enabled": true,
           "NetworkMode": 2,
-          "NetworkInterpolation": true,
+          "NetworkFlags": 0,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
               "__type": "Sandbox.CameraComponent",
               "__guid": "ceb4734c-b80a-450f-bd8a-a0ef1116cf6c",
               "__enabled": true,
+              "Flags": 0,
               "BackgroundColor": "0.33333,0.46275,0.52157,1",
               "ClearFlags": "All",
+              "EnablePostProcessing": true,
               "FieldOfView": 40,
               "FovAxis": "Horizontal",
               "IsMainCamera": true,
@@ -250,9 +267,11 @@
               "OnComponentUpdate": null,
               "Orthographic": false,
               "OrthographicHeight": 1204,
+              "PostProcessAnchor": null,
               "Priority": 1,
               "RenderExcludeTags": "",
               "RenderTags": "",
+              "RenderTexture": null,
               "TargetEye": "None",
               "Viewport": "0,0,1,1",
               "ZFar": 10000,
@@ -262,6 +281,7 @@
               "__type": "Sandbox.ChromaticAberration",
               "__guid": "d98339b9-5e97-4b24-878f-11c91cbbfec3",
               "__enabled": false,
+              "Flags": 0,
               "Offset": "1,0,0",
               "OnComponentDestroy": null,
               "OnComponentDisabled": null,
@@ -275,8 +295,8 @@
               "__type": "Sandbox.AmbientOcclusion",
               "__guid": "1aeb9d8f-a21c-4467-b245-b026178d6330",
               "__enabled": false,
+              "Flags": 0,
               "__version": 1,
-              "DenoiseMode": "Temporal",
               "FalloffRange": 0.75,
               "Intensity": 0.15,
               "OnComponentDestroy": null,
@@ -285,7 +305,6 @@
               "OnComponentFixedUpdate": null,
               "OnComponentStart": null,
               "OnComponentUpdate": null,
-              "Quality": "High",
               "Radius": 128,
               "ThinCompensation": 0
             },
@@ -293,6 +312,7 @@
               "__type": "Sandbox.DepthOfField",
               "__guid": "e8b1c61d-681a-4767-afc4-3c5c9f8b2d35",
               "__enabled": true,
+              "Flags": 0,
               "BackBlur": true,
               "BlurSize": 96.88,
               "FocalDistance": 321.7,
@@ -303,13 +323,13 @@
               "OnComponentEnabled": null,
               "OnComponentFixedUpdate": null,
               "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "QualityLevel": "High"
+              "OnComponentUpdate": null
             },
             {
-              "__type": "Facepunch.MainMenuCamera",
+              "__type": "Warlocks.MainMenuCamera",
               "__guid": "0f760a83-143e-4297-b32f-1983bf4a2fbc",
               "__enabled": true,
+              "Flags": 0,
               "Camera": {
                 "_type": "component",
                 "component_id": "ceb4734c-b80a-450f-bd8a-a0ef1116cf6c",
@@ -334,23 +354,25 @@
     },
     {
       "__guid": "01eb5e1f-50e7-473a-8ae9-41ba393c5358",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Podium",
-      "Position": "-310.9163,-494.5438,1030.817",
-      "Rotation": "0,0,0.5655241,0.8247318",
+      "Position": "-310.91629,-494.543793,1030.81702",
+      "Rotation": "0,0,0.565524101,0.824731827",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
-          "__type": "Facepunch.PartyPodium",
+          "__type": "Warlocks.PartyPodium",
           "__guid": "5cea7146-4e17-470a-a235-1d6ab2d22560",
           "__enabled": true,
+          "Flags": 0,
           "EditorModel": "models/player/t_side/t_side_player_01/t_side_player_01_v2.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -377,7 +399,7 @@
       "Children": [
         {
           "__guid": "031d8348-349e-44ab-86d5-da06e06b1ab2",
-          "__version": 1,
+          "__version": 2,
           "__Prefab": "prefabs/menu/podium_player.prefab",
           "__PrefabInstancePatch": {
             "AddedObjects": [],
@@ -397,7 +419,7 @@
                   "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
                 },
                 "Property": "Position",
-                "Value": "8.889603,-89.66018,2.76355"
+                "Value": "8.88960266,-89.6601791,2.76355004"
               },
               {
                 "Target": {
@@ -405,15 +427,7 @@
                   "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
                 },
                 "Property": "Rotation",
-                "Value": "-0.000000000454194,-0.0000000008130619,-0.1869496,0.98237"
-              },
-              {
-                "Target": {
-                  "Type": "GameObject",
-                  "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
-                },
-                "Property": "NetworkInterpolation",
-                "Value": false
+                "Value": "-4.54193988E-10,-8.13061896E-10,-0.186949596,0.982370019"
               },
               {
                 "Target": {
@@ -430,17 +444,6 @@
                 },
                 "Property": "IdleType",
                 "Value": "WithRifle"
-              },
-              {
-                "Target": {
-                  "Type": "Component",
-                  "IdValue": "c66c8bc4-01e0-4d3d-b400-0d91eb6d9d80"
-                },
-                "Property": "WeaponPrefab",
-                "Value": {
-                  "_type": "gameobject",
-                  "prefab": "weapons/m4a1/wm_m4a1.prefab"
-                }
               },
               {
                 "Target": {
@@ -520,7 +523,7 @@
                   "IdValue": "55fdaec5-c92d-4fa1-a66f-22d265e535ee"
                 },
                 "Property": "Position",
-                "Value": "2.353588,3.296478,-1.189588"
+                "Value": "0,0,0"
               },
               {
                 "Target": {
@@ -528,7 +531,7 @@
                   "IdValue": "55fdaec5-c92d-4fa1-a66f-22d265e535ee"
                 },
                 "Property": "Rotation",
-                "Value": "0.7071075,0.7071061,0.0000006228357,0.0000002650539"
+                "Value": "0,0,0,1"
               },
               {
                 "Target": {
@@ -544,7 +547,7 @@
                   "IdValue": "3826b7d6-0d2c-43b5-8ba1-75fed639af25"
                 },
                 "Property": "Position",
-                "Value": "2.353596,3.296479,1.18004"
+                "Value": "0,0,0"
               },
               {
                 "Target": {
@@ -552,7 +555,7 @@
                   "IdValue": "3826b7d6-0d2c-43b5-8ba1-75fed639af25"
                 },
                 "Property": "Rotation",
-                "Value": "0.7071075,0.7071061,0.0000006228357,0.0000002650539"
+                "Value": "0,0,0,1"
               },
               {
                 "Target": {
@@ -696,7 +699,7 @@
         },
         {
           "__guid": "042d3af9-2042-4969-be98-e0ca599dcee9",
-          "__version": 1,
+          "__version": 2,
           "__Prefab": "prefabs/menu/podium_player.prefab",
           "__PrefabInstancePatch": {
             "AddedObjects": [],
@@ -716,7 +719,7 @@
                   "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
                 },
                 "Property": "Position",
-                "Value": "52.48604,-71.24949,1.609863"
+                "Value": "52.4860382,-71.2494888,1.60986304"
               },
               {
                 "Target": {
@@ -724,26 +727,7 @@
                   "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
                 },
                 "Property": "Rotation",
-                "Value": "-0.000000001061049,-0.0000000006680305,-0.6849087,0.7286287"
-              },
-              {
-                "Target": {
-                  "Type": "GameObject",
-                  "IdValue": "e58fea4b-2224-4bac-a2db-580b55e63e1a"
-                },
-                "Property": "NetworkInterpolation",
-                "Value": false
-              },
-              {
-                "Target": {
-                  "Type": "Component",
-                  "IdValue": "c66c8bc4-01e0-4d3d-b400-0d91eb6d9d80"
-                },
-                "Property": "WeaponPrefab",
-                "Value": {
-                  "_type": "gameobject",
-                  "prefab": "weapons/usp/wm_usp.prefab"
-                }
+                "Value": "-1.06104903E-09,-6.6803052E-10,-0.684908688,0.728628695"
               },
               {
                 "Target": {
@@ -751,7 +735,7 @@
                   "IdValue": "d3d1ed69-303c-4332-b77b-09f5ee202131"
                 },
                 "Property": "Position",
-                "Value": "-1.867378,-1.597454,-1.281879"
+                "Value": "-1.867378,-1.59745395,-1.28187895"
               },
               {
                 "Target": {
@@ -759,7 +743,7 @@
                   "IdValue": "d3d1ed69-303c-4332-b77b-09f5ee202131"
                 },
                 "Property": "Rotation",
-                "Value": "-0.1426012,-0.03518039,-0.7988037,0.5833864"
+                "Value": "-0.142601207,-0.0351803899,-0.798803687,0.583386421"
               }
             ],
             "MovedObjects": []
@@ -857,23 +841,25 @@
     },
     {
       "__guid": "8df68926-c685-4543-8ca4-d112203ab68d",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Spot Light",
-      "Position": "-38.75337,-497.0863,1153.912",
-      "Rotation": "0.1927945,0.0004053185,-0.9812369,0.002062888",
+      "Position": "-38.7533684,-497.086304,1153.91199",
+      "Rotation": "0.192794502,0.000405318511,-0.981236875,0.00206288788",
       "Scale": "1,1,1",
       "Tags": "light_spot,light",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.SpotLight",
           "__guid": "9d1229cf-5b97-496f-91c3-fe96f9677445",
           "__enabled": true,
+          "Flags": 0,
           "Attenuation": 0.2,
           "ConeInner": 15,
           "ConeOuter": 31.06,
@@ -888,6 +874,8 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 4096,
+          "ShadowBias": 0.0005,
+          "ShadowHardness": 0,
           "Shadows": true
         }
       ],
@@ -895,23 +883,25 @@
     },
     {
       "__guid": "19726658-539e-4477-b537-9a163c83737d",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Spot Light (1)",
-      "Position": "-220.6961,-630.2888,1070.394",
-      "Rotation": "0.08734947,-0.084587,0.7130447,0.6904944",
+      "Position": "-220.696106,-630.288818,1070.39404",
+      "Rotation": "0.087349467,-0.0845870003,0.713044703,0.690494418",
       "Scale": "1,1,1",
       "Tags": "light_spot,light",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.SpotLight",
           "__guid": "ffdfe7b6-3d59-4c88-9a56-50d250881c61",
           "__enabled": true,
+          "Flags": 0,
           "Attenuation": 0.52,
           "ConeInner": 15,
           "ConeOuter": 31.06,
@@ -926,6 +916,8 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 556,
+          "ShadowBias": 0.0005,
+          "ShadowHardness": 0,
           "Shadows": true
         }
       ],
@@ -933,23 +925,24 @@
     },
     {
       "__guid": "e226e4b1-5c9a-4e0d-bd24-bb2312f37a08",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "GameObject",
-      "Position": "-195.1032,-364.381,1077.286",
-      "Rotation": "-0.02813232,-0.02164172,-0.7921045,0.6093527",
+      "Position": "-195.103195,-364.381012,1077.28601",
+      "Rotation": "-0.0281323195,-0.0216417201,-0.792104483,0.609352708",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [],
       "Children": [
         {
           "__guid": "25306734-bcc6-48b4-85ac-6c9772707df5",
-          "__version": 1,
+          "__version": 2,
           "Flags": 0,
           "Name": "Spot Light (2)",
           "Position": "0,0,0",
@@ -958,14 +951,16 @@
           "Tags": "light_spot,light",
           "Enabled": true,
           "NetworkMode": 2,
-          "NetworkInterpolation": true,
+          "NetworkFlags": 0,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
               "__type": "Sandbox.SpotLight",
               "__guid": "12bb3ab0-a91b-439e-8c75-307939e61933",
               "__enabled": true,
+              "Flags": 0,
               "Attenuation": 0.52,
               "ConeInner": 15,
               "ConeOuter": 19.32,
@@ -980,6 +975,8 @@
               "OnComponentStart": null,
               "OnComponentUpdate": null,
               "Radius": 150,
+              "ShadowBias": 0.0005,
+              "ShadowHardness": 0,
               "Shadows": true
             }
           ],
@@ -1005,7 +1002,24 @@
       "AgentStepSize": 18,
       "AgentMaxSlope": 40,
       "ExcludedBodies": "",
-      "IncludedBodies": ""
+      "IncludedBodies": "",
+      "DeferGeneration": false,
+      "CustomBounds": false
+    },
+    "GameObjectSystems": {
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "a4bee8de-838d-4c87-b3d3-4dc96a3d205c"
+        }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      }
     }
   },
   "ResourceVersion": 3,

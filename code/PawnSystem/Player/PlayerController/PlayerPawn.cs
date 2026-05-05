@@ -107,7 +107,7 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 
 	protected override void OnUpdate()
 	{
-		if ( HealthComponent.State == LifeState.Dead )
+		if ( HealthComponent is not null && HealthComponent.State == LifeState.Dead )
 		{
 			UpdateDead();
 		}
