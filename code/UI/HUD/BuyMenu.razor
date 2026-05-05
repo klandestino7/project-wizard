@@ -31,11 +31,16 @@
 				<div class="wiz-hint-txt">[ B ] Close</div>
 			</div>
 
-			<div class="wiz-spell-grid">
-				@RenderSpellCol( "Ofensiva", "OFFENSIVE" )
-				@RenderSpellCol( "Controle", "CONTROL"   )
-				@RenderSpellCol( "Defesa",   "DEFENSIVE" )
-				@RenderPotionsCol()
+			<div class="wiz-spell-container">
+				<div class="wiz-spell-grid">
+					@RenderSpellCol( "Ofensiva", "OFFENSIVE" )
+					@RenderSpellCol( "Controle", "CONTROL"   )
+					@RenderSpellCol( "Defesa",   "DEFENSIVE" )
+				</div>
+
+				<div class="wiz-spell-potions">
+					@RenderPotionsCol()
+				</div>
 			</div>
 
 			<div class="wiz-deck-bar">
@@ -44,8 +49,10 @@
 					@RenderDeckSlot( "1", 0 )
 					@RenderDeckSlot( "2", 1 )
 					@RenderDeckSlot( "3", 2 )
+					@RenderDeckSlot( "4", 3 )
 					<div class="wiz-deck-divider"></div>
-					@RenderDeckSlot( "Q", 3 )
+					@RenderDeckSlot( "Q", 4 )
+					@RenderDeckSlot( "E", 5 )
 				</div>
 			</div>
 
@@ -174,7 +181,7 @@
 
 	RenderFragment RenderSpellCol( string cat, string label ) => __builder =>
 	{
-		<div class="wiz-col">
+		<div class="wiz-col wiz-col-bg-@label.ToLower()">
 			<div class="wiz-col-hdr">@label</div>
 			<div class="wiz-col-body">
 				@for ( int i = 0; i < SpellCatalog.All.Length; i++ )
@@ -187,10 +194,12 @@
 					bool sel     = SelectedIdx == idx;
 					bool canAff  = Client.Balance >= entry.BuyCost;
 
+					Log.Info($" I {entry}"); 
+
 					<div class="wiz-sc @( owned ? "owned" : "" ) @( sel ? "sel" : "" ) @( !owned && !canAff ? "poor" : "" )"
 					     onclick=@( () => SelectSpell( idx ) )>
 						<div class="wiz-sc-icon" style="border-color: @entry.AccentColor;">
-							<div class="wiz-sc-dot" style="background-color: @entry.AccentColor;"></div>
+							<div class="wiz-sc-dot" ></div>
 						</div>
 						<div class="wiz-sc-info">
 							<div class="wiz-sc-name">@entry.Name.ToUpper()</div>
@@ -215,19 +224,19 @@
 
 	RenderFragment RenderPotionsCol() => __builder =>
 	{
-		<div class="wiz-col">
+		<div class="wiz-col-potion">
 			<div class="wiz-col-hdr">POTIONS</div>
 			<div class="wiz-col-body">
 				<div class="wiz-potion-card">
 					<div class="wiz-potion-bottle wiz-heal-bottle"></div>
-					<div class="wiz-potion-name">HEALING POTION</div>
+					<div class="wiz-potion-name">Healing Potion</div>
 					<div class="wiz-potion-cost">
 						<span class="wiz-star">★</span><span>600</span>
 					</div>
 				</div>
 				<div class="wiz-potion-card">
 					<div class="wiz-potion-bottle wiz-mana-bottle"></div>
-					<div class="wiz-potion-name">MANA POTION</div>
+					<div class="wiz-potion-name">Mana Potion</div>
 					<div class="wiz-potion-cost">
 						<span class="wiz-star">★</span><span>500</span>
 					</div>

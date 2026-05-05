@@ -65,7 +65,9 @@ public sealed class Wand : Component
 	/// <summary>Spell de slot 0–3 (Q / E / R / F).</summary>
 	public void TryCastSlot( int slot )
 	{
+		Log.Info(" TryCastSlot :: ");
 		var spell = _deck?.GetSlot( slot );
+		Log.Info($" spell :: {spell}");
 		if ( !ValidateCast( spell ) ) return;
 
 		switch ( slot )

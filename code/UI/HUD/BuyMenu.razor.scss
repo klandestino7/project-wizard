@@ -7,7 +7,7 @@ $bg-card-hover:  #362810;
 $border-dark:    #4a2e08;
 $border-gold:    #c89010;
 $text-light:     #ede0b0;
-$text-dim:       rgba(237, 224, 176, 0.35);
+$text-dim:       #B1A89A;
 $color-gold:     #e8a010;
 $color-star:     #30c8c0;
 $parchment:      #c8a850;
@@ -30,10 +30,11 @@ BuyMenu {
 .wiz-overlay {
 	display: flex;
 	flex-direction: row;
-	background-color: rgba(0, 0, 0, 0.75);
+	// background-color: rgba(0, 0, 0, 0.75);
 	padding: 20;
 	width: 85%;
 	height: 85%;
+	gap:5px;
 	// width: 100vw;
 	// height: 100vh;
 }
@@ -41,14 +42,14 @@ BuyMenu {
 // ─── LEFT — Team ─────────────────────────────────────────────────────────────
 
 .wiz-left {
-	width: 215px;
+	width: 360px;
 	flex-shrink: 0;
 	display: flex;
 	flex-direction: column;
-	background-color: $bg-root;
-	border-right: 2px solid $border-dark;
-	padding: 8px;
-	gap: 4px;
+	// background-color: $bg-root;
+	// border-right: 2px solid $border-dark;
+	// padding: 8px;
+	gap: 5px;
 }
 
 .wiz-panel-title {
@@ -56,9 +57,15 @@ BuyMenu {
 	letter-spacing: 5px;
 	color: $color-gold;
 	text-align: center;
-	padding: 6px 0 8px;
-	border-bottom: 1px solid $border-dark;
-	margin-bottom: 2px;
+	padding: 6px 10px 8px;
+	// border-bottom: 1px solid $border-dark;
+	// margin-bottom: 2px;
+
+	
+	background: url("ui/buy_menu/bg_header_team.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 .wiz-team-list {
@@ -66,6 +73,13 @@ BuyMenu {
 	flex-direction: column;
 	gap: 5px;
 	flex: 1;
+
+	background: url("ui/buy_menu/bg_team.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
+	padding: 30px 30px;
 }
 
 // Teammate card
@@ -75,10 +89,15 @@ BuyMenu {
 	flex-direction: row;
 	gap: 8px;
 	align-items: flex-start;
-	background-color: $bg-panel;
-	border: 1px solid $border-dark;
+	// background-color: $bg-panel;
+	// border: 1px solid $border-dark;
 	border-radius: 4px;
 	padding: 6px 8px;
+
+	background: url("ui/buy_menu/bg_player_item.png");
+	background-repeat: no-repeat;
+	background-size: 100% 85px;
+	background-position: center;
 
 	&.is-local {
 		border-color: $border-gold;
@@ -90,12 +109,19 @@ BuyMenu {
 }
 
 .wiz-avatar {
-	width: 46px;
-	height: 46px;
+	width: 80px;
+	height: 90px;
 	flex-shrink: 0;
-	background-color: #3a2408;
-	border: 2px solid $border-gold;
-	border-radius: 4px;
+
+
+	background: url("ui/buy_menu/bg_player_badge.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
+	// background-color: #3a2408;
+	// border: 2px solid $border-gold;
+	// border-radius: 4px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -110,6 +136,8 @@ BuyMenu {
 	flex-direction: column;
 	gap: 3px;
 	min-width: 0;
+	padding: 0px 0px;
+	margin-top: 5px;
 }
 
 .wiz-mate-name {
@@ -165,11 +193,13 @@ BuyMenu {
 // ─── CENTER — Spells ──────────────────────────────────────────────────────────
 
 .wiz-center {
+	max-width: 890px;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	background-color: $bg-root;
-	border-right: 2px solid $border-dark;
+	gap:5px;
+	// background-color: $bg-root;
+	// border-right: 2px solid $border-dark;
 }
 
 .wiz-center-hdr {
@@ -177,9 +207,15 @@ BuyMenu {
 	flex-direction: row;
 	align-items: center;
 	gap: 14px;
-	padding: 10px 18px;
-	background-color: rgba(0, 0, 0, 0.35);
-	border-bottom: 1px solid $border-dark;
+	padding: 8px 18px;
+
+	background: url("ui/buy_menu/bg_header_spells.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
+	// background-color: rgba(0, 0, 0, 0.35);
+	// border-bottom: 1px solid $border-dark;
 }
 
 .wiz-gold {
@@ -216,22 +252,68 @@ BuyMenu {
 }
 
 // Spell columns
+.wiz-spell-container {
+	flex-direction: row;
+	display: flex;
+	flex: 1;
+}
 
 .wiz-spell-grid {
 	flex: 1;
 	display: flex;
 	flex-direction: row;
-	padding: 10px 8px 8px;
 	gap: 6px;
 	overflow: hidden;
 }
 
+.wiz-spell-potions{
+	min-width: 167px;
+}
+
 .wiz-col {
+	padding: 10px;
+	max-width: 231px;
+	min-height: 580px;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	gap: 0;
-	min-width: 0;
+}
+
+.wiz-col-bg-control {
+	background: url("ui/buy_menu/bg_control_spells.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+}
+
+.wiz-col-bg-defensive {
+	background: url("ui/buy_menu/bg_defensive_spells.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+}
+
+.wiz-col-bg-offensive {
+	background: url("ui/buy_menu/bg_offensive_spells.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+}
+
+
+.wiz-col-potion {
+	padding: 3px;
+	min-width: 167px;
+	min-height: 580px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	background: url("ui/buy_menu/bg_potions.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 .wiz-col-hdr {
@@ -239,15 +321,18 @@ BuyMenu {
 	letter-spacing: 3px;
 	color: $text-dim;
 	text-align: center;
-	padding-bottom: 8px;
-	margin-bottom: 6px;
-	border-bottom: 1px solid rgba(74, 46, 8, 0.5);
+	width: 100%;
+	padding: 3px 0;
+
+	label {
+	width: 100%;
+	}
 }
 
 .wiz-col-body {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
+	gap: 2px;
 	flex: 1;
 }
 
@@ -258,25 +343,35 @@ BuyMenu {
 	flex-direction: row;
 	gap: 8px;
 	align-items: center;
-	background-color: $bg-card;
-	border: 1px solid $border-dark;
-	border-radius: 3px;
+	// background-color: $bg-card;
+	// border: 1px solid $border-dark;
+	// border-radius: 3px;
 	padding: 8px;
 	cursor: pointer;
 
+	opacity: 0.8;
+
+	min-width: 214px;
+	min-height: 126px;
+
+	background: url("ui/buy_menu/bg_spell_item.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
 	&:hover {
-		background-color: $bg-card-hover;
+		opacity: 1;
 	}
 
-	&.owned {
-		border-color: rgba(200, 144, 16, 0.55);
-		background-color: #301e08;
-	}
+	// &.owned {
+	// 	border-color: rgba(200, 144, 16, 0.55);
+	// 	background-color: #301e08;
+	// }
 
-	&.sel {
-		border-color: $border-gold;
-		background-color: rgba(200, 144, 16, 0.12);
-	}
+	// &.sel {
+	// 	border-color: $border-gold;
+	// 	background-color: rgba(200, 144, 16, 0.12);
+	// }
 
 	&.poor {
 		opacity: 0.42;
@@ -284,20 +379,26 @@ BuyMenu {
 }
 
 .wiz-sc-icon {
-	width: 40px;
-	height: 40px;
+	width: 74px;
+	height: 74px;
 	flex-shrink: 0;
-	border: 1.5px solid transparent;
-	border-radius: 3px;
-	background-color: rgba(0, 0, 0, 0.5);
+	// border: 1.5px solid transparent;
+	// border-radius: 3px;
+	// background-color: rgba(0, 0, 0, 0.5);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
 .wiz-sc-dot {
-	width: 22px;
-	height: 22px;
+
+	background: url("ui/spells/revelium.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
+	width: 100%;
+	height: 100%;
 	border-radius: 50%;
 	opacity: 0.85;
 }
@@ -313,7 +414,7 @@ BuyMenu {
 .wiz-sc-name {
 	font-size: 11px;
 	font-weight: bold;
-	color: $text-light;
+	color: #30281F;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -337,45 +438,62 @@ BuyMenu {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	gap: 6px;
-	background-color: $bg-card;
-	border: 1px solid $border-dark;
-	border-radius: 3px;
+	// background-color: $bg-card;
+	// border: 1px solid $border-dark;
+	// border-radius: 3px;
 	padding: 14px 8px 10px;
 	cursor: pointer;
 
+	min-width: 157px;
+	min-height: 264px;
+
+	flex:1;
+
+	background: url("ui/buy_menu/bg_potion_item.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+	
+
 	&:hover {
-		background-color: $bg-card-hover;
+		// background-color: $bg-card-hover;
 	}
 
 	&.owned {
-		border-color: rgba(200, 144, 16, 0.55);
-		background-color: #301e08;
+		// border-color: rgba(200, 144, 16, 0.55);
+		// background-color: #301e08;
 	}
 }
 
 .wiz-potion-bottle {
-	width: 38px;
-	height: 50px;
+	width: 95px;
+	min-height: 95px;
+	height: auto;
 	border-radius: 4px 4px 18px 18px;
 	border: 2px solid transparent;
 	position: relative;
 
 	&.wiz-heal-bottle {
-		background-color: rgba(200, 20, 20, 0.55);
-		border-color: rgba(255, 90, 90, 0.75);
+		background: url("ui/items/potion_heal.png");
+		background-repeat: no-repeat;
+		background-size: 100%;
+		background-position: center;
 	}
 
 	&.wiz-mana-bottle {
-		background-color: rgba(20, 80, 200, 0.55);
-		border-color: rgba(80, 130, 255, 0.75);
+		background: url("ui/items/potion_mana.png");
+		background-repeat: no-repeat;
+		background-size: 100%;
+		background-position: center;
 	}
 }
 
 .wiz-potion-name {
 	font-size: 10px;
 	font-weight: bold;
-	color: $text-light;
+	color: #30281F;
 	text-align: center;
 	letter-spacing: 0.5px;
 }
@@ -394,17 +512,31 @@ BuyMenu {
 .wiz-deck-bar {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
-	padding: 8px 14px 12px;
-	background-color: rgba(0, 0, 0, 0.42);
-	border-top: 1px solid $border-dark;
+	gap: 5px;
+
+	min-height: 206px;
+	padding: 10px 14px 12px;
+
+	background: url("ui/buy_menu/bg_spells_deck.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
+	text-align: center;
+
+	// background-color: rgba(0, 0, 0, 0.42);
+	// border-top: 1px solid $border-dark;
 }
 
 .wiz-deck-label {
-	font-size: 9px;
-	letter-spacing: 2px;
-	color: $text-dim;
 	text-align: center;
+	letter-spacing:-1px;
+	color: #E8B45B;
+
+	label{
+		font-size: 14px;
+		width: 100%;
+	}
 }
 
 .wiz-deck-row {
@@ -416,10 +548,10 @@ BuyMenu {
 }
 
 .wiz-ds {
-	width: 82px;
-	height: 82px;
-	background-color: $bg-card;
-	border: 1px solid $border-dark;
+	width: 125;
+	height: 141;
+	// background-color: $bg-card;
+	// border: 1px solid $border-dark;
 	border-radius: 4px;
 	display: flex;
 	flex-direction: column;
@@ -429,17 +561,24 @@ BuyMenu {
 	position: relative;
 	gap: 4px;
 
+	opacity: 0.9;
+
+	background: url("ui/buy_menu/bg_deck_item.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
+
 	&:hover {
-		border-color: rgba(200, 144, 16, 0.45);
+		opacity: 1;
+		// border-color: rgba(200, 144, 16, 0.45);
 	}
 
 	&.filled {
-		border-color: rgba(200, 144, 16, 0.38);
-		background-color: #2e1e08;
+		background: url("ui/buy_menu/bg_deck_item_empty.png") !important;
 	}
 
 	&.pending {
-		border-color: $color-star;
+		background: url("ui/buy_menu/bg_deck_item_empty.png") !important;
 	}
 }
 
@@ -480,11 +619,24 @@ BuyMenu {
 
 .wiz-ds-key {
 	position: absolute;
-	bottom: 4px;
-	right: 6px;
-	font-size: 8px;
-	color: $text-dim;
-	letter-spacing: 1px;
+	bottom: 9px;
+	// right: 6px;
+
+	width: 29px;
+	height: 29px;
+	font-size: 12px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	color: #E2C190;
+	padding-top: 2px;
+
+	background: url("ui/buy_menu/bg_deck_item_number.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 .wiz-ds-rm {
@@ -504,37 +656,54 @@ BuyMenu {
 }
 
 .wiz-deck-divider {
-	width: 1px;
+	width: 20px;
 	height: 64px;
-	background-color: rgba(74, 46, 8, 0.5);
+	// background-color: rgba(74, 46, 8, 0.5);
 	margin: 0 2px;
 }
 
 // ─── RIGHT — Round Info + Spell Detail ───────────────────────────────────────
 
 .wiz-right {
-	width: 215px;
+	width: 361px;
 	flex-shrink: 0;
 	display: flex;
 	flex-direction: column;
-	background-color: $parchment;
+	// background-color: $parchment;
 	overflow: hidden;
+
 }
 
 .wiz-right-empty {
 	flex: 1;
+
+	min-width: 360px;
+	min-height: 204px;
+	
+	background: url("ui/buy_menu/bg_match_footer.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 // Round panel
 
 .wiz-round {
+	min-width: 361px;
+	min-height: 633px;
 	padding: 16px 14px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 6px;
-	border-bottom: 1px solid rgba(58, 32, 8, 0.3);
-	background-color: rgba(0, 0, 0, 0.04);
+	// border-bottom: 1px solid rgba(58, 32, 8, 0.3);
+	// background-color: rgba(0, 0, 0, 0.04);
+
+
+	background: url("ui/buy_menu/bg_match.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 .wiz-round-num {
@@ -613,6 +782,14 @@ BuyMenu {
 	flex-direction: column;
 	gap: 8px;
 	overflow-y: scroll;
+
+	min-width: 360px;
+	min-height: 204px;
+	
+	background: url("ui/buy_menu/bg_match_footer.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	background-position: center;
 }
 
 .wiz-det-name {

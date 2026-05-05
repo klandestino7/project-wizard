@@ -686,7 +686,7 @@ SplashScreen
 
 .match-accept-overlay {
 	position: absolute;
-	inset: 0;
+	// inset: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -769,7 +769,7 @@ SplashScreen
 		flex-direction: row;
 		gap: 6px;
 		max-height: 140px;
-		overflow-y: auto;
+		// overflow-y: auto;
 	}
 
 	.player-row {

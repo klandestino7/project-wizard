@@ -4,6 +4,52 @@
 @attribute [StyleSheet]
 
 <root class="hud with-deadzone bottom-middle flex space-evenly align-center" style="width: 800px; height: 64px;">
-    <Vitals />
+    <VitalsOld />
+
+    @* Abilities Q E R F *@
+    <div class="abilities">
+        @RenderAbilitySlot( "1", _deck.GetSlot(0) )
+        @RenderAbilitySlot( "2", _deck.GetSlot(1) )
+        @RenderAbilitySlot( "3", _deck.GetSlot(2) )
+        @RenderAbilitySlot( "4", _deck.GetSlot(3) )
+    </div>
+
+    @* Itens *@
+    <div class="item-slots">
+        @RenderItemSlot( "Q", Player.ItemSlot1 )
+        @RenderItemSlot( "E", Player.ItemSlot2 )
+    </div>
+
     <PlayerRole />
 </root>
+
+
+@code {
+    public PlayerPawn Player => Client.Viewer?.PlayerPawn;
+	SpellsDeck _deck => Player.SpellsDeck;
+    RenderFragment RenderAbilitySlot( string key, BaseSpell spell ) => __builder =>
+	{
+		bool ready = spell?.IsReady ?? true;
+		<div class="ability-slot @( ready ? "ready" : "cooling" )">
+			<div class="ability-key">@key</div>
+			<div class="ability-name">@( spell?.SpellName ?? "–" )</div>
+			@if ( !ready )
+			{
+				<div class="ability-cd">@( spell?.CooldownRemaining.ToString( "0.0" ) )s</div>
+			}
+		</div>
+	};
+
+	RenderFragment RenderItemSlot( string key, BaseConsumable item ) => __builder =>
+	{
+		<div class="item-slot @( item?.IsUsed == true ? "item-used" : "" )">
+			<div class="item-key">@key</div>
+			<div class="item-name">@( item?.ItemName ?? "–" )</div>
+		</div>
+	};
+
+    protected override int BuildHash() => System.HashCode.Combine(
+		Player?.SpellsDeck,
+		Player?.IsAlive
+	);
+}

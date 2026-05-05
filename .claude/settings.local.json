@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(Remove-Item \"c:\\\\users\\\\cleid\\\\onedrive\\\\documentos\\\\s&box projects\\\\wizardproject\\\\code\\\\Matchmaking\\\\MatchmakingSystem.cs\" -Force)",
+      "Bash(Remove-Item \"c:\\\\users\\\\cleid\\\\onedrive\\\\documentos\\\\s&box projects\\\\wizardproject\\\\code\\\\Matchmaking\" -Force)"
+    ]
+  }
+}

@@ -11,26 +11,26 @@
 	{
         @* HP + Shield + Mana *@
         <div class="status-bars">
-            <div class="bar-label">HP</div>
-            <div class="bar-track">
+            <div class="bar-label">HP @Player.Health</div>
+            @* <div class="bar-track">
                 <div class="bar-fill hp-fill" style="width: @( HealthPercent )%"></div>
-            </div>
-            <div class="bar-value">@Player.Health</div>
+            </div> *@
+            @* <div class="bar-value"></div> *@
 
             @if ( Player.Shield > 0 )
             {
-                <div class="bar-label shield-label">SHIELD</div>
-                <div class="bar-track">
+                <div class="bar-label shield-label">SHIELD @Player.Shield</div>
+                @* <div class="bar-track">
                     <div class="bar-fill shield-fill" style="width: @( ShieldPercent )%"></div>
-                </div>
-                <div class="bar-value">@Player.Shield</div>
+                </div> *@
+                @* <div class="bar-value"> </div> *@
             }
 
-            <div class="bar-label mana-label">MANA</div>
-            <div class="bar-track">
+            <div class="bar-label mana-label">MANA @( (int)(Mana) )</div>
+            @* <div class="bar-track">
                 <div class="bar-fill mana-fill" style="width: @( ManaPercent )%"></div>
-            </div>
-            <div class="bar-value">@( (int)(Mana) )</div>
+            </div> *@
+            @* <div class="bar-value"></div> *@
         </div>
 	}
 </root>

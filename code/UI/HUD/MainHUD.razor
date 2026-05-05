@@ -27,6 +27,7 @@
 
         @if ( isValidPlayer )
         {   
+            <PlayerInfo />
             <Spectating />
             <Deathcam />
             <DamageIndicator />
@@ -41,7 +42,7 @@
 
         @if ( isValidPlayer )
         {
-            @* <Radio /> *@
+            <Radio />
             <ScoringSystem @ref="ScoringSystem" />
         }
 

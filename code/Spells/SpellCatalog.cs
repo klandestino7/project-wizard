@@ -17,6 +17,7 @@ public static class SpellCatalog
 		public float  ManaCost     { get; init; }
 		public float  BaseCooldown { get; init; }
 		public string AccentColor  { get; init; }   // Cor da UI (#rrggbb)
+		public string Image  	   { get; init; }
 	}
 
 	public static readonly Entry[] All =
@@ -29,6 +30,7 @@ public static class SpellCatalog
 			BuyCost = 300, Tier1Cost = 400, Tier2Cost = 700,
 			ManaCost = 20f, BaseCooldown = 6f,
 			AccentColor = "#ff4444",
+			Image = "ui/spells/stupefy.png",
 		},
 		new() {
 			ClassName = nameof(IncendioSpell),
@@ -38,6 +40,7 @@ public static class SpellCatalog
 			BuyCost = 400, Tier1Cost = 500, Tier2Cost = 900,
 			ManaCost = 25f, BaseCooldown = 7f,
 			AccentColor = "#ff7722",
+			Image = "ui/spells/incendio.png",
 		},
 		new() {
 			ClassName = nameof(SectumsempraSpell),
@@ -47,6 +50,7 @@ public static class SpellCatalog
 			BuyCost = 600, Tier1Cost = 700, Tier2Cost = 1100,
 			ManaCost = 30f, BaseCooldown = 8f,
 			AccentColor = "#cc44ff",
+			Image = "ui/spells/avada_kedavra.png",
 		},
 		new() {
 			ClassName = nameof(ImpedimentaSpell),
@@ -56,6 +60,7 @@ public static class SpellCatalog
 			BuyCost = 500, Tier1Cost = 600, Tier2Cost = 1000,
 			ManaCost = 30f, BaseCooldown = 9f,
 			AccentColor = "#4488ff",
+			Image = "ui/spells/bomba.png",
 		},
 		new() {
 			ClassName = nameof(ProtegoSpell),
@@ -65,6 +70,7 @@ public static class SpellCatalog
 			BuyCost = 400, Tier1Cost = 500, Tier2Cost = 900,
 			ManaCost = 30f, BaseCooldown = 6f,
 			AccentColor = "#22ddcc",
+			Image = "ui/spells/lumos.png",
 		},
 		new() {
 			ClassName = nameof(EpiskeySpell),
@@ -74,6 +80,7 @@ public static class SpellCatalog
 			BuyCost = 500, Tier1Cost = 600, Tier2Cost = 1000,
 			ManaCost = 25f, BaseCooldown = 10f,
 			AccentColor = "#44ff88",
+			Image = "ui/spells/silencio.png",
 		},
 		new() {
 			ClassName = nameof(DashSpell),
@@ -83,6 +90,7 @@ public static class SpellCatalog
 			BuyCost = 700, Tier1Cost = 900, Tier2Cost = 1400,
 			ManaCost = 0f, BaseCooldown = 20f,
 			AccentColor = "#ffcc44",
+			Image = "ui/spells/revelium.png",
 		},
 	};
 
