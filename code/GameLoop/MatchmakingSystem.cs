@@ -1,61 +1,70 @@
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Sandbox;
 using Sandbox.Network;
 
 namespace Warlocks;
 
 /// <summary>
-/// CS2-style matchmaking: search → lobby → accept phase (all must confirm) → game start.
-/// The match only loads after every player accepts. Decliners are kicked and must re-queue.
+/// Matchmaking via external Go server over WebSocket.
+///
+/// Flow:
+///   1. Connect WS → send "auth"
+///   2. Send "queue.join"
+///   3. Server pushes "match.proposed" when a match is found
+///   4. Player accepts / declines → server manages accept phase
+///   5. Server pushes "match.ready":
+///      - isHost=true  → create invisible S&amp;Box lobby → send "lobby.register"
+///      - isHost=false → wait for "lobby.ready" then connect
 /// </summary>
 public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 {
-	public enum SearchState
-	{
-		Idle,
-		Searching,       // Querying for / creating a lobby
-		InLobby,         // Host: lobby open, waiting for players
-		JoinedLobby,     // Client: waiting in lobby
-		MatchProposed,   // Accept popup active — everyone must confirm
-		Starting,        // Scene loading
-	}
+	// ── Config ────────────────────────────────────────────────────────────────
 
-	[Property] public int MinPlayers { get; set; } = 2;
+	/// <summary>WebSocket address of the Go matchmaking server.</summary>
+	[Property] public string ServerUrl { get; set; } = "ws://localhost:8080/ws";
+
 	[Property] public int MaxPlayers { get; set; } = 10;
-	[Property] public int AcceptTimeoutSeconds { get; set; } = 15;
 
 	/// <summary>Set to false before loading Sandbox Mode.</summary>
 	public static bool IsMultiplayerSession { get; set; } = true;
 
-	// ── UI-readable state ────────────────────────────────────────────────────
+	// ── State (UI-readable) ───────────────────────────────────────────────────
 
-	public static SearchState CurrentState { get; private set; } = SearchState.Idle;
-	public static int CountdownSeconds { get; private set; }
-	public static string ProposedMapTitle { get; private set; } = "";
-	public static int CurrentPlayerCount => Connection.All.Count();
-	public static int AcceptedCount { get; private set; }
+	public enum SearchState
+	{
+		Idle,
+		Connecting,
+		Queued,
+		MatchProposed,
+		WaitingForLobby,
+		Starting,
+	}
 
-	/// <summary>Fires on every state/countdown change so the UI can refresh.</summary>
+	public static SearchState CurrentState    { get; private set; } = SearchState.Idle;
+	public static int  CountdownSeconds       { get; private set; }
+	public static int  AcceptedCount          { get; private set; }
+	public static int  TotalPlayers           { get; private set; }
+	public static bool IsHost                 { get; private set; }
+	public static string CurrentMatchId       { get; private set; }
+
+	/// <summary>Fires on every state or counter change so UI panels can refresh.</summary>
 	public static event Action OnStateChanged;
 
-	// ── Private state ────────────────────────────────────────────────────────
+	// ── Private ───────────────────────────────────────────────────────────────
 
-	private bool _cancelled;
-	private bool _hasResponded;
-	private bool _proposalActive;
-	private readonly HashSet<ulong> _acceptedSteamIds = new();
-	private SceneFile _proposedMap;
-	private GameMode _proposedGameMode;
+	private WebSocket _socket;
+	private bool      _hasResponded;
+	private DateTime  _matchTimeoutAt;
 
-	// ── Public API ───────────────────────────────────────────────────────────
+	// ── Public API (called from UI / other systems) ───────────────────────────
 
 	public static async Task FindOrCreateMatch()
 	{
-		if ( !Instance.IsValid() )
-		{
-			Log.Warning( "MatchmakingSystem: No instance found." );
-			return;
-		}
-		await Instance.RunMatchmaking();
+		if ( !Instance.IsValid() ) return;
+		await Instance.StartMatchmaking();
 	}
 
 	public static void CancelSearch()
@@ -64,307 +73,281 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		Instance.DoCancel();
 	}
 
-	/// <summary>Called when the local player clicks Accept in the popup.</summary>
 	public static void AcceptMatch()
 	{
 		if ( !Instance.IsValid() ) return;
 		if ( CurrentState != SearchState.MatchProposed ) return;
-		Instance.DoAccept();
+		Instance.SendAccept();
 	}
 
-	/// <summary>Called when the local player clicks Decline in the popup.</summary>
 	public static void DeclineMatch()
 	{
 		if ( !Instance.IsValid() ) return;
-		if ( CurrentState != SearchState.MatchProposed ) return;
-		Instance.DoDecline();
+		Instance.SendDecline();
 	}
 
-	// ── Matchmaking flow ─────────────────────────────────────────────────────
+	// ── Matchmaking flow ──────────────────────────────────────────────────────
 
-	private async Task RunMatchmaking()
+	private async Task StartMatchmaking()
 	{
-		_cancelled = false;
-		IsMultiplayerSession = true;
-		SetState( SearchState.Searching );
+		if ( CurrentState != SearchState.Idle ) return;
 
-		LobbyInformation? foundLobby = null;
+		IsMultiplayerSession = true;
+		SetState( SearchState.Connecting );
+
+		// Health check first (plain HTTP)
+		var healthUrl = ServerUrl
+			.Replace( "ws://",  "http://" )
+			.Replace( "wss://", "https://" )
+			.Replace( "/ws", "/health" );
+
 		try
 		{
-			var lobbies = await Networking.QueryLobbies();
-			foundLobby = lobbies
-				.Where( l => !l.IsFull )
-				.OrderByDescending( l => l.Members )
-				.Cast<LobbyInformation?>()
-				.FirstOrDefault();
+			var http = new System.Net.Http.HttpClient();
+			http.Timeout = TimeSpan.FromSeconds( 5 );
+			var resp = await http.GetStringAsync( healthUrl );
+			var doc  = JsonDocument.Parse( resp );
+			var active = doc.RootElement.GetProperty( "active" ).GetBoolean();
+			if ( !active )
+			{
+				Log.Warning( "MatchmakingSystem: Server is not accepting queues." );
+				SetState( SearchState.Idle );
+				return;
+			}
 		}
 		catch ( Exception e )
 		{
-			Log.Warning( $"MatchmakingSystem: Lobby query failed: {e.Message}" );
-		}
-
-		if ( _cancelled ) return;
-
-		if ( foundLobby.HasValue )
-		{
-			Log.Info( "MatchmakingSystem: Joining existing lobby..." );
-			var joined = await Networking.TryConnectSteamId( foundLobby.Value.LobbyId );
-			if ( joined )
-			{
-				SetState( SearchState.JoinedLobby );
-				return; // Host will broadcast when ready
-			}
-			Log.Warning( "MatchmakingSystem: Failed to join, creating new lobby." );
-		}
-
-		if ( _cancelled ) return;
-
-		Log.Info( "MatchmakingSystem: Creating new lobby..." );
-		Networking.CreateLobby( new LobbyConfig { MaxPlayers = MaxPlayers } );
-		SetState( SearchState.InLobby );
-		await WaitForPlayers();
-	}
-
-	private async Task WaitForPlayers()
-	{
-		while ( !_cancelled )
-		{
-			NotifyStateChanged();
-
-			if ( Connection.All.Count() >= MinPlayers )
-			{
-				await ProposeMatch();
-				return;
-			}
-
-			await Task.DelayRealtimeSeconds( 1f );
-		}
-	}
-
-	private async Task ProposeMatch()
-	{
-		if ( _cancelled ) return;
-
-		var maps = GameUtils.GetAvailableMaps().ToList();
-		if ( maps.Count == 0 )
-		{
-			Log.Warning( "MatchmakingSystem: No maps found." );
+			Log.Warning( $"MatchmakingSystem: Health check failed — {e.Message}" );
+			SetState( SearchState.Idle );
 			return;
 		}
 
-		_proposedMap = maps[Random.Shared.Next( maps.Count )];
-		_proposedGameMode = GameMode.GetAll( _proposedMap ).FirstOrDefault();
-		var mapTitle = _proposedMap.GetMetadata( "Title", _proposedMap.ResourceName );
+		// Open WebSocket
+		_socket = new WebSocket();
+		_socket.OnMessageReceived += OnMessage;
+		_socket.OnDisconnected += OnDisconnected;
 
-		_proposalActive = true;
-		_acceptedSteamIds.Clear();
-		AcceptedCount = 0;
-		CountdownSeconds = AcceptTimeoutSeconds;
-
-		// Fires on host + all clients via [Broadcast]
-		RpcMatchProposed( mapTitle, AcceptTimeoutSeconds );
-		Log.Info( $"MatchmakingSystem: Proposed '{mapTitle}', waiting for accepts ({AcceptTimeoutSeconds}s)..." );
-
-		// Host countdown loop
-		while ( CountdownSeconds > 0 && _proposalActive && !_cancelled )
+		try
 		{
-			if ( Connection.All.Count() < MinPlayers )
-			{
-				Log.Info( "MatchmakingSystem: Player dropped during accept phase." );
-				_proposalActive = false;
-				RpcMatchCancelled();
-				SetState( SearchState.InLobby );
-				await WaitForPlayers();
-				return;
-			}
-
-			await Task.DelayRealtimeSeconds( 1f );
-			CountdownSeconds--;
-			NotifyStateChanged();
+			await _socket.Connect( ServerUrl );
 		}
-
-		if ( !_proposalActive || _cancelled ) return;
-
-		// Timeout — kick anyone who didn't accept
-		Log.Info( "MatchmakingSystem: Timeout, kicking non-acceptors." );
-		var nonAcceptors = Connection.All
-			.Where( c => !_acceptedSteamIds.Contains( c.SteamId ) )
-			.ToList();
-
-		foreach ( var conn in nonAcceptors )
-			conn.Kick( "Did not accept in time" );
-
-		var remaining = Connection.All.Count() - nonAcceptors.Count;
-		if ( remaining >= MinPlayers )
+		catch ( Exception e )
 		{
-			LoadGameScene();
-		}
-		else
-		{
-			_proposalActive = false;
-			RpcMatchCancelled();
-			SetState( SearchState.InLobby );
-			await WaitForPlayers();
-		}
-	}
-
-	// ── Accept / Decline ─────────────────────────────────────────────────────
-
-	private void DoAccept()
-	{
-		if ( _hasResponded ) return;
-		_hasResponded = true;
-
-		if ( Networking.IsHost )
-		{
-			HandleAccept( Connection.Local?.SteamId ?? 0 );
-		}
-		else
-		{
-			RpcAccept(); // [Authority] → executes on host
-		}
-	}
-
-	private void DoDecline()
-	{
-		if ( _hasResponded ) return;
-		_hasResponded = true;
-
-		if ( Networking.IsHost )
-		{
-			_proposalActive = false;
-			RpcMatchCancelled(); // [Broadcast] → notifies all clients
-			DoCancel();
-		}
-		else
-		{
-			RpcDecline(); // [Authority] → host kicks this client
+			Log.Warning( $"MatchmakingSystem: WS connect failed — {e.Message}" );
 			SetState( SearchState.Idle );
-			if ( Networking.IsActive )
-				Networking.Disconnect();
+			return;
 		}
-	}
 
-	/// <summary>Records an accept. Host only.</summary>
-	private void HandleAccept( ulong steamId )
-	{
-		if ( steamId == 0 ) return;
-		_acceptedSteamIds.Add( steamId );
-		AcceptedCount = _acceptedSteamIds.Count;
-		int total = Connection.All.Count();
+		// Authenticate
+		var steamId = Connection.Local.SteamId.ToString();
+		var name    = Connection.Local.DisplayName;
 
-		RpcUpdateAcceptCount( AcceptedCount );
-		Log.Info( $"MatchmakingSystem: {AcceptedCount}/{total} accepted." );
+		// TODO: attach partyId here if the local player is in a party
+		// var partyId = PartySystem.Instance?.LocalPartyId ?? "";
+		var partyId = "";
 
-		if ( _acceptedSteamIds.Count >= total )
+		await SendJson( new
 		{
-			_proposalActive = false;
-			Log.Info( "MatchmakingSystem: All accepted! Starting match." );
-			LoadGameScene();
-		}
+			type    = "auth",
+			steamId = steamId,
+			name    = name,
+			partyId = partyId
+		} );
 	}
 
-	/// <summary>Kicks a decliner and re-evaluates. Host only.</summary>
-	private void HandleDecline( Connection conn )
+	private async Task SendJson( object obj )
 	{
-		Log.Info( $"MatchmakingSystem: {conn.DisplayName} declined." );
-		conn.Kick( "Declined the match" );
-		_acceptedSteamIds.Remove( conn.SteamId );
+		if ( _socket == null ) return;
+		var json = JsonSerializer.Serialize( obj );
+		await _socket.Send( json );
+	}
 
-		var remaining = Connection.All.Count() - 1;
-		if ( remaining < MinPlayers )
+	// ── WebSocket message handler ─────────────────────────────────────────────
+
+	private async void OnMessage( string json )
+	{
+		JsonNode root;
+		try { root = JsonNode.Parse( json ); }
+		catch { return; }
+
+		var type = root?["type"]?.GetValue<string>();
+		if ( type == null ) return;
+
+		switch ( type )
 		{
-			_proposalActive = false;
-			RpcMatchCancelled();
-			SetState( SearchState.InLobby );
-			_ = WaitForPlayers();
+			// ── Server acknowledged our connection
+			case "welcome":
+				Log.Info( "MatchmakingSystem: Authenticated with matchmaking server." );
+				// Auto-join the queue right after auth
+				await SendJson( new { type = "queue.join" } );
+				break;
+
+			// ── We are in the queue
+			case "queued":
+				SetState( SearchState.Queued );
+				break;
+
+			// ── A match was found — show accept popup
+			case "match.proposed":
+				_hasResponded  = false;
+				CurrentMatchId = root["matchId"]?.GetValue<string>() ?? "";
+				TotalPlayers   = root["playerCount"]?.GetValue<int>() ?? 0;
+				AcceptedCount  = root["acceptedCount"]?.GetValue<int>() ?? 0;
+				IsHost         = root["isHost"]?.GetValue<bool>() ?? false;
+
+				var timeoutStr = root["timeoutAt"]?.GetValue<string>();
+				_matchTimeoutAt = timeoutStr != null
+					? DateTime.Parse( timeoutStr, null, System.Globalization.DateTimeStyles.RoundtripKind )
+					: DateTime.UtcNow.AddSeconds( 20 );
+
+				CountdownSeconds = Math.Max( 0, (int)(_matchTimeoutAt - DateTime.UtcNow).TotalSeconds );
+				SetState( SearchState.MatchProposed );
+
+				// Start local countdown (display only — server is authoritative)
+				_ = TickCountdown();
+				break;
+
+			// ── Accept count changed (someone accepted)
+			case "match.update":
+				AcceptedCount = root["acceptedCount"]?.GetValue<int>() ?? AcceptedCount;
+				TotalPlayers  = root["totalPlayers"]?.GetValue<int>() ?? TotalPlayers;
+				NotifyStateChanged();
+				break;
+
+			// ── Everyone accepted — proceed with lobby
+			case "match.ready":
+				IsHost = root["isHost"]?.GetValue<bool>() ?? false;
+				if ( IsHost )
+				{
+					await CreateAndRegisterLobby();
+				}
+				else
+				{
+					SetState( SearchState.WaitingForLobby );
+				}
+				break;
+
+			// ── Host registered the lobby — non-host players can connect
+			case "lobby.ready":
+				var lobbyIdStr = root["lobbyId"]?.GetValue<string>();
+				if ( !string.IsNullOrEmpty( lobbyIdStr ) && ulong.TryParse( lobbyIdStr, out var lobbyId ) )
+				{
+					await ConnectToLobby( lobbyId );
+				}
+				break;
+
+			// ── Match was cancelled (decline / timeout / disconnect)
+			case "match.cancelled":
+				var reason = root["reason"]?.GetValue<string>() ?? "unknown";
+				Log.Info( $"MatchmakingSystem: Match cancelled — {reason}" );
+				// Server auto-re-queues us; update UI
+				SetState( SearchState.Queued );
+				break;
+
+			// ── Party state update
+			case "party.state":
+				// TODO: forward to PartySystem if implemented
+				break;
+
+			// ── Server error
+			case "error":
+				Log.Warning( $"MatchmakingSystem: Server error — {root["message"]?.GetValue<string>()}" );
+				break;
+
+			case "pong":
+				break;
 		}
 	}
 
-	// ── RPCs ─────────────────────────────────────────────────────────────────
-
-	/// <summary>Host → all: match proposed, show the accept popup.</summary>
-	[Broadcast]
-	private void RpcMatchProposed( string mapTitle, int timeoutSeconds )
+	private void OnDisconnected()
 	{
-		ProposedMapTitle = mapTitle;
-		CountdownSeconds = timeoutSeconds;
-		AcceptedCount = 0;
-		_hasResponded = false;
-		SetState( SearchState.MatchProposed );
-
-		if ( !Networking.IsHost )
-			_ = ClientCountdown();
+		Log.Warning( "MatchmakingSystem: WebSocket disconnected." );
+		if ( CurrentState != SearchState.Idle )
+			SetState( SearchState.Idle );
 	}
 
-	/// <summary>Host → all: X players have accepted so far.</summary>
-	[Broadcast]
-	private void RpcUpdateAcceptCount( int count )
+	// ── Accept / Decline ──────────────────────────────────────────────────────
+
+	private async void SendAccept()
 	{
-		AcceptedCount = count;
-		NotifyStateChanged();
+		if ( _hasResponded ) return;
+		_hasResponded = true;
+		await SendJson( new { type = "match.accept" } );
 	}
 
-	/// <summary>Host → all: proposal cancelled, return to waiting.</summary>
-	[Broadcast]
-	private void RpcMatchCancelled()
+	private async void SendDecline()
 	{
-		if ( !Networking.IsHost )
-			SetState( SearchState.JoinedLobby );
+		if ( _hasResponded ) return;
+		_hasResponded = true;
+		await SendJson( new { type = "match.decline" } );
+		DoCancel();
 	}
 
-	/// <summary>Client → host: I accept.</summary>
-	[Authority]
-	private void RpcAccept()
+	private void DoCancel()
 	{
-		if ( !_proposalActive ) return;
-		HandleAccept( Rpc.Caller.SteamId );
+		_ = SendJson( new { type = "queue.leave" } );
+		_socket?.Disconnect();
+		_socket = null;
+		SetState( SearchState.Idle );
 	}
 
-	/// <summary>Client → host: I decline.</summary>
-	[Authority]
-	private void RpcDecline()
+	// ── Lobby creation (host only) ────────────────────────────────────────────
+
+	private async Task CreateAndRegisterLobby()
 	{
-		if ( !_proposalActive ) return;
-		HandleDecline( Rpc.Caller );
+		SetState( SearchState.Starting );
+
+		// Create a private S&Box lobby so it doesn't appear in public queries.
+		// Other players connect only via the lobby ID we register with the Go server.
+		Networking.CreateLobby( new LobbyConfig
+		{
+			MaxPlayers = MaxPlayers,
+			// NOTE: set Visibility = LobbyVisibility.FriendsOnly (or Invisible) once
+			// S&Box exposes that property on LobbyConfig.
+		} );
+
+		// Brief wait for the Steam lobby to be fully created before reading its ID.
+		await Task.DelayRealtimeSeconds( 0.5f );
+
+		// Networking.LobbyId is the Steam lobby ID assigned after CreateLobby().
+		// Other players pass this to Networking.TryConnectSteamId() to join.
+		var lobbyId = Networking.LobbyId;
+		Log.Info( $"MatchmakingSystem: Lobby created — ID {lobbyId}" );
+
+		await SendJson( new
+		{
+			type    = "lobby.register",
+			lobbyId = lobbyId.ToString()
+		} );
 	}
 
-	// ── Client countdown ─────────────────────────────────────────────────────
+	private async Task ConnectToLobby( ulong lobbyId )
+	{
+		SetState( SearchState.Starting );
+		Log.Info( $"MatchmakingSystem: Connecting to lobby {lobbyId}..." );
 
-	private async Task ClientCountdown()
+		var connected = await Networking.TryConnectSteamId( lobbyId );
+		if ( !connected )
+		{
+			Log.Warning( "MatchmakingSystem: Failed to connect to lobby." );
+			SetState( SearchState.Idle );
+		}
+	}
+
+	// ── Countdown (display only) ──────────────────────────────────────────────
+
+	private async Task TickCountdown()
 	{
 		while ( CurrentState == SearchState.MatchProposed && CountdownSeconds > 0 )
 		{
 			await Task.DelayRealtimeSeconds( 1f );
 			if ( CurrentState != SearchState.MatchProposed ) return;
-			CountdownSeconds--;
+			CountdownSeconds = Math.Max( 0, (int)(_matchTimeoutAt - DateTime.UtcNow).TotalSeconds );
 			NotifyStateChanged();
 		}
 	}
 
 	// ── Helpers ───────────────────────────────────────────────────────────────
-
-	private void DoCancel()
-	{
-		Log.Info( "MatchmakingSystem: DoCancel" );
-		_cancelled = true;
-		_proposalActive = false;
-		SetState( SearchState.Idle );
-
-		if ( Networking.IsActive )
-			Networking.Disconnect();
-	}
-
-	private void LoadGameScene()
-	{
-		SetState( SearchState.Starting );
-
-		if ( _proposedGameMode.IsValid() )
-			GameMode.SetCurrent( _proposedGameMode );
-
-		Log.Info( $"MatchmakingSystem: Loading '{ProposedMapTitle}'" );
-		Game.ActiveScene.Load( _proposedMap );
-	}
 
 	private static void SetState( SearchState state )
 	{

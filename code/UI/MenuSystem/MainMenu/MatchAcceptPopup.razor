@@ -13,7 +13,7 @@
 			@* Header *@
 			<div class="match-accept-header">
 				<label class="match-accept-title">PARTIDA ENCONTRADA</label>
-				<label class="match-accept-map">@MatchmakingSystem.ProposedMapTitle</label>
+				<label class="match-accept-map">@(MatchmakingSystem.IsHost ? "VOCÊ É O ANFITRIÃO" : "")</label>
 			</div>
 
 			@* Countdown *@
@@ -25,10 +25,10 @@
 			@* Accept progress *@
 			<div class="match-accept-players">
 				<label class="players-header">
-					PRONTOS @MatchmakingSystem.AcceptedCount / @MatchmakingSystem.CurrentPlayerCount
+					PRONTOS @MatchmakingSystem.AcceptedCount / @MatchmakingSystem.TotalPlayers
 				</label>
 				<div class="accept-pips">
-					@for ( int i = 0; i < MatchmakingSystem.CurrentPlayerCount; i++ )
+					@for ( int i = 0; i < MatchmakingSystem.TotalPlayers; i++ )
 					{
 						<div class="accept-pip @(i < MatchmakingSystem.AcceptedCount ? "ready" : "waiting")"></div>
 					}
@@ -64,6 +64,7 @@
 @code
 {
 	private bool IsVisible => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed
+	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.WaitingForLobby
 	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Starting;
 
 	private bool _hasResponded;
