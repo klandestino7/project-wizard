@@ -369,13 +369,14 @@ public partial class PlayerPawn
 	public void GiveGalleons( int amount )
 	{
 		if ( !Networking.IsHost ) return;
-		Balance += amount;
+		Client.Balance += amount;
 	}
 
 	public bool SpendGalleons( int amount )
 	{
-		if ( !Networking.IsHost || Balance < amount ) return false;
-		Balance -= amount;
+		Log.Info($"SpendGalleons{Networking.IsHost} :: {Client.Balance} :: {amount}");
+		if ( !Networking.IsHost || Client.Balance < amount ) return false;
+		Client.Balance -= amount;
 		return true;
 	}
 

@@ -1,3 +1,4 @@
+@import "/UI/Styles/Theme.scss";
 // ─── BuyMenu — Wizarding Parchment Theme ─────────────────────────────────────
 
 $bg-root:        #141008;
@@ -25,7 +26,14 @@ BuyMenu {
 	position: absolute;
 	top:0;
 	left:0;
+
+	
+
 }
+
+    .visible {
+        pointer-events: all;
+    }
 
 .wiz-overlay {
 	display: flex;

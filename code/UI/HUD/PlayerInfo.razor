@@ -51,6 +51,10 @@
 
     protected override int BuildHash() => System.HashCode.Combine(
 		Player?.SpellsDeck,
-		Player?.IsAlive
+		Player?.IsAlive,
+		_deck.GetSlot(0),
+		_deck.GetSlot(1),
+		_deck.GetSlot(2),
+		_deck.GetSlot(3)
 	);
 }

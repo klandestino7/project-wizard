@@ -122,6 +122,7 @@ public sealed class SpellsDeck : Component
 
 	private void Send( int type, int arg0, int arg1 )
 	{
+		Log.Info($" Send :: {type} {arg0} {arg1}");
 		ActionType = type;
 		ActionArg0 = arg0;
 		ActionArg1 = arg1;
@@ -165,6 +166,7 @@ public sealed class SpellsDeck : Component
 
 	private void ExecuteAction( int type, int arg0, int arg1 )
 	{
+		Log.Info($" ExecuteAction :: {type} {arg0} {arg1}");
 		switch ( type )
 		{
 			case 0: ServerBuy( arg0 ); break;

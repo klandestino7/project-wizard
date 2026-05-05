@@ -1,6 +1,7 @@
 @using Sandbox;
 @using Sandbox.UI;
 @inherits Panel
+@attribute [StyleSheet]
 
 @namespace Warlocks.UI
 
@@ -9,7 +10,7 @@
 <root>
 @if ( IsOpen && Player != null && Deck != null )
 {
-	<div class="wiz-overlay">
+	<div class="wiz-overlay @( IsOpen ? "visible" : "")">
 
 		@* ══ LEFT: Team ══════════════════════════════════════════════ *@
 		<div class="wiz-left">
@@ -79,7 +80,7 @@
 	public Client Client => Client.Viewer;
     public PlayerPawn Player => Client.Viewer?.PlayerPawn;
 	RoundManager Round  => RoundManager.Instance;
-	SpellsDeck   Deck   => Player?.SpellsDeck;
+	SpellsDeck   Deck   => Player.SpellsDeck;
 
 	int SelectedIdx = -1;
 	int PendingSlot = -1;
@@ -314,6 +315,7 @@
 		int  tier   = Deck.GetTier( idx );
 		int  refund = RefundOf( idx );
 		bool canBuy = Client.Balance >= e.BuyCost;
+
 		bool canT1  = Client.Balance >= e.Tier1Cost;
 		bool canT2  = Client.Balance >= e.Tier2Cost;
 
@@ -387,7 +389,10 @@
 
 	// ─── Actions ─────────────────────────────────────────────────────────────
 
-	void Buy( int idx )               { Deck?.ClientBuy( idx ); }
+	void Buy( int idx )               { 
+		Log.Info($" BUY :: {idx}");
+		Deck?.ClientBuy( idx );
+	 }
 	void Upgrade( int idx, int tier ) { Deck?.ClientUpgrade( idx, tier ); }
 	void Sell( int idx )              { Deck?.ClientSell( idx ); if ( SelectedIdx == idx ) SelectedIdx = -1; }
 	void Unassign( int slot )         { Deck?.ClientUnassign( slot ); }
