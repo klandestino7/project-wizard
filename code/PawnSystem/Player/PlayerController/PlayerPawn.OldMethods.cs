@@ -66,64 +66,63 @@ public partial class PlayerPawn
 		.FirstOrDefault( p => !p.IsProxy );
 
 	// ─── Lifecycle ────────────────────────────────────────────────────
-	// protected override void OnStart()
-	// {
-	// 	// 3ª pessoa: corpo visível no cliente local também
-	// 	if ( !IsProxy && BodyRenderer.IsValid() )
-	// 		BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+	public void OnStartOldMethods()
+	{
+		// 3ª pessoa: corpo visível no cliente local também
+		// if ( !IsProxy && BodyRenderer.IsValid() )
+			// BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 
-	// 	LockOnSystem = Components.Get<LockOnSystem>();
+		LockOnSystem = Components.Get<LockOnSystem>();
 
-	// 	WandHolder = Components.Get<WandHolder>();
-	// 	Camera = Scene.Get<CameraComponent>();
-	// 	Wand = Components.Get<Wand>();
-	// 	SpellsDeck = Components.Get<SpellsDeck>();
-	// }
+		WandHolder = Components.Get<WandHolder>();
+		Wand = Components.Get<Wand>();
+		SpellsDeck = Components.Get<SpellsDeck>();
+	}
 
-	// protected override void OnUpdate()
-	// {
-	// 	if ( IsProxy )
-	// 	{
-	// 		UpdateProxy();
-	// 		return;
-	// 	}
+	public void OnUpdateOldMethods()
+	{
+		// if ( IsProxy )
+		// {
+		// 	UpdateProxy();
+		// 	return;
+		// }
 
-	// 	if ( !IsAlive ) return;
+		// if ( !IsAlive ) return;
 
-	// 	// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
-	// 	// HandleLook();
-	// 	HandleAbilityInput();
-	// 	HandleInteractInput();
+		// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
+		// HandleLook();
+		HandleAbilityInput();
+		HandleInteractInput();
 
-	// 	// Expirar estados de combate
-	// 	if ( Networking.IsHost && CombatStateEndTime > 0f && Time.Now >= CombatStateEndTime )
-	// 		SetCombatState( CombatState.Normal );
-	// }
+		// Expirar estados de combate
+		if ( Networking.IsHost && CombatStateEndTime > 0f && Time.Now >= CombatStateEndTime )
+			SetCombatState( CombatState.Normal );
+	}
 
-	// protected override void OnFixedUpdate()
-	// {
-	// 	if ( IsProxy || !IsAlive ) return;
+	public void OnFixedUpdateOldMethods()
+	{
+		// if ( IsProxy || !IsAlive ) return;
 
-	// 	// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
-	// 	// HandleMovement();
+		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
+		// HandleMovement();
 
-	// 	if ( !Networking.IsHost ) return;
+		// if ( !Networking.IsHost ) return;
 
-	// 	// Burning DoT
-	// 	if ( BurningEndTime > 0f && Time.Now < BurningEndTime )
-	// 	{
-	// 		int dot = (int)(BurningDPS * Time.Delta);
-	// 		if ( dot > 0 )
-	// 			TakeDamage( dot, BurningSource );
-	// 	}
-	// 	else if ( BurningEndTime > 0f )
-	// 	{
-	// 		BurningEndTime = 0f;
-	// 		BurningDPS = 0f;
-	// 		if ( CombatState == CombatState.Burning )
-	// 			SetCombatState( CombatState.Normal );
-	// 	}
-	// }
+		// Burning DoT
+		if ( BurningEndTime > 0f && Time.Now < BurningEndTime )
+		{
+			int dot = (int)(BurningDPS * Time.Delta);
+			if ( dot > 0 )
+				TakeDamage( dot, BurningSource );
+		}
+		else if ( BurningEndTime > 0f )
+		{
+			BurningEndTime = 0f;
+			BurningDPS = 0f;
+			if ( CombatState == CombatState.Burning )
+				SetCombatState( CombatState.Normal );
+		}
+	}
 
 	// ─── Input: Look ──────────────────────────────────────────────────
 	private void HandleLook()

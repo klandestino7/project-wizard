@@ -33,7 +33,26 @@ public partial class PlayerPawn
 		}
 		else
 		{
-			CameraController.Mode = CameraMode.FirstPerson;
+			CameraController.Mode = CameraMode.ThirdPerson;
+		}
+	}
+
+	public void UpdateCameraChange()
+	{
+		if ( Input.Pressed("View") )
+		{
+			CameraController.SetActive( false );
+			if ( CameraController.Mode == CameraMode.ThirdPerson)
+			{
+				CameraController.Mode = CameraMode.FirstPerson;
+			}
+
+			if ( CameraController.Mode == CameraMode.FirstPerson)
+			{
+				CameraController.Mode = CameraMode.ThirdPerson;
+			}
+
+			CameraController.SetActive( true );
 		}
 	}
 

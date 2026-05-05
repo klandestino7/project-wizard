@@ -100,6 +100,7 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 		GameObject.Name = $"Player ({DisplayName})";
 
 		CameraController.SetActive( IsViewer );
+		OnStartOldMethods();
 	}
 
 	public SceneTraceResult CachedEyeTrace { get; private set; }
@@ -120,6 +121,8 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 		{
 			DebugUpdate();
 		}
+
+		OnUpdateOldMethods();
 	}
 
 	private float DeathcamSkipTime => 5f;
@@ -214,6 +217,10 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 		ApplyAcceleration();
 
 		ApplyMovement();
+
+		UpdateCameraChange();
+
+		OnFixedUpdateOldMethods();
 	}
 
 	[Sync( SyncFlags.FromHost )] public bool InPlayArea { get; set; } = true;
