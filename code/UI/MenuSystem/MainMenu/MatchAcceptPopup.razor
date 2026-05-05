@@ -64,9 +64,7 @@
 
 @code
 {
-	private bool IsVisible => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed
-	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.WaitingForLobby
-	                       || MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Starting;
+	private bool IsVisible => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.MatchProposed && !_hasResponded;
 
 	private bool _hasResponded;
 
