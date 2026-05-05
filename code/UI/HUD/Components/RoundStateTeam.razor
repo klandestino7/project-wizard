@@ -3,19 +3,40 @@
 @attribute [StyleSheet]
 
 <root class="team flex @(IconPosition == IconPositions.Right ? "justify-end" : "")">
-    <div class="inner flex row gap-sm align-center with-padding blur team">
-        <div class="background" style="@BuildStyle()"></div>
+    @if ( IconPosition == IconPositions.Left )
+    {
+        <div class="players-list">
+            @foreach ( var player in Players?.Reverse() ?? Enumerable.Empty<Client>() )
+            {
+                <PlayerAvatar Player=@player ShowHealth=@false AdditionalClass="team-avatar" />
+            }
+        </div>
 
-        @if ( IconPosition == IconPositions.Left && !string.IsNullOrEmpty( Score ) )
-        {
-            <label>@Score</label>
-        }
+        <div class="inner flex row gap-sm align-center with-padding blur team">
+            <div class="background" style="@BuildStyle()"></div>
+            @if ( !string.IsNullOrEmpty( Score ) )
+            {
+                <label>@Score</label>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="inner flex row gap-sm align-center with-padding blur team">
+            <div class="background" style="@BuildStyle()"></div>
+            @if ( !string.IsNullOrEmpty( Score ) )
+            {
+                <label>@Score</label>
+            }
 
-        @if ( IconPosition == IconPositions.Right && !string.IsNullOrEmpty( Score ) )
-        {
-            <label>@Score</label>
-        }
-    </div>
+            <div class="players-list">
+                @foreach ( var player in Players ?? Enumerable.Empty<Client>() )
+                {
+                    <PlayerAvatar Player=@player ShowHealth=@true AdditionalClass="team-avatar" />
+                }
+            </div>
+        </div>
+    }
 </root>
 
 @code

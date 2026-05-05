@@ -6,13 +6,14 @@ RoundStateDisplay
     color: white;
     font-family: $main-font;
     flex-direction: column;
-    flex-grow: 1;
+    // flex-grow: 1;
 
-    max-width: 250px;
+    // width: 250px;
+    // max-width: 600px;
 
     div
     {
-        flex-grow: 1;
+        // flex-grow: 1;
     }
 
     .status

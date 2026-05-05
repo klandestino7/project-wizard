@@ -2309,11 +2309,10 @@
           "ZIndex": 100
         },
         {
-          "__type": "Sandbox.UI.Chat.Chat",
+          "__type": "Warlocks.UI.Chat",
           "__guid": "d506dd4e-0fb6-4702-8516-3f002dd98f68",
           "__enabled": true,
           "Flags": 0,
-          "MyStringValue": "Hello World!",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -6313,7 +6312,7 @@
         "b4ca6d36-f647-49b3-9151-8ef4c63aeddd": "c3d37ae4-8a0e-4bce-bed4-3d04533932d1",
         "50de49ef-0287-435d-b570-e48047718014": "763e6fa6-a202-45b5-bbea-9d82eedd998a",
         "4dc414cd-ed6d-4fcd-bd26-0c4c340b5301": "9558a8af-a8fd-48e9-ab59-c37582c938bb",
-        "9934f47e-677f-4b52-9f3c-64214832543b": "17e33e91-0e34-4e8b-a157-8503874122df"
+        "4525360a-0d88-4239-af83-2253b95cfc51": "9b85b08d-f08a-4d57-93a5-1bc494403666"
       }
     },
     {
@@ -6416,12 +6415,12 @@
         "5b253708-de7c-4c86-8893-b86fb4822642": "28eea75e-0524-4316-8ed3-aee9aca11b7b",
         "c167e62e-6407-4edf-9ac5-dffe5f0688c1": "edfc86a1-ffd8-41fb-a669-0901e97ff04d",
         "49109783-18b2-44e7-8f29-0dcddd0a6da9": "06dbe3df-9541-4279-ae33-4630a5c9ad93",
-        "c8112b64-f249-4165-b222-f28e6ec07c2e": "406893ba-3124-40e3-b259-8d6a6c7babad",
+        "12a06d97-9ceb-4baf-b7fd-59f8d98e723f": "16d2800b-22c5-4c91-8d31-8cf7fb7765ce",
         "c82d52b1-a9e2-4e71-9bbe-496694888959": "245cf061-9d1e-4be8-813e-fd329fd979f0",
         "83a62c25-6c75-4ee0-abb7-7d7f1d033fe6": "9c97ec19-db4b-4b76-a566-0e05c098d5a9",
         "c041252e-1262-42a4-b630-c032cce27ace": "12d78807-3fb5-44d6-901c-85168b176a81",
         "2d5f9694-5062-485f-9ea2-0ca6c18d167d": "0b314106-6512-4aba-a5fc-7ece54cb8021",
-        "e840bfd9-7392-4c5a-a3a6-32b8893f29b6": "bd129a1f-c77f-48b5-b9d4-73d08ffa91ea",
+        "25c84031-f129-4c80-bc0e-7ec0d11c5046": "9049c461-c963-445b-a586-92b65bc22997",
         "91ab47da-c178-479c-8af6-c7515eba5759": "1d939730-c4c2-4d20-8284-fc66c1e4197c",
         "fec41e74-67b6-4ce4-9d93-31e46c97da45": "24fecfd6-7667-4d7c-972d-94b1f44be2f1",
         "e3523077-dc7e-4d0a-a45f-e8598919832a": "e56eaf5d-292f-434a-b2c0-4d5367b0f92e",
@@ -6485,7 +6484,7 @@
         "35f22135-8476-417b-b33c-fea8b2524a75": "8fa2fdcc-f92f-4437-a280-56e3fe644bb9",
         "ec32f16b-5053-4522-8948-4eaef65a809a": "f91348cf-ba3c-4b18-8728-94b8290ed9ac",
         "7e1e5a0a-7cef-4388-aa2f-44ac5088662e": "8446a516-b995-442d-906b-2d3b26462e56",
-        "05eabc48-7140-4324-aab0-646b340de6e1": "975acd5d-6036-4a8d-8300-b8a47223f780"
+        "0015c5eb-e562-456f-b1f4-850b32d1ef95": "19951583-fd05-4598-80cf-3fbaf805edb8"
       }
     },
     {

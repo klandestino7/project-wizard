@@ -194,12 +194,10 @@
 					bool sel     = SelectedIdx == idx;
 					bool canAff  = Client.Balance >= entry.BuyCost;
 
-					Log.Info($" I {entry}"); 
-
 					<div class="wiz-sc @( owned ? "owned" : "" ) @( sel ? "sel" : "" ) @( !owned && !canAff ? "poor" : "" )"
 					     onclick=@( () => SelectSpell( idx ) )>
 						<div class="wiz-sc-icon" style="border-color: @entry.AccentColor;">
-							<div class="wiz-sc-dot" ></div>
+							<div class="wiz-sc-dot" style="background: url(@entry.Image)" ></div>
 						</div>
 						<div class="wiz-sc-info">
 							<div class="wiz-sc-name">@entry.Name.ToUpper()</div>

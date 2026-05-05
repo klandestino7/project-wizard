@@ -5,7 +5,7 @@
 <root class="flex gap-sm justify-center row">
     @if ( MyTeamPlayers is not null )
     {
-        <RoundStateTeam Score="@MyTeamScore" Team="@MyTeam" Players="@MyTeamPlayers" iconPosition="Right" />
+        <RoundStateTeam Score="@MyTeamScore" Team="@MyTeam" Players="@MyTeamPlayers" iconPosition="Left" />
     }
     else
     {
@@ -29,7 +29,7 @@
 
     @if ( EnemyTeamPlayers is not null )
     {
-        <RoundStateTeam Score="@EnemyTeamScore" Team="@EnemyTeam" Players="@EnemyTeamPlayers" iconPosition="Left" />
+        <RoundStateTeam Score="@EnemyTeamScore" Team="@EnemyTeam" Players="@EnemyTeamPlayers" iconPosition="Right" />
     }
     else
     {

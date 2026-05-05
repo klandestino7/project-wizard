@@ -29,4 +29,17 @@ RoundStateTeam
     {
         min-width: 48px;
     }
+    .team-avatar
+    {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .players-list {
+        display:flex;
+        flex-direction: row;
+        margin: 0 5px;
+        // max-width: 200px;
+        // min-width: 20px;
+    }
 }
