@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -65,6 +66,23 @@ func NewService() *Service {
 	}
 	go s.loop()
 	return s
+}
+
+func (s *Service) UpsertPlayer(steamID, name, partyID string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	p, exists := s.players[steamID]
+	if !exists {
+		p = &Player{}
+		s.players[steamID] = p
+	}
+	p.SteamID = steamID
+	p.Name = name
+	p.LastSeen = time.Now()
+	if partyID != "" {
+		p.PartyID = partyID
+	}
 }
 
 // ── Connection lifecycle ──────────────────────────────────────────────────────
@@ -165,6 +183,43 @@ func (s *Service) Health() HealthInfo {
 		ActiveMatches:  activeMatches,
 		Connections:    len(s.conns),
 	}
+}
+
+func (s *Service) GetQueueStatus(steamID string) map[string]any {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	status := map[string]any{
+		"steamId": steamID,
+		"queued":  false,
+	}
+
+	if entry, ok := s.playerQueue[steamID]; ok {
+		status["queued"] = true
+		status["partyId"] = entry.PartyID
+		status["joinedAt"] = entry.JoinedAt.UTC().Format(time.RFC3339)
+	}
+
+	if matchID, ok := s.playerMatch[steamID]; ok {
+		status["matchId"] = matchID
+		if match, exists := s.matches[matchID]; exists {
+			status["matchState"] = match.State
+			status["isHost"] = match.HostSteamID == steamID
+			status["accepted"] = match.AcceptedBy[steamID]
+			if match.LobbyID != "" {
+				status["lobbyId"] = match.LobbyID
+			}
+		}
+	}
+
+	if player, ok := s.players[steamID]; ok {
+		status["name"] = player.Name
+		if player.PartyID != "" {
+			status["partyId"] = player.PartyID
+		}
+	}
+
+	return status
 }
 
 // ── Queue ─────────────────────────────────────────────────────────────────────
@@ -502,6 +557,23 @@ func (s *Service) cleanupStale() {
 	}
 }
 
+func (s *Service) GetLobbyJoinInfo(matchID, steamID string) (string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	match, ok := s.matches[matchID]
+	if !ok {
+		return "", errors.New("match not found")
+	}
+	if _, ok := s.playerMatch[steamID]; !ok {
+		return "", errors.New("player is not in this match")
+	}
+	if match.LobbyID == "" {
+		return "", errors.New("waiting for host to register lobby")
+	}
+	return match.LobbyID, nil
+}
+
 // ── Lobby ─────────────────────────────────────────────────────────────────────
 
 // RegisterLobby is called by the host once the S&Box private lobby is created.
@@ -602,6 +674,23 @@ func (s *Service) LeaveParty(steamID string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.removeFromPartyLocked(steamID)
+}
+
+func (s *Service) GetParty(partyID string) (*Party, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	party, ok := s.parties[partyID]
+	if !ok {
+		return nil, false
+	}
+
+	copyParty := &Party{
+		ID:       party.ID,
+		LeaderID: party.LeaderID,
+		Members:  append([]string(nil), party.Members...),
+	}
+	return copyParty, true
 }
 
 func (s *Service) removeFromPartyLocked(steamID string) {

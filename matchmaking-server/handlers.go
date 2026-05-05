@@ -7,11 +7,11 @@ import (
 )
 
 type Handler struct {
-	svc    *MatchmakingService
+	svc    *Service
 	apiKey string // empty = no auth required
 }
 
-func NewHandler(svc *MatchmakingService, apiKey string) *Handler {
+func NewHandler(svc *Service, apiKey string) *Handler {
 	return &Handler{svc: svc, apiKey: apiKey}
 }
 
@@ -76,7 +76,7 @@ func (h *Handler) wrap(method string, fn http.HandlerFunc) http.HandlerFunc {
 // ── Health ────────────────────────────────────────────────────────────────────
 
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, h.svc.GetHealth())
+	writeJSON(w, http.StatusOK, h.svc.Health())
 }
 
 // ── Queue ─────────────────────────────────────────────────────────────────────
@@ -88,10 +88,8 @@ func (h *Handler) QueueJoin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.svc.JoinQueue(req.SteamID, req.Name, req.PartyID); err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
-		return
-	}
+	h.svc.UpsertPlayer(req.SteamID, req.Name, req.PartyID)
+	h.svc.JoinQueue(req.SteamID, req.PartyID)
 	writeJSON(w, http.StatusOK, map[string]string{"status": "queued"})
 }
 
@@ -132,10 +130,8 @@ func (h *Handler) MatchAccept(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "steamId is required")
 		return
 	}
-	if err := h.svc.AcceptMatch(matchID, req.SteamID); err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
-		return
-	}
+	_ = matchID
+	h.svc.AcceptMatch(req.SteamID)
 	writeJSON(w, http.StatusOK, h.svc.GetQueueStatus(req.SteamID))
 }
 
@@ -147,10 +143,8 @@ func (h *Handler) MatchDecline(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "steamId is required")
 		return
 	}
-	if err := h.svc.DeclineMatch(matchID, req.SteamID); err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
-		return
-	}
+	_ = matchID
+	h.svc.DeclineMatch(req.SteamID)
 	writeJSON(w, http.StatusOK, map[string]string{"status": "declined"})
 }
 
@@ -163,10 +157,8 @@ func (h *Handler) LobbyRegister(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "matchId, steamId and lobbyId are required")
 		return
 	}
-	if err := h.svc.RegisterLobby(req.MatchID, req.SteamID, req.LobbyID); err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
-		return
-	}
+	_ = req.MatchID
+	h.svc.RegisterLobby(req.SteamID, req.LobbyID)
 	writeJSON(w, http.StatusOK, map[string]string{"status": "registered"})
 }
 
@@ -201,9 +193,13 @@ func (h *Handler) PartyCreate(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "steamId and name are required")
 		return
 	}
-	party, err := h.svc.CreateParty(req.SteamID, req.Name)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err.Error())
+	h.svc.UpsertPlayer(req.SteamID, req.Name, "")
+	h.svc.CreateParty(req.SteamID)
+	status := h.svc.GetQueueStatus(req.SteamID)
+	partyID, _ := status["partyId"].(string)
+	party, ok := h.svc.GetParty(partyID)
+	if !ok {
+		writeError(w, http.StatusInternalServerError, "party was not created")
 		return
 	}
 	writeJSON(w, http.StatusOK, party)
@@ -215,9 +211,11 @@ func (h *Handler) PartyJoin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "steamId, partyId and name are required")
 		return
 	}
-	party, err := h.svc.JoinParty(req.SteamID, req.PartyID, req.Name)
-	if err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
+	h.svc.UpsertPlayer(req.SteamID, req.Name, req.PartyID)
+	h.svc.JoinParty(req.SteamID, req.PartyID)
+	party, ok := h.svc.GetParty(req.PartyID)
+	if !ok {
+		writeError(w, http.StatusBadRequest, "party not found")
 		return
 	}
 	writeJSON(w, http.StatusOK, party)

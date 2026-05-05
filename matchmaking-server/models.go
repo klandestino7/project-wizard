@@ -44,6 +44,50 @@ type Match struct {
 	CreatedAt   time.Time
 }
 
+// HTTP request/response DTOs kept for compatibility with the older REST handlers.
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+type JoinQueueRequest struct {
+	SteamID string `json:"steamId"`
+	Name    string `json:"name"`
+	PartyID string `json:"partyId,omitempty"`
+}
+
+type LeaveQueueRequest struct {
+	SteamID string `json:"steamId"`
+}
+
+type MatchActionRequest struct {
+	SteamID string `json:"steamId"`
+}
+
+type RegisterLobbyRequest struct {
+	MatchID string `json:"matchId"`
+	SteamID string `json:"steamId"`
+	LobbyID string `json:"lobbyId"`
+}
+
+type LobbyJoinResponse struct {
+	LobbyID string `json:"lobbyId"`
+}
+
+type CreatePartyRequest struct {
+	SteamID string `json:"steamId"`
+	Name    string `json:"name"`
+}
+
+type JoinPartyRequest struct {
+	SteamID string `json:"steamId"`
+	PartyID string `json:"partyId"`
+	Name    string `json:"name"`
+}
+
+type LeavePartyRequest struct {
+	SteamID string `json:"steamId"`
+}
+
 // ── Incoming message (client → server) ───────────────────────────────────────
 // All fields are optional depending on the Type.
 
