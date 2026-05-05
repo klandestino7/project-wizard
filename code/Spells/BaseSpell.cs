@@ -10,6 +10,9 @@ public abstract class BaseSpell
 	/// <summary>Nome exibido na HUD e usado pelo MasterySystem.</summary>
 	public abstract string SpellName { get; }
 
+	/// <summary>Imagem exibido na HUD.</summary>
+	public abstract string Image { get; }
+
 	/// <summary>Custo de mana por lançamento. 0 = sem custo.</summary>
 	public abstract float ManaCost { get; }
 

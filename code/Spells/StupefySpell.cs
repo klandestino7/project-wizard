@@ -11,6 +11,7 @@ public sealed class StupefySpell : BaseSpell
 	private static readonly float[] StunByTier   = { 1f, 1.5f, 2f };
 
 	public override string  SpellName       => "Stupefy";
+	public override string Image => "ui/spells/stupefy.png";
 	public override float   ManaCost        => 20f;
 	public override float   BaseCooldown    => 6f;
 	public override float[] CooldownByTier  => new[] { 6f, 5f, 4f };

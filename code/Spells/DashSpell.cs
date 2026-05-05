@@ -8,6 +8,7 @@ public sealed class DashSpell : BaseSpell
 	private static readonly float[] DashDistance = { 400f, 500f, 600f };
 
 	public override string  SpellName      => "Apparition";
+	public override string Image => "ui/spells/stypefy.png";
 	public override float   ManaCost       => 0f;
 	public override float   BaseCooldown   => 20f;
 	public override float[] CooldownByTier => new[] { 20f, 16f, 12f };

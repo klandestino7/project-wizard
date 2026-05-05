@@ -7,6 +7,7 @@
 public sealed class ProtegoSpell : BaseSpell
 {
 	public override string  SpellName      => "Protego";
+	public override string Image => "ui/spells/lumos.png";
 	public override float   ManaCost       => 30f;
 	public override float   BaseCooldown   => 6f;
 	public override float[] CooldownByTier => new[] { 6f, 5f, 4f };

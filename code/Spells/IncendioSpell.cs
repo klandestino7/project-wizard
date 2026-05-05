@@ -12,6 +12,7 @@ public sealed class IncendioSpell : BaseSpell
 	private static readonly float[] BurnDurByTier  = { 3f, 4f, 5f };
 
 	public override string  SpellName      => "Incendio";
+	public override string Image => "ui/spells/incendio.png";
 	public override float   ManaCost       => 25f;
 	public override float   BaseCooldown   => 7f;
 	public override float[] CooldownByTier => new[] { 7f, 6f, 5f };

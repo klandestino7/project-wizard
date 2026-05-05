@@ -11,6 +11,7 @@ public sealed class SectumsempraSpell : BaseSpell
 	private static readonly float[] HeadshotMultByTier = { 2f, 2.2f, 2.5f };
 
 	public override string  SpellName      => "Sectumsempra";
+	public override string Image => "ui/spells/avada_kedavra.png";
 	public override float   ManaCost       => 30f;
 	public override float   BaseCooldown   => 8f;
 	public override float[] CooldownByTier => new[] { 8f, 7f, 6f };

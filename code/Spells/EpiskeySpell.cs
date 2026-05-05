@@ -11,6 +11,7 @@ public sealed class EpiskeySpell : BaseSpell
 	private static readonly int[] TempHpByTier = { 0, 0, 20 };
 
 	public override string  SpellName      => "Episkey";
+	public override string Image => "ui/spells/silencio.png";
 	public override float   ManaCost       => 25f;
 	public override float   BaseCooldown   => 10f;
 	public override float[] CooldownByTier => new[] { 10f, 8f, 7f };
