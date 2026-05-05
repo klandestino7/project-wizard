@@ -36,6 +36,6 @@ public abstract class BaseConsumable : Component
 
 	protected virtual void OnRoundReset() { }
 
-	public bool CanBuy( PlayerPawn player ) =>
-		!IsUsed && player.Balance >= PurchaseCost;
+	// public bool CanBuy( PlayerPawn player ) =>
+	// 	!IsUsed && player.Balance >= PurchaseCost;
 }

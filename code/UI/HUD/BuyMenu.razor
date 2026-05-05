@@ -1,8 +1,10 @@
 @using Sandbox;
 @using Sandbox.UI;
-@inherits PanelComponent
+@inherits Panel
 
 @namespace Warlocks.UI
+
+@if ( !Player.IsValid() ) return;
 
 <root>
 @if ( IsOpen && Player != null && Deck != null )
@@ -23,27 +25,27 @@
 			<div class="wiz-center-hdr">
 				<div class="wiz-gold">
 					<div class="wiz-coin"></div>
-					<span>@Player.Balance</span>
+					<span>@Client.Balance.ToString("N0")</span>
 				</div>
 				<div class="wiz-page-title">SPELLS</div>
 				<div class="wiz-hint-txt">[ B ] Close</div>
 			</div>
 
 			<div class="wiz-spell-grid">
-				@RenderSpellCol( "Ofensiva",  "OFFENSIVE"  )
-				@RenderSpellCol( "Controle",  "CONTROL"    )
-				@RenderSpellCol( "Defesa",    "DEFENSIVE"  )
-				@RenderSpellCol( "Utilidade", "UTILITY"    )
+				@RenderSpellCol( "Ofensiva", "OFFENSIVE" )
+				@RenderSpellCol( "Controle", "CONTROL"   )
+				@RenderSpellCol( "Defesa",   "DEFENSIVE" )
+				@RenderPotionsCol()
 			</div>
 
 			<div class="wiz-deck-bar">
 				<div class="wiz-deck-label">— SPELLS AND POTIONS PREPARED —</div>
 				<div class="wiz-deck-row">
-					@RenderDeckSlot( "Q", 0 )
-					@RenderDeckSlot( "E", 1 )
-					@RenderDeckSlot( "R", 2 )
+					@RenderDeckSlot( "1", 0 )
+					@RenderDeckSlot( "2", 1 )
+					@RenderDeckSlot( "3", 2 )
 					<div class="wiz-deck-divider"></div>
-					@RenderDeckSlot( "F", 3 )
+					@RenderDeckSlot( "Q", 3 )
 				</div>
 			</div>
 
@@ -67,16 +69,38 @@
 </root>
 
 @code {
-	PlayerPawn   Player => PlayerPawn.Local;
+	public Client Client => Client.Viewer;
+    public PlayerPawn Player => Client.Viewer?.PlayerPawn;
 	RoundManager Round  => RoundManager.Instance;
 	SpellsDeck   Deck   => Player?.SpellsDeck;
-
-	bool IsOpen => Round?.State == RoundState.BuyPhase && Input.Down( "BuyMenu" );
 
 	int SelectedIdx = -1;
 	int PendingSlot = -1;
 
 	const int MaxTeamSize = 5;
+
+    private bool IsOpen = false;
+
+    void Toggle()
+    {
+        IsOpen = !IsOpen;
+    }
+
+    public override void Tick()
+    {
+        if ( Player?.CanBuy is true )
+        {
+            if ( Input.Pressed( "BuyMenu" ) )
+            {
+                Toggle();
+            }
+        }
+        else
+        {
+            IsOpen = false;
+        }
+    }
+
 
 	// ─── Team list ──────────────────────────────────────────────────────────
 
@@ -161,7 +185,7 @@
 					bool owned   = Deck.IsOwned( idx );
 					int  tier    = Deck.GetTier( idx );
 					bool sel     = SelectedIdx == idx;
-					bool canAff  = Player.Balance >= entry.BuyCost;
+					bool canAff  = Client.Balance >= entry.BuyCost;
 
 					<div class="wiz-sc @( owned ? "owned" : "" ) @( sel ? "sel" : "" ) @( !owned && !canAff ? "poor" : "" )"
 					     onclick=@( () => SelectSpell( idx ) )>
@@ -183,6 +207,31 @@
 						</div>
 					</div>
 				}
+			</div>
+		</div>
+	};
+
+	// ─── Potions column ─────────────────────────────────────────────────────
+
+	RenderFragment RenderPotionsCol() => __builder =>
+	{
+		<div class="wiz-col">
+			<div class="wiz-col-hdr">POTIONS</div>
+			<div class="wiz-col-body">
+				<div class="wiz-potion-card">
+					<div class="wiz-potion-bottle wiz-heal-bottle"></div>
+					<div class="wiz-potion-name">HEALING POTION</div>
+					<div class="wiz-potion-cost">
+						<span class="wiz-star">★</span><span>600</span>
+					</div>
+				</div>
+				<div class="wiz-potion-card">
+					<div class="wiz-potion-bottle wiz-mana-bottle"></div>
+					<div class="wiz-potion-name">MANA POTION</div>
+					<div class="wiz-potion-cost">
+						<span class="wiz-star">★</span><span>500</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	};
@@ -257,9 +306,9 @@
 		bool own    = Deck.IsOwned( idx );
 		int  tier   = Deck.GetTier( idx );
 		int  refund = RefundOf( idx );
-		bool canBuy = Player.Balance >= e.BuyCost;
-		bool canT1  = Player.Balance >= e.Tier1Cost;
-		bool canT2  = Player.Balance >= e.Tier2Cost;
+		bool canBuy = Client.Balance >= e.BuyCost;
+		bool canT1  = Client.Balance >= e.Tier1Cost;
+		bool canT2  = Client.Balance >= e.Tier2Cost;
 
 		<div class="wiz-detail">
 			<div class="wiz-det-name">@e.Name</div>
@@ -350,7 +399,7 @@
 	protected override int BuildHash() => HashCode.Combine(
 		Round?.State,
 		Round?.CurrentRound,
-		Round?.AurorScore,
+		IsOpen,
 		Player?.Balance,
 		Deck?.OwnedMask,
 		(int)(Round?.TimeRemaining ?? 0f),

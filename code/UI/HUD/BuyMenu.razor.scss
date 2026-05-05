@@ -1,302 +1,695 @@
-// ─── BuyMenu — Deadlock-inspired dark layout ────────────────────────────────
+// ─── BuyMenu — Wizarding Parchment Theme ─────────────────────────────────────
 
-.buy-overlay {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 900px;
-	height: 580px;
-	background-color: rgba(8, 7, 18, 0.97);
-	border: 1px solid rgba(180, 140, 40, 0.35);
-	border-radius: 4px;
+$bg-root:        #141008;
+$bg-panel:       #201808;
+$bg-card:        #2a1e0c;
+$bg-card-hover:  #362810;
+$border-dark:    #4a2e08;
+$border-gold:    #c89010;
+$text-light:     #ede0b0;
+$text-dim:       rgba(237, 224, 176, 0.35);
+$color-gold:     #e8a010;
+$color-star:     #30c8c0;
+$parchment:      #c8a850;
+$parchment-lt:   #d8bc70;
+$parchment-text: #3a2008;
+
+// ─── Root ────────────────────────────────────────────────────────────────────
+
+BuyMenu {
+	width: 100%;
+	height: 100%;
 	display: flex;
-	flex-direction: column;
-	font-family: 'Roboto Mono', monospace;
-	overflow: hidden;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top:0;
+	left:0;
 }
 
-// ─── Header ──────────────────────────────────────────────────────────────────
-
-.buy-header {
+.wiz-overlay {
 	display: flex;
 	flex-direction: row;
-	align-items: center;
-	gap: 16px;
-	padding: 10px 16px;
-	background-color: rgba(0, 0, 0, 0.4);
-	border-bottom: 1px solid rgba(180, 140, 40, 0.25);
+	background-color: rgba(0, 0, 0, 0.75);
+	padding: 20;
+	width: 85%;
+	height: 85%;
+	// width: 100vw;
+	// height: 100vh;
 }
 
-.buy-title {
-	color: #e8c84a;
-	font-size: 15px;
-	font-weight: bold;
-	letter-spacing: 3px;
+// ─── LEFT — Team ─────────────────────────────────────────────────────────────
+
+.wiz-left {
+	width: 215px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	background-color: $bg-root;
+	border-right: 2px solid $border-dark;
+	padding: 8px;
+	gap: 4px;
+}
+
+.wiz-panel-title {
+	font-size: 11px;
+	letter-spacing: 5px;
+	color: $color-gold;
+	text-align: center;
+	padding: 6px 0 8px;
+	border-bottom: 1px solid $border-dark;
+	margin-bottom: 2px;
+}
+
+.wiz-team-list {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 	flex: 1;
 }
 
-.buy-galleons {
+// Teammate card
+
+.wiz-mate {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	align-items: flex-start;
+	background-color: $bg-panel;
+	border: 1px solid $border-dark;
+	border-radius: 4px;
+	padding: 6px 8px;
+
+	&.is-local {
+		border-color: $border-gold;
+	}
+
+	&.is-dead {
+		opacity: 0.38;
+	}
+}
+
+.wiz-avatar {
+	width: 46px;
+	height: 46px;
+	flex-shrink: 0;
+	background-color: #3a2408;
+	border: 2px solid $border-gold;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22px;
+	font-weight: bold;
+	color: $color-gold;
+}
+
+.wiz-mate-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.wiz-mate-name {
+	color: $text-light;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wiz-mate-stats {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	font-size: 10px;
+}
+
+.wiz-mg { color: $color-gold; }
+.wiz-mm { color: $color-star; }
+
+.wiz-mate-deck {
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+	margin-top: 2px;
+}
+
+.wiz-ms {
+	width: 15px;
+	height: 15px;
+	border: 1px solid $border-dark;
+	border-radius: 2px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 7px;
+	font-weight: bold;
+
+	&.filled {
+		background-color: rgba(60, 35, 10, 0.7);
+	}
+}
+
+.wiz-mate-empty {
+	height: 58px;
+	// border: 1px dashed #4a2e084d;
+	border-radius: 4px;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+// ─── CENTER — Spells ──────────────────────────────────────────────────────────
+
+.wiz-center {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background-color: $bg-root;
+	border-right: 2px solid $border-dark;
+}
+
+.wiz-center-hdr {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 14px;
+	padding: 10px 18px;
+	background-color: rgba(0, 0, 0, 0.35);
+	border-bottom: 1px solid $border-dark;
+}
+
+.wiz-gold {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: 6px;
-	color: #f5d060;
+	color: $color-gold;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.wiz-coin {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background-color: $color-gold;
+	border: 1.5px solid #a06808;
+}
+
+.wiz-page-title {
+	flex: 1;
+	text-align: center;
+	color: $color-gold;
+	font-size: 15px;
+	letter-spacing: 10px;
+	font-weight: bold;
+}
+
+.wiz-hint-txt {
+	color: $text-dim;
+	font-size: 10px;
+	letter-spacing: 1px;
+}
+
+// Spell columns
+
+.wiz-spell-grid {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+	padding: 10px 8px 8px;
+	gap: 6px;
+	overflow: hidden;
+}
+
+.wiz-col {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	min-width: 0;
+}
+
+.wiz-col-hdr {
+	font-size: 9px;
+	letter-spacing: 3px;
+	color: $text-dim;
+	text-align: center;
+	padding-bottom: 8px;
+	margin-bottom: 6px;
+	border-bottom: 1px solid rgba(74, 46, 8, 0.5);
+}
+
+.wiz-col-body {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	flex: 1;
+}
+
+// Spell card
+
+.wiz-sc {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	align-items: center;
+	background-color: $bg-card;
+	border: 1px solid $border-dark;
+	border-radius: 3px;
+	padding: 8px;
+	cursor: pointer;
+
+	&:hover {
+		background-color: $bg-card-hover;
+	}
+
+	&.owned {
+		border-color: rgba(200, 144, 16, 0.55);
+		background-color: #301e08;
+	}
+
+	&.sel {
+		border-color: $border-gold;
+		background-color: rgba(200, 144, 16, 0.12);
+	}
+
+	&.poor {
+		opacity: 0.42;
+	}
+}
+
+.wiz-sc-icon {
+	width: 40px;
+	height: 40px;
+	flex-shrink: 0;
+	border: 1.5px solid transparent;
+	border-radius: 3px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wiz-sc-dot {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	opacity: 0.85;
+}
+
+.wiz-sc-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.wiz-sc-name {
+	font-size: 11px;
+	font-weight: bold;
+	color: $text-light;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wiz-sc-cost {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 2px;
+	font-size: 10px;
+	color: $color-star;
+}
+
+.wiz-star { color: $color-star; }
+.wiz-tier { color: $color-gold; font-weight: bold; }
+
+// Potions column
+
+.wiz-potion-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	background-color: $bg-card;
+	border: 1px solid $border-dark;
+	border-radius: 3px;
+	padding: 14px 8px 10px;
+	cursor: pointer;
+
+	&:hover {
+		background-color: $bg-card-hover;
+	}
+
+	&.owned {
+		border-color: rgba(200, 144, 16, 0.55);
+		background-color: #301e08;
+	}
+}
+
+.wiz-potion-bottle {
+	width: 38px;
+	height: 50px;
+	border-radius: 4px 4px 18px 18px;
+	border: 2px solid transparent;
+	position: relative;
+
+	&.wiz-heal-bottle {
+		background-color: rgba(200, 20, 20, 0.55);
+		border-color: rgba(255, 90, 90, 0.75);
+	}
+
+	&.wiz-mana-bottle {
+		background-color: rgba(20, 80, 200, 0.55);
+		border-color: rgba(80, 130, 255, 0.75);
+	}
+}
+
+.wiz-potion-name {
+	font-size: 10px;
+	font-weight: bold;
+	color: $text-light;
+	text-align: center;
+	letter-spacing: 0.5px;
+}
+
+.wiz-potion-cost {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 3px;
+	font-size: 10px;
+	color: $color-star;
+}
+
+// ─── Deck bar ─────────────────────────────────────────────────────────────────
+
+.wiz-deck-bar {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	padding: 8px 14px 12px;
+	background-color: rgba(0, 0, 0, 0.42);
+	border-top: 1px solid $border-dark;
+}
+
+.wiz-deck-label {
+	font-size: 9px;
+	letter-spacing: 2px;
+	color: $text-dim;
+	text-align: center;
+}
+
+.wiz-deck-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 6px;
+	justify-content: center;
+}
+
+.wiz-ds {
+	width: 82px;
+	height: 82px;
+	background-color: $bg-card;
+	border: 1px solid $border-dark;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	position: relative;
+	gap: 4px;
+
+	&:hover {
+		border-color: rgba(200, 144, 16, 0.45);
+	}
+
+	&.filled {
+		border-color: rgba(200, 144, 16, 0.38);
+		background-color: #2e1e08;
+	}
+
+	&.pending {
+		border-color: $color-star;
+	}
+}
+
+.wiz-ds-ring {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	border: 2px solid transparent;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	font-size: 18px;
 	font-weight: bold;
 }
 
-.gal-icon {
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background-color: #e8c84a;
-	color: #1a1400;
-	font-size: 12px;
-	font-weight: bold;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.wiz-ds-name {
+	font-size: 8px;
+	letter-spacing: 0.5px;
+	text-align: center;
+	line-height: 1.2;
+	padding: 0 4px;
 }
 
-.buy-hint-close {
-	color: rgba(255, 255, 255, 0.3);
-	font-size: 11px;
+.wiz-ds-empty {
+	width: 22px;
+	height: 22px;
+	border: 1px solid rgba(74, 46, 8, 0.4);
+	border-radius: 2px;
+	transform: rotate(45deg);
+}
+
+.wiz-ds-hint {
+	font-size: 8px;
+	color: $color-star;
+	letter-spacing: 1px;
+	text-align: center;
+}
+
+.wiz-ds-key {
+	position: absolute;
+	bottom: 4px;
+	right: 6px;
+	font-size: 8px;
+	color: $text-dim;
 	letter-spacing: 1px;
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────
+.wiz-ds-rm {
+	position: absolute;
+	top: 3px;
+	right: 5px;
+	background-color: transparent;
+	border: none;
+	color: rgba(255, 80, 80, 0.45);
+	font-size: 10px;
+	cursor: pointer;
+	padding: 0;
 
-.buy-body {
+	&:hover {
+		color: rgba(255, 80, 80, 0.9);
+	}
+}
+
+.wiz-deck-divider {
+	width: 1px;
+	height: 64px;
+	background-color: rgba(74, 46, 8, 0.5);
+	margin: 0 2px;
+}
+
+// ─── RIGHT — Round Info + Spell Detail ───────────────────────────────────────
+
+.wiz-right {
+	width: 215px;
+	flex-shrink: 0;
 	display: flex;
-	flex-direction: row;
-	flex: 1;
+	flex-direction: column;
+	background-color: $parchment;
 	overflow: hidden;
 }
 
-// ─── Catalog panel (left) ─────────────────────────────────────────────────────
-
-.catalog-panel {
+.wiz-right-empty {
 	flex: 1;
-	overflow-y: scroll;
+}
+
+// Round panel
+
+.wiz-round {
+	padding: 16px 14px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	border-bottom: 1px solid rgba(58, 32, 8, 0.3);
+	background-color: rgba(0, 0, 0, 0.04);
+}
+
+.wiz-round-num {
+	font-size: 16px;
+	font-weight: bold;
+	color: $parchment-text;
+	letter-spacing: 3px;
+}
+
+.wiz-round-sub {
+	font-size: 10px;
+	color: rgba(58, 32, 8, 0.45);
+	letter-spacing: 1px;
+	margin-top: -4px;
+}
+
+.wiz-score {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	margin-top: 4px;
+}
+
+.wiz-score-side {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+}
+
+.wiz-score-side.aurors .wiz-score-lbl { color: #1058b8; }
+.wiz-score-side.aurors .wiz-score-val { color: #1058b8; }
+.wiz-score-side.dark .wiz-score-lbl   { color: #841020; }
+.wiz-score-side.dark .wiz-score-val   { color: #841020; }
+
+.wiz-score-lbl {
+	font-size: 8px;
+	letter-spacing: 1.5px;
+	font-weight: bold;
+}
+
+.wiz-score-val {
+	font-size: 26px;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.wiz-score-vs {
+	color: rgba(58, 32, 8, 0.35);
+	font-size: 12px;
+}
+
+.wiz-timer {
+	font-size: 30px;
+	font-weight: bold;
+	color: $parchment-text;
+	letter-spacing: 2px;
+	margin-top: 4px;
+}
+
+.wiz-timer-lbl {
+	font-size: 8px;
+	color: rgba(58, 32, 8, 0.45);
+	letter-spacing: 2px;
+}
+
+// Spell detail
+
+.wiz-detail {
+	flex: 1;
 	padding: 12px;
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
-	border-right: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.catalog-category {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.cat-label {
-	color: rgba(255, 255, 255, 0.3);
-	font-size: 10px;
-	letter-spacing: 2px;
-	padding-bottom: 4px;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.cat-spells {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
-// ─── Spell card ───────────────────────────────────────────────────────────────
-
-.spell-card {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-	padding: 8px 10px;
-	border-radius: 3px;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background-color: rgba(255, 255, 255, 0.03);
-	cursor: pointer;
-	transition: background-color 0.1s, border-color 0.1s;
-
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.07);
-		border-color: rgba(255, 255, 255, 0.18);
-	}
-
-	&.owned {
-		border-color: rgba(232, 200, 74, 0.3);
-		background-color: rgba(232, 200, 74, 0.05);
-
-		&:hover {
-			background-color: rgba(232, 200, 74, 0.1);
-		}
-	}
-
-	&.selected {
-		border-color: rgba(232, 200, 74, 0.7);
-		background-color: rgba(232, 200, 74, 0.12);
-	}
-}
-
-.sc-name {
-	color: #ffffff;
-	font-size: 13px;
-	font-weight: bold;
-}
-
-.spell-card.owned .sc-name {
-	color: #f5d060;
-}
-
-.sc-meta {
-	display: flex;
-	flex-direction: row;
-	gap: 10px;
-	align-items: center;
-}
-
-.sc-cost {
-	color: rgba(245, 208, 96, 0.8);
-	font-size: 11px;
-}
-
-.sc-cd {
-	color: rgba(255, 255, 255, 0.3);
-	font-size: 10px;
-}
-
-.sc-pips {
-	display: flex;
-	flex-direction: row;
-	gap: 3px;
-	margin-top: 2px;
-}
-
-.pip {
-	width: 16px;
-	height: 3px;
-	border-radius: 2px;
-	background-color: rgba(255, 255, 255, 0.12);
-
-	&.lit {
-		background-color: #e8c84a;
-	}
-}
-
-// ─── Right panel ──────────────────────────────────────────────────────────────
-
-.right-panel {
-	width: 280px;
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-}
-
-// ─── Detail panel ─────────────────────────────────────────────────────────────
-
-.detail-panel {
-	flex: 1;
-	padding: 16px;
-	display: flex;
-	flex-direction: column;
 	gap: 8px;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	overflow-y: scroll;
 }
 
-.detail-empty {
-	align-items: center;
-	justify-content: center;
-	color: rgba(255, 255, 255, 0.18);
-	font-size: 12px;
-	letter-spacing: 1px;
-}
-
-.det-name {
-	color: #f5d060;
-	font-size: 17px;
+.wiz-det-name {
+	font-size: 15px;
 	font-weight: bold;
+	color: $parchment-text;
 }
 
-.det-cat {
-	color: rgba(255, 255, 255, 0.35);
-	font-size: 10px;
+.wiz-det-cat {
+	font-size: 9px;
 	letter-spacing: 2px;
-	text-transform: uppercase;
+	color: rgba(58, 32, 8, 0.5);
 }
 
-.det-desc {
-	color: rgba(255, 255, 255, 0.65);
-	font-size: 12px;
-	line-height: 1.6;
+.wiz-det-desc {
+	font-size: 11px;
+	color: rgba(58, 32, 8, 0.72);
+	line-height: 1.5;
 	padding: 8px 0;
-	border-top: 1px solid rgba(255, 255, 255, 0.06);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	border-top: 1px solid rgba(58, 32, 8, 0.2);
+	border-bottom: 1px solid rgba(58, 32, 8, 0.2);
 }
 
-.det-stats {
+.wiz-det-stats {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
 
-.stat-row {
+.wiz-drow {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	font-size: 11px;
-
-	span:first-child {
-		color: rgba(255, 255, 255, 0.4);
-	}
-
-	span:last-child {
-		color: rgba(255, 255, 255, 0.85);
-	}
+	font-size: 10px;
 }
 
-.det-actions {
+.wiz-det-acts {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 5px;
 	margin-top: auto;
 	padding-top: 8px;
 }
 
-.det-maxed {
+.wiz-maxed {
 	text-align: center;
-	color: #e8c84a;
-	font-size: 11px;
+	font-size: 9px;
 	letter-spacing: 2px;
-	padding: 6px;
-	border: 1px solid rgba(232, 200, 74, 0.3);
+	color: $parchment-text;
+	border: 1px solid rgba(58, 32, 8, 0.3);
 	border-radius: 3px;
+	padding: 5px;
 }
 
-// ─── Action buttons ───────────────────────────────────────────────────────────
+// Action buttons
 
-.btn-buy,
-.btn-upgrade,
-.btn-sell {
+.wiz-btn-buy,
+.wiz-btn-up,
+.wiz-btn-sell {
 	width: 100%;
-	padding: 8px 0;
+	padding: 7px 0;
 	border-radius: 3px;
 	font-family: inherit;
-	font-size: 11px;
+	font-size: 10px;
 	letter-spacing: 1px;
 	font-weight: bold;
 	cursor: pointer;
 	text-align: center;
 }
 
-.btn-buy {
-	background-color: rgba(232, 200, 74, 0.15);
-	border: 1px solid rgba(232, 200, 74, 0.5);
-	color: #e8c84a;
+.wiz-btn-buy {
+	background-color: rgba(200, 144, 16, 0.15);
+	border: 1px solid rgba(200, 144, 16, 0.55);
+	color: $parchment-text;
 
 	&:hover {
-		background-color: rgba(232, 200, 74, 0.28);
+		background-color: rgba(200, 144, 16, 0.3);
 	}
 
 	&.disabled {
@@ -306,13 +699,13 @@
 	}
 }
 
-.btn-upgrade {
-	background-color: rgba(100, 180, 255, 0.1);
-	border: 1px solid rgba(100, 180, 255, 0.35);
-	color: #88ccff;
+.wiz-btn-up {
+	background-color: rgba(30, 90, 200, 0.1);
+	border: 1px solid rgba(30, 90, 200, 0.35);
+	color: #1a4890;
 
 	&:hover {
-		background-color: rgba(100, 180, 255, 0.2);
+		background-color: rgba(30, 90, 200, 0.2);
 	}
 
 	&.disabled {
@@ -322,108 +715,13 @@
 	}
 }
 
-.btn-sell {
-	background-color: rgba(255, 80, 80, 0.08);
-	border: 1px solid rgba(255, 80, 80, 0.25);
-	color: rgba(255, 120, 120, 0.7);
+.wiz-btn-sell {
+	background-color: rgba(180, 30, 30, 0.08);
+	border: 1px solid rgba(180, 30, 30, 0.25);
+	color: rgba(160, 30, 30, 0.8);
 
 	&:hover {
-		background-color: rgba(255, 80, 80, 0.16);
-		color: rgba(255, 120, 120, 1.0);
-	}
-}
-
-// ─── Deck panel ───────────────────────────────────────────────────────────────
-
-.deck-panel {
-	padding: 12px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.deck-label {
-	color: rgba(255, 255, 255, 0.25);
-	font-size: 10px;
-	letter-spacing: 2px;
-}
-
-.deck-slots {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
-// ─── Deck slot ────────────────────────────────────────────────────────────────
-
-.deck-slot {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 8px;
-	padding: 7px 10px;
-	border-radius: 3px;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background-color: rgba(255, 255, 255, 0.02);
-	cursor: pointer;
-	min-height: 36px;
-
-	&:hover {
-		border-color: rgba(255, 255, 255, 0.18);
-	}
-
-	&.filled {
-		border-color: rgba(232, 200, 74, 0.25);
-		background-color: rgba(232, 200, 74, 0.04);
-	}
-
-	&.pending {
-		border-color: rgba(100, 200, 255, 0.5);
-		background-color: rgba(100, 200, 255, 0.06);
-		animation: slot-pulse 0.8s ease-in-out infinite alternate;
-	}
-}
-
-@keyframes slot-pulse {
-	from { border-color: rgba(100, 200, 255, 0.3); }
-	to   { border-color: rgba(100, 200, 255, 0.75); }
-}
-
-.ds-key {
-	min-width: 20px;
-	color: rgba(255, 255, 255, 0.35);
-	font-size: 11px;
-	font-weight: bold;
-	letter-spacing: 1px;
-}
-
-.ds-name {
-	flex: 1;
-	color: #f5d060;
-	font-size: 12px;
-}
-
-.ds-tier {
-	color: rgba(255, 255, 255, 0.35);
-	font-size: 10px;
-}
-
-.ds-empty {
-	flex: 1;
-	color: rgba(255, 255, 255, 0.2);
-	font-size: 11px;
-	letter-spacing: 0.5px;
-}
-
-.ds-remove {
-	color: rgba(255, 80, 80, 0.5);
-	font-size: 12px;
-	background: transparent;
-	border: none;
-	cursor: pointer;
-	padding: 0 2px;
-
-	&:hover {
-		color: rgba(255, 80, 80, 1.0);
+		background-color: rgba(180, 30, 30, 0.18);
+		color: rgba(160, 30, 30, 1.0);
 	}
 }
