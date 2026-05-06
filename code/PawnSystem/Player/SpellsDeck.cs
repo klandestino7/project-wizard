@@ -6,7 +6,7 @@ namespace Warlocks;
 /// </summary>
 public sealed class SpellsDeck : Component
 {
-	public const int RuntimeSlotCount = 4;
+	public const int RuntimeSlotCount = 6;
 
 	[Sync] public int OwnedMask { get; set; } = 0;
 	[Sync] public int TierPacked { get; set; } = 0;
@@ -15,11 +15,15 @@ public sealed class SpellsDeck : Component
 	[Sync] public int Slot1Idx { get; set; } = -1;
 	[Sync] public int Slot2Idx { get; set; } = -1;
 	[Sync] public int Slot3Idx { get; set; } = -1;
+	[Sync] public int Slot4Idx { get; set; } = -1;
+	[Sync] public int Slot5Idx { get; set; } = -1;
 
 	[Sync] public float SlotCD0 { get; set; } = 0f;
 	[Sync] public float SlotCD1 { get; set; } = 0f;
 	[Sync] public float SlotCD2 { get; set; } = 0f;
 	[Sync] public float SlotCD3 { get; set; } = 0f;
+	[Sync] public float SlotCD4 { get; set; } = 0f;
+	[Sync] public float SlotCD5 { get; set; } = 0f;
 
 	[Sync] public int ActionId { get; set; } = 0;
 	[Sync] public int ActionType { get; set; } = 0; // 0=select 1=assign 2=unassign 3=deselect 4=upgrade
@@ -29,13 +33,7 @@ public sealed class SpellsDeck : Component
 	private int _lastActionId;
 
 	private readonly BaseSpell[] _owned = new BaseSpell[SpellCatalog.All.Length];
-	private readonly BaseSpell[] _slots = new BaseSpell[RuntimeSlotCount]
-	{
-		new StupefySpell(),
-		new ProtegoSpell(),
-		new DashSpell(),
-		new EpiskeySpell()
-	};
+	private readonly BaseSpell[] _slots = new BaseSpell[RuntimeSlotCount];
 
 	public BasicCastSpell BasicCast { get; } = new();
 
@@ -61,6 +59,8 @@ public sealed class SpellsDeck : Component
 		SlotCD1 = _slots[1]?.CooldownEndTime ?? 0f;
 		SlotCD2 = _slots[2]?.CooldownEndTime ?? 0f;
 		SlotCD3 = _slots[3]?.CooldownEndTime ?? 0f;
+		SlotCD4 = _slots[4]?.CooldownEndTime ?? 0f;
+		SlotCD5 = _slots[5]?.CooldownEndTime ?? 0f;
 	}
 
 	public BaseSpell GetSlot( int index )
@@ -141,7 +141,7 @@ public sealed class SpellsDeck : Component
 
 		OwnedMask = 0;
 		TierPacked = 0;
-		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = -1;
+		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = Slot4Idx = Slot5Idx = -1;
 	}
 
 	public void ClientSelect( int catalogIdx ) => Send( 0, catalogIdx, 0 );
@@ -175,6 +175,8 @@ public sealed class SpellsDeck : Component
 		1 => Slot1Idx,
 		2 => Slot2Idx,
 		3 => Slot3Idx,
+		4 => Slot4Idx,
+		5 => Slot5Idx,
 		_ => -1
 	};
 
@@ -186,6 +188,8 @@ public sealed class SpellsDeck : Component
 			1 => SlotCD1,
 			2 => SlotCD2,
 			3 => SlotCD3,
+			4 => SlotCD4,
+			5 => SlotCD5,
 			_ => 0f
 		};
 
@@ -353,6 +357,8 @@ public sealed class SpellsDeck : Component
 		Slot1Idx = IdxOf( _slots[1] );
 		Slot2Idx = IdxOf( _slots[2] );
 		Slot3Idx = IdxOf( _slots[3] );
+		Slot4Idx = IdxOf( _slots[4] );
+		Slot5Idx = IdxOf( _slots[5] );
 	}
 
 	private int IdxOf( BaseSpell spell )

@@ -20,8 +20,10 @@ public sealed class Wand : Component
 	[Sync] private int _castSlot1 { get; set; } = 0;
 	[Sync] private int _castSlot2 { get; set; } = 0;
 	[Sync] private int _castSlot3 { get; set; } = 0;
+	[Sync] private int _castSlot4 { get; set; } = 0;
+	[Sync] private int _castSlot5 { get; set; } = 0;
 
-	private int _lastBasic, _lastSlot0, _lastSlot1, _lastSlot2, _lastSlot3;
+	private int _lastBasic, _lastSlot0, _lastSlot1, _lastSlot2, _lastSlot3, _lastSlot4, _lastSlot5;
 
 	private PlayerPawn _player;
 	private SpellsDeck _deck;
@@ -61,6 +63,8 @@ public sealed class Wand : Component
 		if ( _castSlot1 != _lastSlot1 ) { _lastSlot1 = _castSlot1; ExecuteSpell( _deck?.GetSlot( 1 ) ); }
 		if ( _castSlot2 != _lastSlot2 ) { _lastSlot2 = _castSlot2; ExecuteSpell( _deck?.GetSlot( 2 ) ); }
 		if ( _castSlot3 != _lastSlot3 ) { _lastSlot3 = _castSlot3; ExecuteSpell( _deck?.GetSlot( 3 ) ); }
+		if ( _castSlot4 != _lastSlot4 ) { _lastSlot4 = _castSlot4; ExecuteSpell( _deck?.GetSlot( 4 ) ); }
+		if ( _castSlot5 != _lastSlot5 ) { _lastSlot5 = _castSlot5; ExecuteSpell( _deck?.GetSlot( 5 ) ); }
 	}
 
 	private void ExecuteSpell( BaseSpell spell )
@@ -70,6 +74,7 @@ public sealed class Wand : Component
 		_currentResolvedSpell = resolved;
 		_player.ManaSystem?.TrySpend( resolved.ManaCost );
 		spell.Execute( this );
+		_player.PassiveEffects?.OnSpellCast( spell );
 		_currentResolvedSpell = null;
 	}
 
@@ -96,6 +101,8 @@ public sealed class Wand : Component
 			case 1: _castSlot1++; break;
 			case 2: _castSlot2++; break;
 			case 3: _castSlot3++; break;
+			case 4: _castSlot4++; break;
+			case 5: _castSlot5++; break;
 		}
 	}
 

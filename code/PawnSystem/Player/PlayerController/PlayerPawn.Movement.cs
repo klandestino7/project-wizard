@@ -531,8 +531,18 @@ public partial class PlayerPawn
 	{
 		if ( IsSlowWalking ) return Global.SlowWalkSpeed;
 		if ( IsCrouching ) return Global.CrouchingSpeed;
-		if ( IsSprinting ) return Global.SprintingSpeed - (GetSpeedPenalty() * 0.5f);
-		return Global.WalkSpeed - GetSpeedPenalty();
+
+		float speed = IsSprinting
+			? Global.SprintingSpeed - (GetSpeedPenalty() * 0.5f)
+			: Global.WalkSpeed - GetSpeedPenalty();
+
+		if ( IsSlowed )
+			speed *= MathF.Max( 0f, 1f - SlowFraction );
+
+		if ( IsSpeedBoosted )
+			speed *= 1f + SpeedBoostFraction;
+
+		return MathF.Max( speed, 0f );
 	}
 
 	private void DebugUpdate()

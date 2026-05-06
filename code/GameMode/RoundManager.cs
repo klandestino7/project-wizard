@@ -202,8 +202,14 @@ public sealed class RoundManager : Component
 		if ( !Networking.IsHost || State != RoundState.Combat )
 			return;
 
-		if ( killer != null && killer.Team != victim.Team && killer.Client is not null )
-			killer.Client.Balance += KillMoney;
+		if ( killer != null && killer.Team != victim.Team )
+		{
+			if ( killer.Client is not null )
+				killer.Client.Balance += KillMoney;
+
+			killer.PassiveEffects?.OnKill();
+			killer.UltimateCharge?.AddKillCharge();
+		}
 
 		CheckRoundEndConditions();
 	}

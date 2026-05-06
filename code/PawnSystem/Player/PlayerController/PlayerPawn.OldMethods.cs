@@ -32,6 +32,10 @@ public partial class PlayerPawn
 	[Sync] public float SlowFraction { get; set; } = 0f;
 	public bool IsSlowed => Time.Now < SlowEndTime && SlowFraction > 0f;
 
+	// Read-through to PassiveEffectSystem so Movement.cs can access it cleanly
+	public bool  IsSpeedBoosted    => PassiveEffects?.IsSpeedBoosted ?? false;
+	public float SpeedBoostFraction => PassiveEffects?.SpeedBoostFraction ?? 0f;
+
 	/// <summary>True enquanto no ar (lançado). Spells de burst fazem +50% dmg.</summary>
 	public bool IsAirborne => CombatState == CombatState.Airborne;
 
@@ -47,6 +51,7 @@ public partial class PlayerPawn
 	[Property] public PlayerBuildComponent PlayerBuild { get; set; }
 	[Property] public UltimateChargeComponent UltimateCharge { get; set; }
 	[Property] public SpellComboSystem ComboSystem { get; set; }
+	[Property] public PassiveEffectSystem PassiveEffects { get; set; }
 
 	// ─── Itens consumíveis ────────────────────────────────────────────
 	[Property] public BaseConsumable ItemSlot1 { get; set; }
@@ -65,6 +70,7 @@ public partial class PlayerPawn
 		PlayerBuild     ??= Components.Get<PlayerBuildComponent>()      ?? Components.Create<PlayerBuildComponent>();
 		UltimateCharge  ??= Components.Get<UltimateChargeComponent>()   ?? Components.Create<UltimateChargeComponent>();
 		ComboSystem     ??= Components.Get<SpellComboSystem>()          ?? Components.Create<SpellComboSystem>();
+		PassiveEffects  ??= Components.Get<PassiveEffectSystem>()       ?? Components.Create<PassiveEffectSystem>();
 
 		if ( !IsLocallyControlled )
 			return;
@@ -125,9 +131,22 @@ public partial class PlayerPawn
 		if ( Input.Pressed( "Ability2" ) ) Wand?.TryCastSlot( 1 );
 		if ( Input.Pressed( "Ability3" ) ) Wand?.TryCastSlot( 2 );
 		if ( Input.Pressed( "Ability4" ) ) Wand?.TryCastSlot( 3 );
+		if ( Input.Pressed( "Ability5" ) ) Wand?.TryCastSlot( 4 );
+		if ( Input.Pressed( "Ability6" ) ) Wand?.TryCastSlot( 5 );
+
+		if ( Input.Pressed( "Ultimate" ) ) TryUseUltimate();
 
 		if ( Input.Pressed( "Item1" ) ) ItemSlot1?.TryUse();
 		if ( Input.Pressed( "Item2" ) ) ItemSlot2?.TryUse();
+	}
+
+	// ─── Ultimate ─────────────────────────────────────────────────────
+	private void TryUseUltimate()
+	{
+		if ( UltimateCharge == null || !UltimateCharge.TryConsumeUltimate() ) return;
+
+		var affinity = PlayerBuild?.Affinity ?? AffinityType.Neutral;
+		UltimateEffects.Fire( this, affinity );
 	}
 
 	// ─── Input: Interação (genérico via IInteractable) ────────────────

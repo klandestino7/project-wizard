@@ -153,9 +153,12 @@ public sealed class SpellProjectile : Component
 			if ( catalogEntry != null && catalogEntry.ComboTags != ComboTag.None )
 				victim.ComboSystem?.RecordHit( catalogEntry.ComboTags, _shooter );
 
-			// Feed ultimate charge on the attacker
+			// Feed ultimate charge + passive on the attacker
 			if ( finalDamage > 0f )
+			{
 				_shooter?.UltimateCharge?.AddDamageCharge( finalDamage );
+				_shooter?.PassiveEffects?.OnDamageDealt( finalDamage );
+			}
 		}
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );
