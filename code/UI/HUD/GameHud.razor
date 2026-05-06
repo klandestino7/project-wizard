@@ -1,42 +1,33 @@
-@using Sandbox;
-@using Sandbox.UI;
+@using Sandbox
+@using Sandbox.UI
 
 @namespace Warlocks.UI
 @inherits PanelComponent
 
-
 <root class="game-hud">
-
 	@if ( Player != null && Player.IsAlive )
 	{
-		@* ── Bottom Bar ───────────────────────────────────────────── *@
 		<div class="hud-bottom">
-
-			@* HP + Shield + Mana *@
 			<Vitals />
 
-			@* Abilities Q E R F *@
 			<div class="abilities">
-				@RenderAbilitySlot( "Q", _deck.GetSlot(0) )
-				@RenderAbilitySlot( "E", _deck.GetSlot(1) )
-				@RenderAbilitySlot( "R", _deck.GetSlot(2) )
-				@RenderAbilitySlot( "F", _deck.GetSlot(3) )
+				@RenderAbilitySlot( "Q", _deck.GetSlot( 0 ) )
+				@RenderAbilitySlot( "E", _deck.GetSlot( 1 ) )
+				@RenderAbilitySlot( "R", _deck.GetSlot( 2 ) )
+				@RenderAbilitySlot( "F", _deck.GetSlot( 3 ) )
 			</div>
 
-			@* Itens *@
 			<div class="item-slots">
 				@RenderItemSlot( "1", Player.ItemSlot1 )
 				@RenderItemSlot( "2", Player.ItemSlot2 )
 			</div>
 
-			@* Galeões *@
 			<div class="galleons">
-				<div class="galleon-icon">G</div>
-				<div class="galleon-amount">@Player.Balance</div>
+				<div class="galleon-icon">E</div>
+				<div class="galleon-amount">@EnergyLabel</div>
 			</div>
 		</div>
 
-		@* ── Top Bar ──────────────────────────────────────────────── *@
 		<div class="hud-top">
 			<div class="score auror-score">@( Round?.AurorScore ?? 0 )</div>
 			<div class="round-info">
@@ -51,7 +42,6 @@
 			<div class="score comensal-score">@( Round?.ComensalScore ?? 0 )</div>
 		</div>
 
-		@* ── Horcrux timer (quando plantada) ─────────────────────── *@
 		@{
 			var plantedSite = PlantedHorcrux;
 		}
@@ -66,13 +56,11 @@
 			</div>
 		}
 
-		@* ── Burning indicator ────────────────────────────────────── *@
 		@if ( Player.BurningEndTime > Time.Now )
 		{
 			<div class="status-effect burning">BURNING</div>
 		}
 
-		@* ── Crosshair ────────────────────────────────────────────── *@
 		<div class="crosshair">
 			<div class="cross-h"></div>
 			<div class="cross-v"></div>
@@ -82,15 +70,15 @@
 	{
 		<div class="dead-screen">
 			<div class="dead-text">ELIMINADO</div>
-			<div class="dead-sub">Aguarde o próximo round</div>
+			<div class="dead-sub">Aguarde o proximo round</div>
 		</div>
 	}
-
 </root>
 
 @code {
 	PlayerPawn Player => PlayerPawn.Local;
-	SpellsDeck _deck => Player.SpellsDeck;
+	SpellsDeck _deck => Player?.SpellsDeck;
+	PlayerBuildComponent Build => Player?.PlayerBuild;
 	RoundManager Round => RoundManager.Instance;
 
 	HorcruxSite PlantedHorcrux => Game.ActiveScene
@@ -99,12 +87,15 @@
 
 	float TimeRemaining => Round?.TimeRemaining ?? 0f;
 	bool IsLowTime => TimeRemaining < 10f && Round?.State == RoundState.Combat;
+	string EnergyLabel => _deck?.ValidateCurrentLoadout() is { } validation && Build is not null
+		? $"{validation.EnergyUsed}/{Build.EnergyBudget}"
+		: "-";
 
 	string TimerLabel
 	{
 		get
 		{
-			if ( Round == null ) return "–";
+			if ( Round == null ) return "-";
 			int mins = (int)(TimeRemaining / 60f);
 			int secs = (int)(TimeRemaining % 60f);
 			return $"{mins}:{secs:00}";
@@ -113,10 +104,10 @@
 
 	string GetStateLabel() => Round?.State switch
 	{
-		RoundState.BuyPhase  => "FASE DE COMPRA",
-		RoundState.Combat    => "COMBATE",
+		RoundState.BuyPhase => "PREPARATION",
+		RoundState.Combat => "COMBATE",
 		RoundState.PostRound => "FIM DE ROUND",
-		RoundState.MatchEnd  => "PARTIDA ENCERRADA",
+		RoundState.MatchEnd => "PARTIDA ENCERRADA",
 		_ => ""
 	};
 
@@ -125,7 +116,7 @@
 		bool ready = spell?.IsReady ?? true;
 		<div class="ability-slot @( ready ? "ready" : "cooling" )">
 			<div class="ability-key">@key</div>
-			<div class="ability-name">@( spell?.SpellName ?? "–" )</div>
+			<div class="ability-name">@( spell?.SpellName ?? "-" )</div>
 			@if ( !ready )
 			{
 				<div class="ability-cd">@( spell?.CooldownRemaining.ToString( "0.0" ) )s</div>
@@ -137,12 +128,12 @@
 	{
 		<div class="item-slot @( item?.IsUsed == true ? "item-used" : "" )">
 			<div class="item-key">@key</div>
-			<div class="item-name">@( item?.ItemName ?? "–" )</div>
+			<div class="item-name">@( item?.ItemName ?? "-" )</div>
 		</div>
 	};
 
 	protected override int BuildHash() => System.HashCode.Combine(
-		Player?.Balance,
+		EnergyLabel,
 		Player?.IsAlive,
 		Round?.TimeRemaining,
 		Round?.State

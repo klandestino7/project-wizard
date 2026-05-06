@@ -1,5 +1,5 @@
-@using Sandbox;
-@using Sandbox.UI;
+@using Sandbox
+@using Sandbox.UI
 @inherits Panel
 @attribute [StyleSheet]
 
@@ -10,56 +10,45 @@
 <root>
 @if ( IsOpen && Player != null && Deck != null )
 {
-	<div class="wiz-overlay @( IsOpen ? "visible" : "")">
-
-		@* ══ LEFT: Team ══════════════════════════════════════════════ *@
+	<div class="wiz-overlay @( IsOpen ? "visible" : "" )">
 		<div class="wiz-left">
-			<div class="wiz-panel-title">TEAM</div>
+			<div class="wiz-panel-title">BUILD</div>
 			<div class="wiz-team-list">
+				@RenderBuildSummary()
 				@RenderTeamList()
 			</div>
 		</div>
 
-		@* ══ CENTER: Spells + Deck ════════════════════════════════════ *@
 		<div class="wiz-center">
-
 			<div class="wiz-center-hdr">
 				<div class="wiz-gold">
 					<div class="wiz-coin"></div>
-					<span>@Client.Balance.ToString("N0")</span>
+					<span>@EnergyLabel</span>
 				</div>
-				<div class="wiz-page-title">SPELLS</div>
+				<div class="wiz-page-title">SPELL LOADOUT</div>
 				<div class="wiz-hint-txt">[ B ] Close</div>
 			</div>
 
 			<div class="wiz-spell-container">
 				<div class="wiz-spell-grid">
-					@RenderSpellCol( "Ofensiva", "OFFENSIVE" )
-					@RenderSpellCol( "Controle", "CONTROL"   )
-					@RenderSpellCol( "Defesa",   "DEFENSIVE" )
-				</div>
-
-				<div class="wiz-spell-potions">
-					@RenderPotionsCol()
+					@RenderSpellCol( "Ofensiva", "OFFENSE" )
+					@RenderSpellCol( "Controle", "CONTROL" )
+					@RenderSpellCol( "Defesa", "DEFENSE" )
+					@RenderSpellCol( "Utilidade", "UTILITY" )
 				</div>
 			</div>
 
 			<div class="wiz-deck-bar">
-				<div class="wiz-deck-label">— SPELLS AND POTIONS PREPARED —</div>
+				<div class="wiz-deck-label">ACTIVE SPELLS</div>
 				<div class="wiz-deck-row">
-					@RenderDeckSlot( "1", 0 )
-					@RenderDeckSlot( "2", 1 )
-					@RenderDeckSlot( "3", 2 )
-					@RenderDeckSlot( "4", 3 )
-					<div class="wiz-deck-divider"></div>
-					@RenderDeckSlot( "Q", 4 )
-					@RenderDeckSlot( "E", 5 )
+					@RenderDeckSlot( "Q", 0 )
+					@RenderDeckSlot( "E", 1 )
+					@RenderDeckSlot( "R", 2 )
+					@RenderDeckSlot( "F", 3 )
 				</div>
 			</div>
-
 		</div>
 
-		@* ══ RIGHT: Round Info + Spell Detail ════════════════════════ *@
 		<div class="wiz-right">
 			@RenderRoundInfo()
 			@if ( SelectedIdx >= 0 )
@@ -71,46 +60,71 @@
 				<div class="wiz-right-empty"></div>
 			}
 		</div>
-
 	</div>
 }
 </root>
 
 @code {
 	public Client Client => Client.Viewer;
-    public PlayerPawn Player => Client.Viewer?.PlayerPawn;
-	RoundManager Round  => RoundManager.Instance;
-	SpellsDeck   Deck   => Player.SpellsDeck;
+	public PlayerPawn Player => Client.Viewer?.PlayerPawn;
+	RoundManager Round => RoundManager.Instance;
+	SpellsDeck Deck => Player?.SpellsDeck;
+	PlayerBuildComponent Build => Player?.PlayerBuild;
+	BuildValidationResult Validation => Deck?.ValidateCurrentLoadout();
 
 	int SelectedIdx = -1;
 	int PendingSlot = -1;
 
 	const int MaxTeamSize = 5;
 
-    private bool IsOpen = false;
+	private bool IsOpen;
 
-    void Toggle()
-    {
-        IsOpen = !IsOpen;
-    }
+	string EnergyLabel => Validation is null || Build is null
+		? "0 / 0"
+		: $"{Validation.EnergyUsed} / {Build.EnergyBudget}";
 
-    public override void Tick()
-    {
-        if ( Player?.CanBuy is true )
-        {
-            if ( Input.Pressed( "BuyMenu" ) )
-            {
-                Toggle();
-            }
-        }
-        else
-        {
-            IsOpen = false;
-        }
-    }
+	void Toggle()
+	{
+		IsOpen = !IsOpen;
+	}
 
+	public override void Tick()
+	{
+		if ( Player?.CanBuy is true )
+		{
+			if ( Input.Pressed( "BuyMenu" ) )
+				Toggle();
+		}
+		else
+		{
+			IsOpen = false;
+		}
+	}
 
-	// ─── Team list ──────────────────────────────────────────────────────────
+	RenderFragment RenderBuildSummary() => __builder =>
+	{
+		<div class="wiz-mate is-local">
+			<div class="wiz-avatar">W</div>
+			<div class="wiz-mate-body">
+				<div class="wiz-mate-name">Affinity: @Build?.Affinity</div>
+				<div class="wiz-mate-stats">
+					<span class="wiz-mg">Discipline: @Build?.Discipline</span>
+				</div>
+				<div class="wiz-mate-stats">
+					<span class="wiz-mm">Passive: @Build?.Passive</span>
+				</div>
+				<div class="wiz-mate-stats">
+					<span class="wiz-mm">Energy: @EnergyLabel</span>
+				</div>
+				@if ( Validation?.Errors.Count > 0 )
+				{
+					<div class="wiz-mate-stats">
+						<span class="wiz-mg">Invalid build</span>
+					</div>
+				}
+			</div>
+		</div>
+	};
 
 	RenderFragment RenderTeamList() => __builder =>
 	{
@@ -118,15 +132,18 @@
 
 		foreach ( var p in Game.ActiveScene.GetAllComponents<PlayerPawn>() )
 		{
-			Log.Info($" Player {Player.Team} :: {p.Team}");
-			if ( !p.IsValid() || Player == null || p.Team != Player.Team || !p.IsLocallyControlled ) continue;
+			if ( !p.IsValid() || Player == null || p.Team != Player.Team || !p.IsLocallyControlled )
+				continue;
+
 			RenderMate( p )( __builder );
 			mateCount++;
 		}
 
 		foreach ( var p in Game.ActiveScene.GetAllComponents<PlayerPawn>() )
 		{
-			if ( !p.IsValid() || Player == null || p.Team != Player.Team || p.IsLocallyControlled ) continue;
+			if ( !p.IsValid() || Player == null || p.Team != Player.Team || p.IsLocallyControlled )
+				continue;
+
 			RenderMate( p )( __builder );
 			mateCount++;
 		}
@@ -137,14 +154,12 @@
 		}
 	};
 
-	// ─── Teammate card ───────────────────────────────────────────────────────
-
 	RenderFragment RenderMate( PlayerPawn mate ) => __builder =>
 	{
-		bool isLocal  = mate.IsLocallyControlled;
-		bool alive    = mate.IsAlive;
-		var  md       = mate.SpellsDeck;
-		var  ms       = mate.Components.Get<ManaSystem>();
+		bool isLocal = mate.IsLocallyControlled;
+		bool alive = mate.IsAlive;
+		var md = mate.SpellsDeck;
+		var ms = mate.Components.Get<ManaSystem>();
 		string letter = mate.DisplayName.Length > 0 ? mate.DisplayName.Substring( 0, 1 ).ToUpper() : "?";
 
 		<div class="wiz-mate @( isLocal ? "is-local" : "" ) @( alive ? "" : "is-dead" )">
@@ -152,19 +167,19 @@
 			<div class="wiz-mate-body">
 				<div class="wiz-mate-name">@mate.DisplayName</div>
 				<div class="wiz-mate-stats">
-					<span class="wiz-mg">G @mate.Balance</span>
+					<span class="wiz-mg">@mate.PlayerBuild?.Affinity</span>
 					@if ( ms != null )
 					{
-						<span class="wiz-mm">★ @( (int)ms.Mana )</span>
+						<span class="wiz-mm">Mana @( (int)ms.Mana )</span>
 					}
 				</div>
 				<div class="wiz-mate-deck">
 					@if ( md != null )
 					{
-						@for ( int s = 0; s < 4; s++ )
+						@for ( int s = 0; s < SpellsDeck.RuntimeSlotCount; s++ )
 						{
-							int  cidx = md.GetSlotIdx( s );
-							bool has  = cidx >= 0;
+							int cidx = md.GetSlotIdx( s );
+							bool has = cidx >= 0;
 							string ac = has ? SpellCatalog.All[cidx].AccentColor : "transparent";
 							<div class="wiz-ms @( has ? "filled" : "" )" style="border-color: @ac;">
 								@if ( has )
@@ -179,8 +194,6 @@
 		</div>
 	};
 
-	// ─── Spell column ────────────────────────────────────────────────────────
-
 	RenderFragment RenderSpellCol( string cat, string label ) => __builder =>
 	{
 		<div class="wiz-col wiz-col-bg-@label.ToLower()">
@@ -188,29 +201,29 @@
 			<div class="wiz-col-body">
 				@for ( int i = 0; i < SpellCatalog.All.Length; i++ )
 				{
-					var  entry   = SpellCatalog.All[i];
+					var entry = SpellCatalog.All[i];
 					if ( entry.Category != cat ) continue;
-					int  idx     = i;
-					bool owned   = Deck.IsOwned( idx );
-					int  tier    = Deck.GetTier( idx );
-					bool sel     = SelectedIdx == idx;
-					bool canAff  = Client.Balance >= entry.BuyCost;
 
-					<div class="wiz-sc @( owned ? "owned" : "" ) @( sel ? "sel" : "" ) @( !owned && !canAff ? "poor" : "" )"
+					int idx = i;
+					bool selected = Deck.IsOwned( idx );
+					int tier = Deck.GetTier( idx );
+					bool active = SelectedIdx == idx;
+
+					<div class="wiz-sc @( selected ? "owned" : "" ) @( active ? "sel" : "" )"
 					     onclick=@( () => SelectSpell( idx ) )>
 						<div class="wiz-sc-icon" style="border-color: @entry.AccentColor;">
-							<div class="wiz-sc-dot" style="background: url(@entry.Image)" ></div>
+							<div class="wiz-sc-dot" style="background: url(@entry.Image)"></div>
 						</div>
 						<div class="wiz-sc-info">
 							<div class="wiz-sc-name">@entry.Name.ToUpper()</div>
 							<div class="wiz-sc-cost">
-								@if ( owned )
+								@if ( selected )
 								{
 									<span class="wiz-tier">T@tier</span>
 								}
 								else
 								{
-									<span class="wiz-star">★</span><span>@entry.BuyCost</span>
+									<span class="wiz-star">E</span><span>@entry.EnergyCost</span>
 								}
 							</div>
 						</div>
@@ -220,42 +233,15 @@
 		</div>
 	};
 
-	// ─── Potions column ─────────────────────────────────────────────────────
-
-	RenderFragment RenderPotionsCol() => __builder =>
-	{
-		<div class="wiz-col-potion">
-			<div class="wiz-col-hdr">POTIONS</div>
-			<div class="wiz-col-body">
-				<div class="wiz-potion-card">
-					<div class="wiz-potion-bottle wiz-heal-bottle"></div>
-					<div class="wiz-potion-name">Healing Potion</div>
-					<div class="wiz-potion-cost">
-						<span class="wiz-star">★</span><span>600</span>
-					</div>
-				</div>
-				<div class="wiz-potion-card">
-					<div class="wiz-potion-bottle wiz-mana-bottle"></div>
-					<div class="wiz-potion-name">Mana Potion</div>
-					<div class="wiz-potion-cost">
-						<span class="wiz-star">★</span><span>500</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	};
-
-	// ─── Deck slot ───────────────────────────────────────────────────────────
-
 	RenderFragment RenderDeckSlot( string key, int slot ) => __builder =>
 	{
-		int    cidx   = Deck.GetSlotIdx( slot );
-		bool   filled = cidx >= 0;
-		bool   pend   = PendingSlot == slot;
-		string acc    = filled ? SpellCatalog.All[cidx].AccentColor : "transparent";
-		string name   = filled ? SpellCatalog.All[cidx].Name : "";
+		int cidx = Deck.GetSlotIdx( slot );
+		bool filled = cidx >= 0;
+		bool pending = PendingSlot == slot;
+		string acc = filled ? SpellCatalog.All[cidx].AccentColor : "transparent";
+		string name = filled ? SpellCatalog.All[cidx].Name : "";
 
-		<div class="wiz-ds @( filled ? "filled" : "" ) @( pend ? "pending" : "" )"
+		<div class="wiz-ds @( filled ? "filled" : "" ) @( pending ? "pending" : "" )"
 		     onclick=@( () => ClickSlot( slot ) )>
 			@if ( filled )
 			{
@@ -263,12 +249,12 @@
 					<span style="color: @acc;">@( name.Length > 0 ? name.Substring( 0, 1 ) : "" )</span>
 				</div>
 				<div class="wiz-ds-name" style="color: @acc;">@name.ToUpper()</div>
-				<button class="wiz-ds-rm" onclick=@( () => Unassign( slot ) )>✕</button>
+				<button class="wiz-ds-rm" onclick=@( () => Unassign( slot ) )>X</button>
 			}
 			else
 			{
 				<div class="wiz-ds-empty"></div>
-				@if ( pend )
+				@if ( pending )
 				{
 					<div class="wiz-ds-hint">select spell</div>
 				}
@@ -277,16 +263,14 @@
 		</div>
 	};
 
-	// ─── Round info ──────────────────────────────────────────────────────────
-
 	RenderFragment RenderRoundInfo() => __builder =>
 	{
-		int   roundNum = Round?.CurrentRound ?? 0;
-		int   aurors   = Round?.AurorScore ?? 0;
-		int   dark     = Round?.ComensalScore ?? 0;
-		float t        = Round?.TimeRemaining ?? 0f;
-		int   mins     = (int)(t / 60f);
-		int   secs     = (int)(t % 60f);
+		int roundNum = Round?.CurrentRound ?? 0;
+		int aurors = Round?.AurorScore ?? 0;
+		int dark = Round?.ComensalScore ?? 0;
+		float t = Round?.TimeRemaining ?? 0f;
+		int mins = (int)(t / 60f);
+		int secs = (int)(t % 60f);
 
 		<div class="wiz-round">
 			<div class="wiz-round-num">ROUND @roundNum</div>
@@ -303,80 +287,93 @@
 				</div>
 			</div>
 			<div class="wiz-timer">@mins:@secs.ToString("D2")</div>
-			<div class="wiz-timer-lbl">BUY PHASE</div>
+			<div class="wiz-timer-lbl">PREPARATION</div>
 		</div>
 	};
 
-	// ─── Spell detail ────────────────────────────────────────────────────────
-
 	RenderFragment RenderDetail( int idx ) => __builder =>
 	{
-		var  e      = SpellCatalog.All[idx];
-		bool own    = Deck.IsOwned( idx );
-		int  tier   = Deck.GetTier( idx );
-		int  refund = RefundOf( idx );
-		bool canBuy = Client.Balance >= e.BuyCost;
-
-		bool canT1  = Client.Balance >= e.Tier1Cost;
-		bool canT2  = Client.Balance >= e.Tier2Cost;
+		var e = SpellCatalog.All[idx];
+		bool selected = Deck.IsOwned( idx );
+		int tier = Deck.GetTier( idx );
+		bool canUpgradeT1 = selected && tier < 1;
+		bool canUpgradeT2 = selected && tier < 2;
 
 		<div class="wiz-detail">
 			<div class="wiz-det-name">@e.Name</div>
 			<div class="wiz-det-cat">@e.Category.ToUpper()</div>
 			<div class="wiz-det-desc">@e.Description</div>
 			<div class="wiz-det-stats">
+				<div class="wiz-drow"><span>Affinity</span><span>@e.Affinity</span></div>
+				<div class="wiz-drow"><span>Energy</span><span>@e.EnergyCost</span></div>
 				<div class="wiz-drow"><span>Cooldown</span><span>@e.BaseCooldown s</span></div>
-				<div class="wiz-drow"><span>Mana</span><span>@( e.ManaCost > 0f ? e.ManaCost.ToString() : "—" )</span></div>
+				<div class="wiz-drow"><span>Mana</span><span>@( e.ManaCost > 0f ? e.ManaCost.ToString() : "-" )</span></div>
+			</div>
+			<div class="wiz-det-stats">
+				<div class="wiz-drow"><span>T1</span><span>@e.TierBehaviors.ElementAtOrDefault( 0 )</span></div>
+				<div class="wiz-drow"><span>T2</span><span>@e.TierBehaviors.ElementAtOrDefault( 1 )</span></div>
+				<div class="wiz-drow"><span>T3</span><span>@e.TierBehaviors.ElementAtOrDefault( 2 )</span></div>
 			</div>
 			<div class="wiz-det-acts">
-				@if ( !own )
+				@if ( !selected )
 				{
-					<button class="wiz-btn-buy @( canBuy ? "" : "disabled" )" onclick=@( () => Buy( idx ) )>
-						BUY — ★ @e.BuyCost
+					<button class="wiz-btn-buy" onclick=@( () => AddToBuild( idx ) )>
+						ADD TO BUILD
 					</button>
 				}
 				else
 				{
-					@if ( tier < 1 )
+					<button class="wiz-btn-sell" onclick=@( () => RemoveFromBuild( idx ) )>
+						REMOVE FROM BUILD
+					</button>
+
+					@if ( canUpgradeT1 )
 					{
-						<button class="wiz-btn-up @( canT1 ? "" : "disabled" )" onclick=@( () => Upgrade( idx, 1 ) )>
-							TIER 1 — ★ @e.Tier1Cost
+						<button class="wiz-btn-up" onclick=@( () => Upgrade( idx, 1 ) )>
+							UNLOCK TIER 2
 						</button>
 					}
-					@if ( tier < 2 )
+
+					@if ( canUpgradeT2 )
 					{
-						<button class="wiz-btn-up @( canT2 ? "" : "disabled" )" onclick=@( () => Upgrade( idx, 2 ) )>
-							TIER 2 — ★ @e.Tier2Cost
+						<button class="wiz-btn-up" onclick=@( () => Upgrade( idx, 2 ) )>
+							UNLOCK TIER 3
 						</button>
 					}
+
 					@if ( tier >= 2 )
 					{
 						<div class="wiz-maxed">MAXIMIZED</div>
 					}
-					<button class="wiz-btn-sell" onclick=@( () => Sell( idx ) )>
-						SELL (+★ @refund)
-					</button>
 				}
 			</div>
 		</div>
 	};
 
-	// ─── Selection logic ─────────────────────────────────────────────────────
-
 	void SelectSpell( int idx )
 	{
 		if ( PendingSlot >= 0 )
 		{
-			Deck?.ClientAssign( PendingSlot, idx );
-			PendingSlot = -1;
+			if ( Deck?.IsOwned( idx ) == true )
+			{
+				Deck.ClientAssign( PendingSlot, idx );
+				PendingSlot = -1;
+			}
+
 			return;
 		}
+
 		SelectedIdx = SelectedIdx == idx ? -1 : idx;
 	}
 
 	void ClickSlot( int slot )
 	{
-		if ( PendingSlot == slot ) { PendingSlot = -1; return; }
+		if ( PendingSlot == slot )
+		{
+			PendingSlot = -1;
+			return;
+		}
+
 		if ( SelectedIdx >= 0 && Deck != null && Deck.IsOwned( SelectedIdx ) )
 		{
 			Deck.ClientAssign( slot, SelectedIdx );
@@ -388,35 +385,46 @@
 		}
 	}
 
-	// ─── Actions ─────────────────────────────────────────────────────────────
-
-	void Buy( int idx )               { 
-		Log.Info($" BUY :: {idx}");
-		Deck?.ClientBuy( idx );
-	 }
-	void Upgrade( int idx, int tier ) { Deck?.ClientUpgrade( idx, tier ); }
-	void Sell( int idx )              { Deck?.ClientSell( idx ); if ( SelectedIdx == idx ) SelectedIdx = -1; }
-	void Unassign( int slot )         { Deck?.ClientUnassign( slot ); }
-
-	int RefundOf( int idx )
+	void AddToBuild( int idx )
 	{
-		if ( Deck == null || idx < 0 || idx >= SpellCatalog.All.Length ) return 0;
-		var e    = SpellCatalog.All[idx];
-		int tier = Deck.GetTier( idx );
-		int r    = e.BuyCost / 2;
-		if ( tier >= 1 ) r += e.Tier1Cost / 2;
-		if ( tier >= 2 ) r += e.Tier2Cost / 2;
-		return r;
+		Deck?.ClientSelect( idx );
 	}
 
-	protected override int BuildHash() => HashCode.Combine(
-		Round?.State,
-		Round?.CurrentRound,
-		IsOpen,
-		Player?.Balance,
-		Deck?.OwnedMask,
-		(int)(Round?.TimeRemaining ?? 0f),
-		Deck?.Slot0Idx,
-		SelectedIdx
-	);
+	void RemoveFromBuild( int idx )
+	{
+		Deck?.ClientDeselect( idx );
+		if ( SelectedIdx == idx )
+			SelectedIdx = -1;
+	}
+
+	void Upgrade( int idx, int tier )
+	{
+		Deck?.ClientUpgrade( idx, tier );
+	}
+
+	void Unassign( int slot )
+	{
+		Deck?.ClientUnassign( slot );
+	}
+
+	protected override int BuildHash()
+	{
+		var buildHash = HashCode.Combine(
+			Round?.State,
+			Round?.CurrentRound,
+			IsOpen,
+			Build?.Affinity,
+			Build?.Discipline,
+			Build?.Passive,
+			Validation?.EnergyUsed,
+			Validation?.Errors.Count
+		);
+
+		return HashCode.Combine(
+			buildHash,
+			Deck?.OwnedMask,
+			Deck?.Slot0Idx,
+			SelectedIdx
+		);
+	}
 }
