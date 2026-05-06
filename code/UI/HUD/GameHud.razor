@@ -25,8 +25,8 @@
 			</div>
 
 			<div class="item-slots">
-				@RenderItemSlot( "1", Player.ItemSlot1 )
-				@RenderItemSlot( "2", Player.ItemSlot2 )
+				@RenderItemSlot( "Q", Player.ItemSlot1 )
+				@RenderItemSlot( "E", Player.ItemSlot2 )
 			</div>
 
 			<div class="galleons">
@@ -142,12 +142,15 @@
 		<div class="item-slot @( item?.IsUsed == true ? "item-used" : "" )">
 			<div class="item-key">@key</div>
 			<div class="item-name">@( item?.ItemName ?? "-" )</div>
+			<div class="item-count">x@( item?.Charges ?? 0 )</div>
 		</div>
 	};
 
 	protected override int BuildHash() => System.HashCode.Combine(
 		EnergyLabel,
 		Player?.IsAlive,
+		Player?.ItemSlot1?.Charges ?? 0,
+		Player?.ItemSlot2?.Charges ?? 0,
 		Round?.TimeRemaining,
 		Round?.State,
 		_ult?.IsReady,

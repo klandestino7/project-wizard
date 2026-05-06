@@ -481,6 +481,10 @@ BuyMenu {
 		// border-color: rgba(200, 144, 16, 0.55);
 		// background-color: #301e08;
 	}
+
+	&.wiz-potion-disabled {
+		opacity: 0.55;
+	}
 }
 
 .wiz-potion-bottle {
@@ -514,6 +518,13 @@ BuyMenu {
 	letter-spacing: 0.5px;
 }
 
+.wiz-potion-meta {
+	font-size: 10px;
+	color: #5b4830;
+	text-align: center;
+	padding: 0 10px;
+}
+
 .wiz-potion-cost {
 	display: flex;
 	flex-direction: row;
@@ -521,6 +532,32 @@ BuyMenu {
 	gap: 3px;
 	font-size: 10px;
 	color: $color-star;
+}
+
+.wiz-potion-owned {
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c4f15;
+}
+
+.wiz-consumables {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.wiz-consumables-balance {
+	font-size: 12px;
+	font-weight: bold;
+	color: #e8b45b;
+	text-align: center;
+}
+
+.wiz-consumables-row {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
 }
 
 // ─── Deck bar ─────────────────────────────────────────────────────────────────
@@ -903,6 +940,15 @@ BuyMenu {
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
+
+	&.locked {
+		opacity: 0.4;
+		pointer-events: none;
+
+		.wiz-id-title {
+			color: $text-dim;
+		}
+	}
 }
 
 .wiz-id-title {

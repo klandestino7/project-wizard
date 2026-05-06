@@ -12,10 +12,13 @@ public sealed class FelixFelicis : BaseConsumable
 		PurchaseCost = 800;
 	}
 
-	protected override void Use()
+	protected override bool Use()
 	{
-		if ( !Networking.IsHost ) return;
-		if ( Player.ManaSystem != null )
-			Player.ManaSystem.FelixActive = true;
+		if ( !Networking.IsHost ) return false;
+		if ( Player.ManaSystem == null || Player.ManaSystem.FelixActive )
+			return false;
+
+		Player.ManaSystem.FelixActive = true;
+		return true;
 	}
 }

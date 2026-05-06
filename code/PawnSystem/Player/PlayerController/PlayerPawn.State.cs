@@ -21,6 +21,8 @@ public partial class PlayerPawn
 	{
 		if ( Networking.IsHost )
 		{
+			DropConsumablesOnDeath();
+
 			var defaultRespawnState = Scene.GetAllComponents<DefaultRespawnState>().FirstOrDefault();
 			if ( defaultRespawnState.IsValid() )
 			{

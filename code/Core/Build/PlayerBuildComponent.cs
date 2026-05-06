@@ -39,9 +39,10 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 		if ( BuildActionId != _lastActionId )
 		{
 			_lastActionId = BuildActionId;
-			Affinity   = (AffinityType)PendingAffinityRaw;
-			Discipline = (DisciplineType)PendingDisciplineRaw;
-			Passive    = (PassiveType)PendingPassiveRaw;
+			var rm = RoundManager.Instance;
+			Affinity   = (rm?.EnableAffinity   ?? true) ? (AffinityType)PendingAffinityRaw     : AffinityType.Neutral;
+			Discipline = (rm?.EnableDiscipline ?? true) ? (DisciplineType)PendingDisciplineRaw : DisciplineType.Generalist;
+			Passive    = (rm?.EnablePassive    ?? true) ? (PassiveType)PendingPassiveRaw       : PassiveType.None;
 		}
 	}
 
@@ -76,15 +77,40 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 	{
 		if ( !Networking.IsHost ) return;
 
-		var affinities = Enum.GetValues<AffinityType>()
-			.Where( a => a != AffinityType.Neutral ).ToArray();
-		var disciplines = Enum.GetValues<DisciplineType>().ToArray();
-		var passives    = Enum.GetValues<PassiveType>().ToArray();
+		var rm  = RoundManager.Instance;
 		var rng = new Random();
 
-		Affinity   = affinities[rng.Next( affinities.Length )];
-		Discipline = disciplines[rng.Next( disciplines.Length )];
-		Passive    = passives[rng.Next( passives.Length )];
+		if ( rm?.EnableAffinity ?? true )
+		{
+			var affinities = Enum.GetValues<AffinityType>()
+				.Where( a => a != AffinityType.Neutral ).ToArray();
+			Affinity = affinities[rng.Next( affinities.Length )];
+		}
+		else
+		{
+			Affinity = AffinityType.Neutral;
+		}
+
+		if ( rm?.EnableDiscipline ?? true )
+		{
+			var disciplines = Enum.GetValues<DisciplineType>().ToArray();
+			Discipline = disciplines[rng.Next( disciplines.Length )];
+		}
+		else
+		{
+			Discipline = DisciplineType.Generalist;
+		}
+
+		if ( rm?.EnablePassive ?? true )
+		{
+			var passives = Enum.GetValues<PassiveType>().ToArray();
+			Passive = passives[rng.Next( passives.Length )];
+		}
+		else
+		{
+			Passive = PassiveType.None;
+		}
+
 		BuildConfirmed = true;
 	}
 

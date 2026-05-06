@@ -271,6 +271,13 @@ $overlay-bg:    rgba(8, 8, 18, 0.72);
 	text-align: center;
 }
 
+.item-count {
+	font-size: 9px;
+	font-weight: 700;
+	color: $ability-ready;
+	text-align: center;
+}
+
 /* ─── Status effects ────────────────────────────────────────────── */
 .status-effect {
 	position: absolute;

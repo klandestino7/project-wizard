@@ -8,7 +8,9 @@ public abstract class BaseConsumable : Component
 {
 	[Property] public string ItemName { get; set; } = "Item";
 	[Property] public int PurchaseCost { get; set; } = 500;
-	[Property, Sync] public bool IsUsed { get; set; } = false;
+	[Property, Sync] public int Charges { get; private set; } = 0;
+	[Property] public int MaxCharges { get; set; } = 9;
+	public bool IsUsed => Charges <= 0;
 
 	protected PlayerPawn Player { get; private set; }
 
@@ -19,18 +21,53 @@ public abstract class BaseConsumable : Component
 
 	public void TryUse()
 	{
-		if ( IsUsed ) return;
+		if ( Charges <= 0 ) return;
 		if ( !Player.IsValid() || !Player.IsAlive ) return;
-		Use();
-		IsUsed = true;
+
+		using var _ = Rpc.FilterInclude( Connection.Host );
+		TryUseHost();
 	}
 
-	protected abstract void Use();
+	public bool TryAddCharges( int amount )
+	{
+		if ( !Networking.IsHost || amount <= 0 )
+			return false;
+
+		if ( Charges >= MaxCharges )
+			return false;
+
+		Charges = Math.Min( MaxCharges, Charges + amount );
+		return true;
+	}
+
+	public int RemoveAllCharges()
+	{
+		if ( !Networking.IsHost )
+			return 0;
+
+		int dropped = Charges;
+		Charges = 0;
+		return dropped;
+	}
+
+	[Rpc.Owner]
+	private void TryUseHost()
+	{
+		if ( !Networking.IsHost ) return;
+		if ( Charges <= 0 ) return;
+		if ( !Player.IsValid() || !Player.IsAlive ) return;
+
+		if ( !Use() )
+			return;
+
+		Charges = Math.Max( 0, Charges - 1 );
+	}
+
+	protected abstract bool Use();
 
 	/// <summary>Chamado no início de cada round.</summary>
 	public void ResetForRound()
 	{
-		IsUsed = false;
 		OnRoundReset();
 	}
 

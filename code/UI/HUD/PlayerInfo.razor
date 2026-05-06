@@ -46,12 +46,15 @@
 		<div class="item-slot @( item?.IsUsed == true ? "item-used" : "" )">
 			<div class="item-key">@key</div>
 			<div class="item-name">@( item?.ItemName ?? "–" )</div>
+			<div class="item-count">x@( item?.Charges ?? 0 )</div>
 		</div>
 	};
 
     protected override int BuildHash() => System.HashCode.Combine(
 		Player?.SpellsDeck,
 		Player?.IsAlive,
+		Player?.ItemSlot1?.Charges ?? 0,
+		Player?.ItemSlot2?.Charges ?? 0,
 		_deck.GetSlot(0),
 		_deck.GetSlot(1),
 		_deck.GetSlot(2),

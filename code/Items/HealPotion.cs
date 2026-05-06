@@ -12,11 +12,14 @@ public sealed class HealPotion : BaseConsumable
 		PurchaseCost = 600;
 	}
 
-	protected override void Use()
+	protected override bool Use()
 	{
-		if ( !Networking.IsHost ) return;
+		if ( !Networking.IsHost ) return false;
 		var hc = Player.HealthComponent;
-		if ( hc.IsValid() )
-			hc.Health = Math.Min( hc.Health + 50f, hc.MaxHealth );
+		if ( !hc.IsValid() || hc.Health >= hc.MaxHealth )
+			return false;
+
+		hc.Health = Math.Min( hc.Health + 50f, hc.MaxHealth );
+		return true;
 	}
 }

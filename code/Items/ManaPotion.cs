@@ -12,9 +12,13 @@ public sealed class ManaPotion : BaseConsumable
 		PurchaseCost = 500;
 	}
 
-	protected override void Use()
+	protected override bool Use()
 	{
-		if ( !Networking.IsHost ) return;
-		Player.ManaSystem?.Restore( 60f );
+		if ( !Networking.IsHost ) return false;
+		if ( Player.ManaSystem == null || Player.ManaSystem.Mana >= Player.ManaSystem.MaxMana )
+			return false;
+
+		Player.ManaSystem.Restore( 60f );
+		return true;
 	}
 }

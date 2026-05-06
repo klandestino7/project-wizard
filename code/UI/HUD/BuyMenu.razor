@@ -73,6 +73,11 @@
 			{
 				<div class="wiz-right-empty"></div>
 			}
+
+			@if ( ActiveTab == Tab.Spells )
+			{
+				@RenderConsumablesPanel()
+			}
 		</div>
 	</div>
 }
@@ -99,6 +104,7 @@
 	string EnergyLabel => Validation is null || Build is null
 		? "0 / 0"
 		: $"{Validation.EnergyUsed} / {Build.EnergyBudget}";
+	string BalanceLabel => $"${Player?.Client?.Balance ?? 0}";
 
 	void Toggle()
 	{
@@ -129,53 +135,66 @@
 
 	RenderFragment RenderIdentityPanel() => __builder =>
 	{
+		bool affinityEnabled   = Round?.EnableAffinity   ?? true;
+		bool disciplineEnabled = Round?.EnableDiscipline ?? true;
+		bool passiveEnabled    = Round?.EnablePassive    ?? true;
+
 		<div class="wiz-identity">
-			<div class="wiz-id-section">
-				<div class="wiz-id-title">AFFINITY</div>
+			<div class="wiz-id-section @( affinityEnabled ? "" : "locked" )">
+				<div class="wiz-id-title">AFFINITY @( affinityEnabled ? "" : "— DISABLED" )</div>
 				<div class="wiz-id-desc">Buffs spells of the matching element.</div>
-				<div class="wiz-id-options">
-					@foreach ( AffinityType aff in Enum.GetValues( typeof(AffinityType) ) )
-					{
-						var a = aff;
-						bool sel = Build?.Affinity == a;
-						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetAffinity( a ) )>
-							<div class="wiz-id-opt-name">@a.ToString().ToUpper()</div>
-							<div class="wiz-id-opt-sub">@AffinityDescription( a )</div>
-						</div>
-					}
-				</div>
+				@if ( affinityEnabled )
+				{
+					<div class="wiz-id-options">
+						@foreach ( AffinityType aff in Enum.GetValues( typeof(AffinityType) ) )
+						{
+							var a = aff;
+							bool sel = Build?.Affinity == a;
+							<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetAffinity( a ) )>
+								<div class="wiz-id-opt-name">@a.ToString().ToUpper()</div>
+								<div class="wiz-id-opt-sub">@AffinityDescription( a )</div>
+							</div>
+						}
+					</div>
+				}
 			</div>
 
-			<div class="wiz-id-section">
-				<div class="wiz-id-title">DISCIPLINE</div>
+			<div class="wiz-id-section @( disciplineEnabled ? "" : "locked" )">
+				<div class="wiz-id-title">DISCIPLINE @( disciplineEnabled ? "" : "— DISABLED" )</div>
 				<div class="wiz-id-desc">Defines your combat profile.</div>
-				<div class="wiz-id-options">
-					@foreach ( DisciplineType disc in Enum.GetValues( typeof(DisciplineType) ) )
-					{
-						var d = disc;
-						bool sel = Build?.Discipline == d;
-						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetDiscipline( d ) )>
-							<div class="wiz-id-opt-name">@d.ToString().ToUpper()</div>
-							<div class="wiz-id-opt-sub">@DisciplineDescription( d )</div>
-						</div>
-					}
-				</div>
+				@if ( disciplineEnabled )
+				{
+					<div class="wiz-id-options">
+						@foreach ( DisciplineType disc in Enum.GetValues( typeof(DisciplineType) ) )
+						{
+							var d = disc;
+							bool sel = Build?.Discipline == d;
+							<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetDiscipline( d ) )>
+								<div class="wiz-id-opt-name">@d.ToString().ToUpper()</div>
+								<div class="wiz-id-opt-sub">@DisciplineDescription( d )</div>
+							</div>
+						}
+					</div>
+				}
 			</div>
 
-			<div class="wiz-id-section">
-				<div class="wiz-id-title">PASSIVE</div>
+			<div class="wiz-id-section @( passiveEnabled ? "" : "locked" )">
+				<div class="wiz-id-title">PASSIVE @( passiveEnabled ? "" : "— DISABLED" )</div>
 				<div class="wiz-id-desc">A permanent trait that shapes your playstyle.</div>
-				<div class="wiz-id-options">
-					@foreach ( PassiveType pass in Enum.GetValues( typeof(PassiveType) ) )
-					{
-						var p = pass;
-						bool sel = Build?.Passive == p;
-						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetPassive( p ) )>
-							<div class="wiz-id-opt-name">@p.ToString().ToUpper()</div>
-							<div class="wiz-id-opt-sub">@PassiveDescription( p )</div>
-						</div>
-					}
-				</div>
+				@if ( passiveEnabled )
+				{
+					<div class="wiz-id-options">
+						@foreach ( PassiveType pass in Enum.GetValues( typeof(PassiveType) ) )
+						{
+							var p = pass;
+							bool sel = Build?.Passive == p;
+							<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetPassive( p ) )>
+								<div class="wiz-id-opt-name">@p.ToString().ToUpper()</div>
+								<div class="wiz-id-opt-sub">@PassiveDescription( p )</div>
+							</div>
+						}
+					</div>
+				}
 			</div>
 		</div>
 	};
@@ -397,6 +416,39 @@
 		</div>
 	};
 
+	RenderFragment RenderConsumablesPanel() => __builder =>
+	{
+		<div class="wiz-consumables">
+			<div class="wiz-panel-title">CONSUMABLES</div>
+			<div class="wiz-consumables-balance">@BalanceLabel</div>
+			<div class="wiz-consumables-row">
+				@RenderPotionCard( ConsumableType.HealthPotion, Player?.ItemSlot1, "wiz-heal-bottle", "+50 HP instantaneamente" )
+				@RenderPotionCard( ConsumableType.ManaPotion, Player?.ItemSlot2, "wiz-mana-bottle", "+60 mana instantaneamente" )
+			</div>
+		</div>
+	};
+
+	RenderFragment RenderPotionCard( ConsumableType type, BaseConsumable item, string bottleClass, string description ) => __builder =>
+	{
+		bool canBuy = CanBuyConsumable( item );
+		string status = item == null
+			? ""
+			: item.Charges >= item.MaxCharges
+				? "MAX"
+				: $"x{item.Charges}";
+
+		<div class="wiz-potion-card @( canBuy ? "" : "wiz-potion-disabled" )"
+		     onclick=@( () => BuyConsumable( type ) )>
+			<div class="wiz-potion-bottle @bottleClass"></div>
+			<div class="wiz-potion-name">@( item?.ItemName?.ToUpper() ?? "-" )</div>
+			<div class="wiz-potion-meta">@description</div>
+			<div class="wiz-potion-cost">
+				<span>$</span><span>@( item?.PurchaseCost ?? 0 )</span>
+			</div>
+			<div class="wiz-potion-owned">@status</div>
+		</div>
+	};
+
 	RenderFragment RenderDetail( int idx ) => __builder =>
 	{
 		var e = SpellCatalog.All[idx];
@@ -515,6 +567,20 @@
 		Deck?.ClientUnassign( slot );
 	}
 
+	bool CanBuyConsumable( BaseConsumable item )
+	{
+		return item != null
+			&& Player?.Client != null
+			&& Player.BuyMenuMode != BuyMenuMode.Disabled
+			&& item.Charges < item.MaxCharges
+			&& Player.Client.Balance >= item.PurchaseCost;
+	}
+
+	void BuyConsumable( ConsumableType type )
+	{
+		Player?.ClientBuyConsumable( type );
+	}
+
 	protected override int BuildHash()
 	{
 		var buildHash = HashCode.Combine(
@@ -528,10 +594,19 @@
 			Validation?.Errors.Count
 		);
 
+		buildHash = HashCode.Combine( buildHash,
+			Round?.EnableAffinity,
+			Round?.EnableDiscipline,
+			Round?.EnablePassive
+		);
+
 		return HashCode.Combine(
 			buildHash,
 			Deck?.OwnedMask,
 			Deck?.Slot0Idx,
+			Player?.Client?.Balance ?? 0,
+			Player?.ItemSlot1?.Charges ?? 0,
+			Player?.ItemSlot2?.Charges ?? 0,
 			SelectedIdx,
 			(int)ActiveTab
 		);

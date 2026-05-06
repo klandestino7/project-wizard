@@ -15,6 +15,10 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 	[Property] public float WarmupTime { get; set; } = 3f;
 	[Property] public bool FreezePlayersOutsideCombat { get; set; } = true;
 
+	[Property, Sync] public bool EnableAffinity { get; set; } = true;
+	[Property, Sync] public bool EnableDiscipline { get; set; } = true;
+	[Property, Sync] public bool EnablePassive { get; set; } = true;
+
 	public const int RoundsToWin = 13;
 	public const int MaxRounds = 24;
 	public const int FirstHalfRounds = 12;

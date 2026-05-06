@@ -71,6 +71,7 @@ public partial class PlayerPawn
 		UltimateCharge  ??= Components.Get<UltimateChargeComponent>()   ?? Components.Create<UltimateChargeComponent>();
 		ComboSystem     ??= Components.Get<SpellComboSystem>()          ?? Components.Create<SpellComboSystem>();
 		PassiveEffects  ??= Components.Get<PassiveEffectSystem>()       ?? Components.Create<PassiveEffectSystem>();
+		EnsureConsumableSlots();
 
 		if ( !IsLocallyControlled )
 			return;
