@@ -97,9 +97,7 @@ public sealed class Wand : Component
 	/// <summary>Spell de slot 0–3 (Q / E / R / F).</summary>
 	public void TryCastSlot( int slot )
 	{
-		Log.Info(" TryCastSlot :: ");
 		var spell = _deck?.GetSlot( slot );
-		Log.Info($" spell :: {spell}");
 		if ( !ValidateCast( spell ) ) return;
 
 		switch ( slot )
@@ -150,10 +148,6 @@ public sealed class Wand : Component
 	{
 		var origin = _player.GetSpellMuzzle();
 		var dir = _player.GetSpellDirection( origin );
-
-		Log.Info($" _player:: {_player.GameObject.Name}");
-		Log.Info($" origin:: {origin}");
-		Log.Info($" dir:: {dir}");
 
 		var go = new GameObject( true, $"{sourceClass}_Projectile" );
 		go.WorldPosition = origin;

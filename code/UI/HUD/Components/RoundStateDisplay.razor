@@ -22,7 +22,7 @@
             @* <label class="small slight">@Status</label> *@
             @if (Time.HasValue)
             {
-                <label class="uppercase">@(Time?.ToString(@"m\:ss"))</label>
+                <label class="uppercase">@RenderRoundInfo()</label>
             }
         }
     </div>
@@ -41,6 +41,7 @@
 {
     private Team MyTeam => Client.Local.Team;
     private Team EnemyTeam => MyTeam.GetOpponents();
+	RoundManager Round => RoundManager.Instance;
 
     private string MyTeamScore { get; set; } = "0";
     private string EnemyTeamScore { get; set; } = "0";
@@ -51,6 +52,20 @@
     public string Status => GameMode.Instance.IsValid() ? GameMode.Instance.DisplayedStatus : "";
     public string IconPath => GameMode.Instance.IsValid() ? GameMode.Instance.Get<ShowStatusIcon>()?.IconPath : "";
     public TimeSpan? Time => GameMode.Instance.IsValid() ? GameMode.Instance.DisplayedTime : null;
+
+
+    RenderFragment RenderRoundInfo() => __builder =>
+	{
+		<!-- int roundNum = Round?.CurrentRound ?? 0;
+		int aurors = Round?.AurorScore ?? 0;
+		int dark = Round?.ComensalScore ?? 0; -->
+		float t = Round?.TimeRemaining ?? 0f;
+		int mins = (int)(t / 60f);
+		int secs = (int)(t % 60f);
+
+		<label class="uppercase">@mins:@secs.ToString("D2")</label>
+	};
+
 
     private void OnSecondElapsed()
     {

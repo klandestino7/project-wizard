@@ -388,6 +388,17 @@
 		</div>
 	};
 
+	
+	string GetStateLabel() => Round?.State switch
+	{
+		RoundState.BuildPhase => "BUILD PHASE",
+		RoundState.BuyPhase => "PREPARATION",
+		RoundState.Combat => "COMBATE",
+		RoundState.PostRound => "FIM DE ROUND",
+		RoundState.MatchEnd => "PARTIDA ENCERRADA",
+		_ => ""
+	};
+
 	RenderFragment RenderRoundInfo() => __builder =>
 	{
 		int roundNum = Round?.CurrentRound ?? 0;
@@ -412,7 +423,7 @@
 				</div>
 			</div>
 			<div class="wiz-timer">@mins:@secs.ToString("D2")</div>
-			<div class="wiz-timer-lbl">PREPARATION</div>
+			<div class="wiz-timer-lbl">@GetStateLabel()</div>
 		</div>
 	};
 

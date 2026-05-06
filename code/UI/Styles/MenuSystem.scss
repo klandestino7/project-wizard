@@ -307,7 +307,11 @@ SplashScreen
     left: 0; top: 0; right: 0; bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+
+    background: url("ui/wallpaper.png");
+    background-position: center;
+    background-color: rgba(0,0,0,0.5);
+    background-size: cover;
     justify-content: center;
     align-items: center;
     pointer-events: all;
@@ -315,6 +319,7 @@ SplashScreen
     z-index: 9999;
     opacity: 1;
     transition: opacity 0.4s ease;
+
 
     &.dismissed
     {
@@ -324,8 +329,12 @@ SplashScreen
 
     .splash-content
     {
+        backdrop-filter: blur(1px);
         flex-direction: column;
         align-items: center;
+
+        width: 100%;
+        height: 100%;
         justify-content: center;
         gap: 40px;
     }
@@ -339,7 +348,7 @@ SplashScreen
 
     .splash-title
     {
-        font-family: $main-font;
+        font-family: "VALVE Oracle";
         font-size: 96px;
         font-weight: 700;
         color: white;
@@ -353,17 +362,18 @@ SplashScreen
         font-family: $main-font;
         font-size: 18px;
         font-weight: 400;
-        color: rgba( white, 0.5 );
+        color: rgba( white, 0.6 );
         letter-spacing: 6px;
         text-transform: uppercase;
     }
 
     .splash-press-key
     {
+        margin-top: 50px;
         font-family: $main-font;
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 400;
-        color: rgba( white, 0.75 );
+        color: rgba( white, 1 );
         letter-spacing: 4px;
         text-transform: uppercase;
         animation: splash-blink 1.4s ease-in-out infinite;
@@ -395,7 +405,7 @@ SplashScreen
     padding: 60px 70px;
     gap: 0px;
     pointer-events: all;
-    width: 500px;
+    width: 600px;
     flex-shrink: 0;
 }
 
@@ -408,9 +418,9 @@ SplashScreen
 
 .landing-game-title
 {
-    font-family: $main-font;
-    font-size: 52px;
+    font-size: 60px;
     font-weight: 700;
+    font-family: "VALVE Oracle";
     color: white;
     letter-spacing: 6px;
     text-transform: uppercase;
@@ -525,9 +535,33 @@ SplashScreen
     flex-grow: 1;
 }
 
+.play-page-topbar
+{
+    padding: 28px 36px 0px 36px;
+}
+
+.play-page-back
+{
+    font-family: $main-font;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba( white, 0.55 );
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: color 0.12s ease, padding-left 0.12s ease;
+
+    &:hover
+    {
+        color: white;
+        padding-left: 6px;
+        sound-in: ui.button.over;
+    }
+}
+
 .play-page-header
 {
-    padding: 40px 36px 20px 36px;
+    padding: 24px 36px 20px 36px;
 
     label
     {
@@ -537,6 +571,24 @@ SplashScreen
         color: rgba( white, 0.5 );
         text-transform: uppercase;
         letter-spacing: 3px;
+    }
+}
+
+.play-page-server-warning
+{
+    margin: 20px 36px 0px 36px;
+    padding: 12px 14px;
+    background-color: rgba( 255, 140, 0, 0.12 );
+    border: 1px solid rgba( 255, 165, 0, 0.45 );
+    border-radius: 4px;
+
+    label
+    {
+        font-family: $main-font;
+        font-size: 13px;
+        font-weight: 500;
+        color: #ffb347;
+        white-space: normal;
     }
 }
 
@@ -573,6 +625,18 @@ SplashScreen
         opacity: 0.6;
         pointer-events: none;
     }
+
+    &.disabled
+    {
+        cursor: default;
+        opacity: 0.55;
+        pointer-events: none;
+
+        .play-mode-title
+        {
+            color: rgba( white, 0.7 );
+        }
+    }
 }
 
 .play-mode-item-inner
@@ -603,6 +667,11 @@ SplashScreen
     &.searching
     {
         color: rgba( white, 0.8 );
+    }
+
+    &.offline
+    {
+        color: #ffb347;
     }
 }
 

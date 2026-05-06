@@ -4151,7 +4151,7 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "ServerUrl": "ws://177.130.255.91:8080/ws"
+          "ServerUrl": "ws://wlserver.klandestino.dev:8080/ws"
         }
       ],
       "Children": []

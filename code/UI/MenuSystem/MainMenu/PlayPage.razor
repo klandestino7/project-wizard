@@ -11,6 +11,17 @@
 
 	@* Left panel: mode selection *@
 	<div class="play-page-left">
+		<div class="play-page-topbar">
+			<a class="play-page-back" href="/"> ← Back</a>
+		</div>
+
+		@if ( ShowServerOfflineNotice )
+		{
+			<div class="play-page-server-warning">
+				<label>Matchmaking server is currently offline. Play Warlocks is temporarily unavailable.</label>
+			</div>
+		}
+
 		<div class="play-page-header">
 			<label>Select Play Mode:</label>
 		</div>
@@ -18,11 +29,19 @@
 		<div class="play-mode-list">
 
 			@* ── Play Warlocks ── *@
-			<div class="play-mode-item @ActiveClass @LockedClass" >
+			<div class="play-mode-item @ActiveClass @PlayWarlocksClass" >
 				<div class="play-mode-item-inner" onclick=@OnClickPlayWarlocks>
 					<label class="play-mode-title">Play Warlocks</label>
 
-					@if ( IsIdle )
+					@if ( IsCheckingServerStatus )
+					{
+						<label class="play-mode-desc">Checking server status...</label>
+					}
+					else if ( IsServerOffline )
+					{
+						<label class="play-mode-desc offline">Server offline. Try again later.</label>
+					}
+					else if ( IsIdle )
 					{
 						<label class="play-mode-desc">Queue up for a standard match against other players online.</label>
 					}
@@ -95,6 +114,8 @@
 @code
 {
 	private int MaxPlayers => MatchmakingSystem.Instance.IsValid() ? MatchmakingSystem.Instance.MaxPlayers : 10;
+	private bool IsCheckingServerStatus { get; set; } = true;
+	private bool IsServerOffline { get; set; }
 
 	private bool IsIdle => MatchmakingSystem.CurrentState == MatchmakingSystem.SearchState.Idle;
 	private bool IsSearching =>
@@ -106,6 +127,8 @@
 
 	private string ActiveClass => !IsIdle ? "active" : "";
 	private string LockedClass => !IsIdle ? "locked" : "";
+	private string PlayWarlocksClass => !IsIdle ? "locked" : IsCheckingServerStatus || IsServerOffline ? "disabled" : "";
+	private bool ShowServerOfflineNotice => IsServerOffline && IsIdle;
 
 	public void OnNavigationOpen()
 	{
@@ -113,6 +136,7 @@
 			MainMenuRoot.Instance.SetBlur( true );
 
 		MatchmakingSystem.OnStateChanged += Refresh;
+		_ = RefreshServerStatus();
 	}
 
 	public void OnNavigationClose()
@@ -125,9 +149,31 @@
 
 	private void Refresh() => StateHasChanged();
 
+	private async Task RefreshServerStatus()
+	{
+		IsCheckingServerStatus = true;
+		IsServerOffline = false;
+		StateHasChanged();
+
+		try
+		{
+			IsServerOffline = !await MatchmakingSystem.IsServerAvailable();
+		}
+		catch ( Exception e )
+		{
+			Log.Warning( $"PlayPage: Failed to check matchmaking server status - {e.Message}" );
+			IsServerOffline = true;
+		}
+		finally
+		{
+			IsCheckingServerStatus = false;
+			StateHasChanged();
+		}
+	}
+
 	private void OnClickPlayWarlocks()
 	{
-		if ( !IsIdle ) return;
+		if ( !IsIdle || IsCheckingServerStatus || IsServerOffline ) return;
 		_ = MatchmakingSystem.FindOrCreateMatch();
 	}
 

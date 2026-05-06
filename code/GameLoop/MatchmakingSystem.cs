@@ -55,6 +55,12 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		await Instance.StartMatchmaking();
 	}
 
+	public static async Task<bool> IsServerAvailable()
+	{
+		if ( !Instance.IsValid() ) return false;
+		return await Instance.CheckServerAvailability();
+	}
+
 	public static void CancelSearch()
 	{
 		if ( !Instance.IsValid() ) return;
@@ -81,27 +87,10 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 		IsMultiplayerSession = true;
 		SetState( SearchState.Connecting );
 
-		var healthUrl = ServerUrl
-			.Replace( "ws://", "http://" )
-			.Replace( "wss://", "https://" )
-			.Replace( "/ws", "/health" );
-
 		try
 		{
-			var healthUri = new Uri( healthUrl );
-			if ( !Http.IsAllowed( healthUri ) )
+			if ( !await CheckServerAvailability() )
 			{
-				Log.Warning( $"MatchmakingSystem: Health check URL is not allowed: {healthUrl}" );
-				SetState( SearchState.Idle );
-				return;
-			}
-
-			var response = await Http.RequestStringAsync( healthUrl );
-			var document = JsonDocument.Parse( response );
-			var active = document.RootElement.GetProperty( "active" ).GetBoolean();
-			if ( !active )
-			{
-				Log.Warning( "MatchmakingSystem: Server is not accepting queues." );
 				SetState( SearchState.Idle );
 				return;
 			}
@@ -139,6 +128,32 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 			name = name,
 			partyId = partyId
 		} );
+	}
+
+	private async Task<bool> CheckServerAvailability()
+	{
+		var healthUrl = ServerUrl
+			.Replace( "ws://", "http://" )
+			.Replace( "wss://", "https://" )
+			.Replace( "/ws", "/health" );
+
+		var healthUri = new Uri( healthUrl );
+		if ( !Http.IsAllowed( healthUri ) )
+		{
+			Log.Warning( $"MatchmakingSystem: Health check URL is not allowed: {healthUrl}" );
+			return false;
+		}
+
+		var response = await Http.RequestStringAsync( healthUrl );
+		var document = JsonDocument.Parse( response );
+		var active = document.RootElement.GetProperty( "active" ).GetBoolean();
+		if ( !active )
+		{
+			Log.Warning( "MatchmakingSystem: Server is not accepting queues." );
+			return false;
+		}
+
+		return true;
 	}
 
 	private async Task SendJson( object obj )
