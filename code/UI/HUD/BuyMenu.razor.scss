@@ -296,6 +296,7 @@ BuyMenu {
 	background-position: center;
 }
 
+.wiz-col-bg-defense,
 .wiz-col-bg-defensive {
 	background: url("ui/buy_menu/bg_defensive_spells.png");
 	background-repeat: no-repeat;
@@ -303,11 +304,17 @@ BuyMenu {
 	background-position: center;
 }
 
+.wiz-col-bg-offense,
 .wiz-col-bg-offensive {
 	background: url("ui/buy_menu/bg_offensive_spells.png");
 	background-repeat: no-repeat;
 	background-size: 100%;
 	background-position: center;
+}
+
+.wiz-col-bg-utility {
+	background-color: rgba(30, 20, 5, 0.6);
+	border: 1px solid $border-dark;
 }
 
 
@@ -853,7 +860,103 @@ BuyMenu {
 	padding: 5px;
 }
 
-// Action buttons
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+
+.wiz-tabs {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 6px;
+}
+
+.wiz-tab {
+	padding: 4px 18px;
+	font-size: 10px;
+	letter-spacing: 3px;
+	color: $text-dim;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+
+	&:hover {
+		color: $text-light;
+	}
+
+	&.active {
+		color: $color-gold;
+		border-bottom-color: $color-gold;
+	}
+}
+
+// ─── Identity panel ───────────────────────────────────────────────────────────
+
+.wiz-identity {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 12px 18px;
+	overflow-y: scroll;
+}
+
+.wiz-id-section {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wiz-id-title {
+	font-size: 9px;
+	letter-spacing: 4px;
+	color: $color-gold;
+}
+
+.wiz-id-desc {
+	font-size: 10px;
+	color: $text-dim;
+}
+
+.wiz-id-options {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.wiz-id-opt {
+	padding: 8px 14px;
+	border: 1px solid $border-dark;
+	border-radius: 3px;
+	background-color: $bg-card;
+	cursor: pointer;
+	min-width: 140px;
+
+	&:hover {
+		background-color: $bg-card-hover;
+		border-color: rgba(200, 144, 16, 0.4);
+	}
+
+	&.selected {
+		border-color: $border-gold;
+		background-color: rgba(200, 144, 16, 0.12);
+	}
+}
+
+.wiz-id-opt-name {
+	font-size: 11px;
+	font-weight: bold;
+	color: $text-light;
+	letter-spacing: 1px;
+}
+
+.wiz-id-opt-sub {
+	font-size: 9px;
+	color: $text-dim;
+	margin-top: 3px;
+	line-height: 1.4;
+}
+
+// ─── Action buttons
 
 .wiz-btn-buy,
 .wiz-btn-up,

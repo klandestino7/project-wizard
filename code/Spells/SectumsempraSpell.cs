@@ -37,6 +37,14 @@ public sealed class SectumsempraSpell : BaseSpell
 		if ( Tier >= 2 )
 			victim.ApplyBurning( wand.ResolveDamage( 15f ), wand.ResolveDuration( 3f ), wand.Player ); // bleeding via burning
 
+		// Feed combat systems (hitscan bypasses SpellProjectile pipeline)
+		wand.Player.UltimateCharge?.AddDamageCharge( finalDamage );
+		wand.Player.PassiveEffects?.OnDamageDealt( finalDamage );
+
+		var catalogEntry = SpellCatalog.Find( nameof( SectumsempraSpell ) );
+		if ( catalogEntry != null && catalogEntry.ComboTags != ComboTag.None )
+			victim.ComboSystem?.RecordHit( catalogEntry.ComboTags, wand.Player );
+
 		var mastery = wand.Player.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
 		mastery?.RegisterSpellHit( nameof( SectumsempraSpell ) );
 	}
