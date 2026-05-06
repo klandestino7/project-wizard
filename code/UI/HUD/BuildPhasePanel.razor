@@ -1,0 +1,77 @@
+@using Sandbox
+@using Sandbox.UI
+
+@namespace Warlocks.UI
+@inherits Panel
+@attribute [StyleSheet]
+
+<root>
+@if ( Round?.State == RoundState.BuildPhase )
+{
+	var totalPlayers = Round?.BuildConfirmedCount is int c ? c : 0;
+
+	<div class="build-phase-bar">
+
+		<div class="build-phase-left">
+			<div class="build-phase-title">BUILD PHASE</div>
+			<div class="build-phase-sub">Configure your wizard — open all tabs with [ B ]</div>
+		</div>
+
+		<div class="build-phase-center">
+			<div class="build-phase-timer @( TimeRemaining <= 10f ? "bp-critical" : "" )">
+				@( ((int)TimeRemaining) )s
+			</div>
+			<div class="build-phase-count">
+				@( Round?.BuildConfirmedCount ?? 0 ) confirmed
+			</div>
+		</div>
+
+		<div class="build-phase-right">
+			@if ( !_confirmed )
+			{
+				<div class="bp-confirm-btn" onclick=@ConfirmBuild>
+					CONFIRM BUILD
+				</div>
+			}
+			else
+			{
+				<div class="bp-confirmed-label">
+					BUILD CONFIRMED
+				</div>
+			}
+		</div>
+
+	</div>
+}
+</root>
+
+@code {
+	PlayerPawn Player => PlayerPawn.Local;
+	PlayerBuildComponent Build => Player?.PlayerBuild;
+	RoundManager Round => RoundManager.Instance;
+
+	float TimeRemaining => Round?.TimeRemaining ?? 0f;
+
+	bool _confirmed;
+
+	void ConfirmBuild()
+	{
+		if ( _confirmed || Build == null ) return;
+		Build.BuildConfirmed = true;
+		_confirmed = true;
+	}
+
+	public override void Tick()
+	{
+		// Reset local confirmed flag when BuildPhase isn't active
+		if ( Round?.State != RoundState.BuildPhase )
+			_confirmed = false;
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Round?.State,
+		Round?.BuildConfirmedCount,
+		_confirmed,
+		(int)TimeRemaining
+	);
+}

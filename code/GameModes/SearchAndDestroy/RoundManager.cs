@@ -18,6 +18,7 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 	public const int RoundsToWin = 13;
 	public const int MaxRounds = 24;
 	public const int FirstHalfRounds = 12;
+	public const float BuildPhaseTime = 30f;
 	public const float BuyPhaseTime = 30f;
 	public const float CombatPhaseTime = 90f;
 	public const float PostRoundTime = 7f;
@@ -40,6 +41,7 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 	[Property, Sync] public RoundEndReason LastRoundReason { get; set; } = RoundEndReason.TimeExpired;
 	[Property, Sync] public string ActiveObjectiveSiteName { get; set; } = "";
 	[Property, Sync] public bool IsOvertime { get; set; }
+	[Sync] public int BuildConfirmedCount { get; set; }
 
 	private int _aurorLossStreak;
 	private int _comensalLossStreak;
@@ -75,12 +77,33 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 		if ( !Networking.IsHost )
 			return;
 
+		// During BuildPhase: track confirmations and exit early when all confirm
+		if ( State == RoundState.BuildPhase )
+		{
+			var all = GetAllPlayers();
+			if ( all.Count > 0 )
+			{
+				int confirmed = all.Count( p => p.PlayerBuild?.BuildConfirmed == true );
+				BuildConfirmedCount = confirmed;
+
+				if ( confirmed >= all.Count )
+				{
+					StartNewRound();
+					return;
+				}
+			}
+		}
+
 		if ( Time.Now < PhaseEndTime )
 			return;
 
 		switch ( State )
 		{
 			case RoundState.Warmup:
+				StartBuildPhase();
+				break;
+			case RoundState.BuildPhase:
+				ApplyRandomBuildsToUnconfirmed();
 				StartNewRound();
 				break;
 			case RoundState.BuyPhase:
@@ -93,6 +116,31 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 				if ( !CheckMatchEnd() )
 					StartNewRound();
 				break;
+		}
+	}
+
+	private void StartBuildPhase()
+	{
+		BuildConfirmedCount = 0;
+
+		foreach ( var player in GetAllPlayers() )
+		{
+			if ( player.PlayerBuild != null )
+				player.PlayerBuild.BuildConfirmed = false;
+		}
+
+		State = RoundState.BuildPhase;
+		PhaseEndTime = Time.Now + BuildPhaseTime;
+		BroadcastBuildPhaseStart();
+	}
+
+	private void ApplyRandomBuildsToUnconfirmed()
+	{
+		foreach ( var player in GetAllPlayers() )
+		{
+			if ( player.PlayerBuild?.BuildConfirmed == true ) continue;
+			player.PlayerBuild?.AssignRandomBuild();
+			player.SpellsDeck?.HostAssignRandomLoadout();
 		}
 	}
 
@@ -409,6 +457,12 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 	// public void OnDisconnected( Connection connection )
 	// {
 	// }
+
+	[Rpc.Broadcast]
+	private void BroadcastBuildPhaseStart()
+	{
+		Log.Info( $"[Warlocks] Build phase started — {BuildPhaseTime}s to configure your wizard." );
+	}
 
 	[Rpc.Broadcast]
 	private void BroadcastRoundStart( int round )

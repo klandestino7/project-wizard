@@ -107,7 +107,14 @@
 
 	public override void Tick()
 	{
-		if ( Player?.CanConfigureBuild is true )
+		var inBuildPhase = Round?.State == RoundState.BuildPhase;
+
+		if ( inBuildPhase )
+		{
+			// Force open and lock during BuildPhase — player must use the panel
+			IsOpen = true;
+		}
+		else if ( Player?.CanConfigureBuild is true )
 		{
 			if ( Input.Pressed( "BuyMenu" ) )
 				Toggle();

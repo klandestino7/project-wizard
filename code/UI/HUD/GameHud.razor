@@ -81,6 +81,7 @@
 		</div>
 	}
 
+	<BuildPhasePanel />
 	<RoundEndUpgradePanel />
 	<ComboPopup />
 </root>
@@ -115,6 +116,7 @@
 
 	string GetStateLabel() => Round?.State switch
 	{
+		RoundState.BuildPhase => "BUILD PHASE",
 		RoundState.BuyPhase => "PREPARATION",
 		RoundState.Combat => "COMBATE",
 		RoundState.PostRound => "FIM DE ROUND",

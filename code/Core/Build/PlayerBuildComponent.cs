@@ -1,3 +1,5 @@
+using Sandbox;
+
 namespace Warlocks;
 
 /// <summary>
@@ -15,6 +17,12 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 	[Property, Sync] public PassiveType Passive { get; set; } = PassiveType.None;
 	[Property, Sync] public int EnergyBudget { get; set; } = DefaultEnergyBudget;
 	[Property, Sync] public int PreparedSpellLimit { get; set; } = DefaultPreparedSpellLimit;
+
+	/// <summary>
+	/// Set to true by the client (network owner) when they confirm their build during BuildPhase.
+	/// The host reads this to track how many players have confirmed.
+	/// </summary>
+	[Sync] public bool BuildConfirmed { get; set; } = false;
 
 	// ─── Action bus (client → host) ──────────────────────────────────
 	[Sync] public int BuildActionId { get; set; } = 0;
@@ -61,6 +69,23 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 		PendingDisciplineRaw = (int)Discipline;
 		PendingPassiveRaw    = (int)value;
 		BuildActionId++;
+	}
+
+	/// <summary>Host-only. Assigns a random identity and marks the player as confirmed.</summary>
+	public void AssignRandomBuild()
+	{
+		if ( !Networking.IsHost ) return;
+
+		var affinities = Enum.GetValues<AffinityType>()
+			.Where( a => a != AffinityType.Neutral ).ToArray();
+		var disciplines = Enum.GetValues<DisciplineType>().ToArray();
+		var passives    = Enum.GetValues<PassiveType>().ToArray();
+		var rng = new Random();
+
+		Affinity   = affinities[rng.Next( affinities.Length )];
+		Discipline = disciplines[rng.Next( disciplines.Length )];
+		Passive    = passives[rng.Next( passives.Length )];
+		BuildConfirmed = true;
 	}
 
 	public PlayerBuildSnapshot GetBuildSnapshot()

@@ -1,0 +1,119 @@
+/* ─── Build Phase Bar ───────────────────────────────────────────── */
+
+.build-phase-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 24px;
+	background: linear-gradient(180deg, rgba(20, 10, 40, 0.92) 0%, rgba(20, 10, 40, 0.0) 100%);
+	border-bottom: 1px solid rgba(180, 100, 255, 0.25);
+	pointer-events: all;
+	font-family: "VALVE Oracle", sans-serif;
+	color: #e0dfe8;
+	gap: 16px;
+}
+
+/* ─── Left: title ────────────────────────────────────────────────── */
+
+.build-phase-left {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 200px;
+}
+
+.build-phase-title {
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 3px;
+	color: #ce93d8;
+}
+
+.build-phase-sub {
+	font-size: 10px;
+	color: rgba(255,255,255,0.45);
+	letter-spacing: 1px;
+}
+
+/* ─── Center: timer + confirmed count ───────────────────────────── */
+
+.build-phase-center {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+}
+
+.build-phase-timer {
+	font-size: 36px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	color: #ce93d8;
+	transition: color 0.3s;
+
+	&.bp-critical {
+		color: #ef5350;
+		animation: bp-pulse 0.4s ease-in-out infinite alternate;
+	}
+}
+
+.build-phase-count {
+	font-size: 10px;
+	letter-spacing: 2px;
+	color: rgba(255,255,255,0.5);
+	text-transform: uppercase;
+}
+
+/* ─── Right: confirm button ─────────────────────────────────────── */
+
+.build-phase-right {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	min-width: 200px;
+}
+
+.bp-confirm-btn {
+	padding: 8px 20px;
+	background-color: #7b1fa2;
+	border: 1px solid #ce93d8;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	color: #f3e5f5;
+	cursor: pointer;
+	transition: background-color 0.15s, transform 0.1s;
+
+	&:hover {
+		background-color: #9c27b0;
+		transform: scale(1.03);
+	}
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+.bp-confirmed-label {
+	padding: 8px 20px;
+	background-color: rgba(76, 175, 80, 0.2);
+	border: 1px solid #81c784;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	color: #a5d6a7;
+}
+
+/* ─── Animation ─────────────────────────────────────────────────── */
+
+@keyframes bp-pulse {
+	from { opacity: 1.0; }
+	to   { opacity: 0.4; }
+}

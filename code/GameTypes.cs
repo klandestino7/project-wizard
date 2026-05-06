@@ -19,6 +19,7 @@ public enum Team
 public enum RoundState
 {
 	Warmup,
+	BuildPhase,  // Pre-match identity configuration (once per match)
 	BuyPhase,
 	Combat,
 	PostRound,

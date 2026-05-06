@@ -144,6 +144,46 @@ public sealed class SpellsDeck : Component
 		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = Slot4Idx = Slot5Idx = -1;
 	}
 
+	/// <summary>
+	/// Host-only. Selects a random set of spells within the player's energy budget
+	/// and assigns them to the first available slots. Used when a player misses BuildPhase.
+	/// </summary>
+	public void HostAssignRandomLoadout()
+	{
+		if ( !Networking.IsHost ) return;
+
+		ClearOwned();
+
+		var build = ResolveBuild();
+		var rng = new Random();
+		var shuffled = Enumerable.Range( 0, SpellCatalog.All.Length )
+			.OrderBy( _ => rng.Next() )
+			.ToList();
+
+		var picked = new List<int>();
+		int slotIdx = 0;
+
+		foreach ( var idx in shuffled )
+		{
+			if ( slotIdx >= RuntimeSlotCount ) break;
+
+			var entry = SpellCatalog.Get( idx );
+			if ( entry == null ) continue;
+
+			var test = picked.Append( idx ).ToList();
+			var validation = BuildValidationService.Validate( build, new SpellLoadout { SpellIndices = test } );
+			if ( !validation.IsValid ) continue;
+
+			picked.Add( idx );
+			_owned[idx] = SpellCatalog.CreateInstance( entry.ClassName );
+			_slots[slotIdx] = _owned[idx];
+			slotIdx++;
+		}
+
+		SyncOwned();
+		SyncSlots();
+	}
+
 	public void ClientSelect( int catalogIdx ) => Send( 0, catalogIdx, 0 );
 	public void ClientAssign( int slot, int catalogIdx ) => Send( 1, catalogIdx, slot );
 	public void ClientUnassign( int slot ) => Send( 2, -1, slot );
