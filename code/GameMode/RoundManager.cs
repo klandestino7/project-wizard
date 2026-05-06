@@ -169,6 +169,7 @@ public sealed class RoundManager : Component
 			var spawn = spawns.Count > 0 ? spawns[i % spawns.Count] : null;
 			var spawnTransform = spawn?.Transform.World ?? new Transform( Vector3.Zero );
 			players[i].SetSpawnPoint( new SpawnPointInfo( spawnTransform, Array.Empty<string>() ) );
+			players[i].UltimateCharge?.Reset();
 			players[i].OnRespawn();
 		}
 	}

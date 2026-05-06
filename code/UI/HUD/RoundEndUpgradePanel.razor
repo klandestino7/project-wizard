@@ -2,7 +2,7 @@
 @using Sandbox.UI
 
 @namespace Warlocks.UI
-@inherits PanelComponent
+@inherits Panel
 
 <root>
 @if ( IsVisible && _options.Count > 0 && !_chosen )
@@ -45,7 +45,7 @@
 	bool _chosen;
 	int  _lastRound = -1;
 
-	protected override void OnUpdate()
+	public override void Tick()
 	{
 		int currentRound = Round?.CurrentRound ?? 0;
 

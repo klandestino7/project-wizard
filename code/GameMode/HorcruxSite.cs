@@ -150,6 +150,8 @@ public sealed class HorcruxSite : Component, IInteractable
 		if ( planter?.Client is not null )
 			planter.Client.Balance += RoundManager.PlantMoney;
 
+		planter?.UltimateCharge?.AddObjectiveCharge();
+
 		var round = RoundManager.Instance;
 		round?.OnHorcruxPlanted( this );
 
@@ -163,6 +165,8 @@ public sealed class HorcruxSite : Component, IInteractable
 
 		if ( defuser?.Client is not null )
 			defuser.Client.Balance += RoundManager.DefuseMoney;
+
+		defuser?.UltimateCharge?.AddObjectiveCharge();
 
 		var round = RoundManager.Instance;
 		round?.OnHorcruxDefused( this );
