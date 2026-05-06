@@ -571,7 +571,7 @@
 	{
 		return item != null
 			&& Player?.Client != null
-			&& Player.BuyMenuMode != BuyMenuMode.Disabled
+			&& Player.Client.BuyMenuMode != BuyMenuMode.Disabled
 			&& item.Charges < item.MaxCharges
 			&& Player.Client.Balance >= item.PurchaseCost;
 	}

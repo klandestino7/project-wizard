@@ -15,7 +15,7 @@ public sealed class ManaPotion : BaseConsumable
 	protected override bool Use()
 	{
 		if ( !Networking.IsHost ) return false;
-		if ( Player.ManaSystem == null || Player.ManaSystem.Mana >= Player.ManaSystem.MaxMana )
+		if ( Player.ManaSystem == null || Player.ManaSystem.Mana >= ManaSystem.MaxMana )
 			return false;
 
 		Player.ManaSystem.Restore( 60f );
