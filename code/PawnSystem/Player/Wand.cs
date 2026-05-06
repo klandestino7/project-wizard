@@ -116,6 +116,10 @@ public sealed class Wand : Component
 		var origin = _player.GetSpellMuzzle();
 		var dir = _player.GetSpellDirection( origin );
 
+		Log.Info($" _player:: {_player.GameObject.Name}");
+		Log.Info($" origin:: {origin}");
+		Log.Info($" dir:: {dir}");
+
 		var go = new GameObject( true, $"{sourceClass}_Projectile" );
 		go.WorldPosition = origin;
 		go.WorldRotation = Rotation.LookAt( dir );
@@ -135,6 +139,7 @@ public sealed class Wand : Component
 		proj.SlowFraction = slowFraction;
 		proj.SlowDuration = slowDuration;
 		proj.SourceSpellClass = sourceClass;
+		proj.SpawnOrigin = origin;
 
 		go.NetworkSpawn();
 		return proj;

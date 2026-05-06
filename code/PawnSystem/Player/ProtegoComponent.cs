@@ -110,6 +110,9 @@ public sealed class ProtegoComponent : Component
 	{
 		if ( ShieldFx != null ) return;
 
+		_player ??= Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
+		if ( _player == null ) return;
+
 		ShieldFx = new GameObject( true, "ProtegoFX" );
 		ShieldFx.SetParent( _player.GameObject, true );
 		ShieldFx.Transform.LocalPosition = Vector3.Up * 40f;
@@ -123,6 +126,7 @@ public sealed class ProtegoComponent : Component
 	[Rpc.Broadcast]
 	private void HideEffect()
 	{
+		_player ??= Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
 		if ( ShieldFx == null ) return;
 		ShieldFx.Destroy();
 		ShieldFx = null;

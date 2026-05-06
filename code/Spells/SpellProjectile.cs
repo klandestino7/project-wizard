@@ -28,6 +28,9 @@ public sealed class SpellProjectile : Component
 	/// <summary>Nome da classe da ability de origem — usado pelo MasterySystem e SpellEffectsLibrary.</summary>
 	[Property, Sync] public string SourceSpellClass { get; set; } = "";
 
+	/// <summary>Posição do muzzle no momento do cast — usada pelo SpellLineTrail em todos os clientes.</summary>
+	[Sync] public Vector3 SpawnOrigin { get; set; }
+
 	/// <summary>Bridge server-side: setar antes de NetworkSpawn().</summary>
 	public static PlayerPawn PendingShooter { get; set; }
 
@@ -61,6 +64,9 @@ public sealed class SpellProjectile : Component
 			trail.Parent = GameObject;
 			trail.LocalPosition = Vector3.Zero;
 			trail.LocalRotation = Rotation.Identity;
+
+			var lineTrail = trail.Components.Get<SpellLineTrail>( FindMode.EverythingInSelfAndDescendants );
+			lineTrail?.Setup( SpawnOrigin, SpellColor );
 		}
 	}
 

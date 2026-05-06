@@ -61,27 +61,27 @@ public partial class PlayerPawn
 
 	// ─── Helpers ──────────────────────────────────────────────────────
 	public Vector3 EyePosition => WorldPosition + Vector3.Up * EyeHeight;
-	public static PlayerPawn Local => Game.ActiveScene
-		.GetAllComponents<PlayerPawn>()
-		.FirstOrDefault( p => !p.IsProxy );
+	public static PlayerPawn Local => Client.Local?.Pawn as PlayerPawn;
 
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	public void OnStartOldMethods()
 	{
 		// 3ª pessoa: corpo visível no cliente local também
-		// if ( !IsProxy && BodyRenderer.IsValid() )
-			// BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+		if ( !IsProxy && BodyRenderer.IsValid() )
+			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+		
+		if ( !IsLocallyControlled )
+			return;
 
-		LockOnSystem = Components.Get<LockOnSystem>();
-
-		WandHolder = Components.Get<WandHolder>();
-		Wand = Components.Get<Wand>();
-		SpellsDeck = Components.Get<SpellsDeck>();
+		LockOnSystem ??= Components.Get<LockOnSystem>();
+		WandHolder ??= Components.Get<WandHolder>();
+		Wand ??= Components.Get<Wand>();
+		SpellsDeck ??= Components.Get<SpellsDeck>();
 	}
 
 	public void OnUpdateOldMethods()
 	{
-		if ( !IsLocallyControlled )
+		if ( IsProxy )
 			return;
 
 		// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
@@ -96,12 +96,12 @@ public partial class PlayerPawn
 
 	public void OnFixedUpdateOldMethods()
 	{
-		// if ( IsProxy || !IsAlive ) return;
+		if ( IsProxy || !IsAlive ) return;
 
 		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
 		// HandleMovement();
 
-		// if ( !Networking.IsHost ) return;
+		if ( !Networking.IsHost ) return;
 
 		// Burning DoT
 		if ( BurningEndTime > 0f && Time.Now < BurningEndTime )
@@ -401,14 +401,16 @@ public partial class PlayerPawn
 		Vector3 rayOrigin;
 		Vector3 rayForward;
 
-		if ( Camera.IsValid() )
+		// Usa câmera apenas para o jogador local (onde a câmera é atualizada frame a frame).
+		// Para jogadores remotos e bots, a câmera no host não é atualizada via UpdateFromEyes,
+		// então EyeAngles (sincronizado via [Sync]) é a fonte confiável.
+		if ( !IsProxy && Camera.IsValid() )
 		{
 			rayOrigin = Camera.WorldPosition;
 			rayForward = Camera.WorldRotation.Forward;
 		}
 		else
 		{
-			// Bots e casos sem câmera: usa EyeAngles diretamente
 			rayOrigin = EyePosition;
 			rayForward = EyeAngles.ToRotation().Forward;
 		}

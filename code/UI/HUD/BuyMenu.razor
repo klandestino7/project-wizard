@@ -118,6 +118,7 @@
 
 		foreach ( var p in Game.ActiveScene.GetAllComponents<PlayerPawn>() )
 		{
+			Log.Info($" Player {Player.Team} :: {p.Team}");
 			if ( !p.IsValid() || Player == null || p.Team != Player.Team || !p.IsLocallyControlled ) continue;
 			RenderMate( p )( __builder );
 			mateCount++;
