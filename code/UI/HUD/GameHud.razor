@@ -19,8 +19,8 @@
 				@RenderAbilitySlot( "6", _deck.GetSlot( 5 ) )
 			</div>
 
-			<div class="ultimate-bar">
-				<div class="ultimate-fill" style="width: @( (_ult?.Charge ?? 0f).ToString( "0.##" ) )%"></div>
+			<div class="ultimate-bar @( _ult?.IsReady == true ? "ready" : "" )">
+				<div class="ultimate-fill" style="width: @( ((_ult?.ChargeFraction ?? 0f) * 100f).ToString( "0.##" ) )%"></div>
 				<div class="ultimate-label">@( _ult?.IsReady == true ? "ULTIMATE READY" : "ULTIMATE" )</div>
 			</div>
 
@@ -82,6 +82,7 @@
 	}
 
 	<RoundEndUpgradePanel />
+	<ComboPopup />
 </root>
 
 @code {
@@ -146,6 +147,8 @@
 		EnergyLabel,
 		Player?.IsAlive,
 		Round?.TimeRemaining,
-		Round?.State
+		Round?.State,
+		_ult?.IsReady,
+		(int)((_ult?.ChargeFraction ?? 0f) * 20f) // bucket to 5% steps
 	);
 }

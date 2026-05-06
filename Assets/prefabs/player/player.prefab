@@ -20,7 +20,6 @@
         "__guid": "3370799f-99ac-4881-9678-016414bdb61f",
         "__enabled": true,
         "Flags": 0,
-        "Balance": 0,
         "BloodEffect": {
           "_type": "gameobject",
           "prefab": "prefabs/impact_fx/impact_blood_mist.prefab"
@@ -32,6 +31,7 @@
           "go": "d5948881-7e0d-4ca0-8054-85c77a3cc5af",
           "component_type": "PlayerBody"
         },
+        "ComboSystem": null,
         "Deaths": 0,
         "DodgeSystem": {
           "_type": "component",
@@ -49,7 +49,6 @@
           "prefab": "prefabs/impact_fx/impact_blood_mist.prefab"
         },
         "HeadshotSound": "sounds/player/headshot_hit.sound",
-        "Health": 150,
         "HealthComponent": {
           "_type": "component",
           "component_id": "b0ad035b-94a2-4e02-8850-15baffda666b",
@@ -61,7 +60,6 @@
           "_type": "gameobject",
           "go": "54431291-2c92-4075-bf87-882481574799"
         },
-        "IsAlive": true,
         "ItemSlot1": null,
         "ItemSlot2": null,
         "Kills": 0,
@@ -89,13 +87,14 @@
         "OnComponentUpdate": null,
         "OnJump": null,
         "OutOfPlayAreaKillTime": 5,
+        "PassiveEffects": null,
         "PlayerBoxCollider": {
           "_type": "component",
           "component_id": "0d4973b2-fdb1-4f1d-ab98-c1c49bfd4a2b",
           "go": "3e4e2095-635e-4b89-a9c9-fc3b4d321b84",
           "component_type": "BoxCollider"
         },
-        "Shield": 0,
+        "PlayerBuild": null,
         "SpellsDeck": {
           "_type": "component",
           "component_id": "7eadc31d-d9a0-463f-9833-cfcc5b456bb5",
@@ -104,6 +103,7 @@
         },
         "SprintMovementDampening": 0.35,
         "Team": "Unassigned",
+        "UltimateCharge": null,
         "UseDistance": 72,
         "Wand": {
           "_type": "component",
@@ -175,13 +175,15 @@
         "Flags": 0,
         "IsGodMode": false,
         "MaxHealth": 100,
+        "MaxShield": 100,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "OnHealthChanged": null
+        "OnHealthChanged": null,
+        "OnShieldChanged": null
       },
       {
         "__type": "Warlocks.PlayerFootsteps",
@@ -403,6 +405,71 @@
       {
         "__type": "Warlocks.ProtegoComponent",
         "__guid": "5da92f15-6c11-4992-891d-7a891a36e64a",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.PlayerBuildComponent",
+        "__guid": "b4d9524d-c623-4667-9b29-912ba042b264",
+        "__enabled": true,
+        "Flags": 0,
+        "Affinity": "Arcane",
+        "Discipline": "Generalist",
+        "EnergyBudget": 10,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Passive": "None",
+        "PreparedSpellLimit": 6
+      },
+      {
+        "__type": "Warlocks.UltimateChargeComponent",
+        "__guid": "54bb396b-6ec9-434f-82b5-99f0cccf6952",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.SpellComboSystem",
+        "__guid": "e9a091b1-8c35-4c22-b445-06434e828842",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Warlocks.PassiveEffectSystem",
+        "__guid": "c6576c7e-ae84-4bd2-9151-0652d5ed9a46",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "MasterySystem",
+        "__guid": "84fbc793-5301-4c8f-b92f-86a85d2c3de9",
         "__enabled": true,
         "Flags": 0,
         "OnComponentDestroy": null,
@@ -4118,7 +4185,7 @@
             ]
           },
           {
-            "__guid": "f61cf417-7405-4fc9-8778-d2af2f676e09",
+            "__guid": "ba8dd4cf-73cb-4848-975d-091b9fc32215",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - baseball_cap_blue_white",
@@ -4135,7 +4202,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "bfb8a2e6-5f93-4b2d-987e-cf7a95dbe811",
+                "__guid": "47cc3d5c-3ad9-4c9f-8ca5-958869ffc86d",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -4187,7 +4254,7 @@
             "Children": []
           },
           {
-            "__guid": "4a1f96a3-99b4-481b-961c-e63a63ccd23b",
+            "__guid": "0b8bb14e-d6a7-45e2-bfca-27a5338d57ab",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - hoodie_black",
@@ -4204,7 +4271,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "aff75ad9-2a9b-4da3-bd7a-5fe337bb9770",
+                "__guid": "7358e317-3da9-4580-b0c2-940833a8b83e",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -4256,7 +4323,7 @@
             "Children": []
           },
           {
-            "__guid": "23bc0448-24c5-4271-986c-b45dd3c02fc7",
+            "__guid": "7ec9073f-2587-42ce-a564-ad3c724b2af2",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - football_shoes",
@@ -4273,7 +4340,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "d05d42ec-9ebb-4dc4-be9c-7cb2e0d896df",
+                "__guid": "6c5b94d5-16a6-4db2-ad23-d20ca82e4498",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -4325,7 +4392,7 @@
             "Children": []
           },
           {
-            "__guid": "fe5713d1-ed97-4634-aa48-8af8ac446bf3",
+            "__guid": "c422f79d-2b1a-4108-8b20-d488aa55cc06",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - jeans",
@@ -4342,7 +4409,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "a151321b-01f6-414e-a135-ce319a752b94",
+                "__guid": "f9ae7658-6cac-48b8-b08f-d77952b06b30",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,

@@ -1,0 +1,47 @@
+@using Sandbox
+@using Sandbox.UI
+
+@namespace Warlocks.UI
+@inherits Panel
+@attribute [StyleSheet]
+
+<root>
+@if ( _visible )
+{
+	<div class="combo-popup combo-@_cssClass">
+		<div class="combo-tag">COMBO</div>
+		<div class="combo-name">@_label</div>
+	</div>
+}
+</root>
+
+@code {
+	public static ComboPopup Instance { get; private set; }
+
+	string _label   = "";
+	string _cssClass = "";
+	bool   _visible;
+	RealTimeUntil _hideAt;
+
+	public ComboPopup() { Instance = this; }
+
+	/// <summary>
+	/// Called from SpellComboSystem.BroadcastCombo — runs on all clients.
+	/// </summary>
+	public static void Show( string label )
+	{
+		if ( Instance == null ) return;
+		Instance._label    = label;
+		Instance._cssClass = label.ToLower();
+		Instance._visible  = true;
+		Instance._hideAt   = 2f;
+	}
+
+	public override void Tick()
+	{
+		if ( _visible && _hideAt <= 0f )
+			_visible = false;
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine( _label, _visible );
+}

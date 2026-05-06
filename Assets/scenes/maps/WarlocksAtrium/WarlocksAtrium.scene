@@ -2290,6 +2290,20 @@
             "prefab": "prefabs/particles/stupefy_trail.prefab"
           },
           "WandAttackHit": null
+        },
+        {
+          "__type": "Warlocks.DamageTracker",
+          "__guid": "38f108fd-ee6b-46da-b772-29386ed7e865",
+          "__enabled": true,
+          "Flags": 0,
+          "ClearBetweenRounds": true,
+          "ClearOnRespawn": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []
@@ -2331,30 +2345,6 @@
         {
           "__type": "Warlocks.UI.Chat",
           "__guid": "d506dd4e-0fb6-4702-8516-3f002dd98f68",
-          "__enabled": true,
-          "Flags": 0,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
-        },
-        {
-          "__type": "Warlocks.UI.GameHud",
-          "__guid": "165a36fe-a03d-4b71-a77c-8248c067f26e",
-          "__enabled": true,
-          "Flags": 0,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
-        },
-        {
-          "__type": "Warlocks.UI.Scoreboard",
-          "__guid": "d6af7c69-d010-47a6-a5b4-bf2b5dcff4f7",
           "__enabled": true,
           "Flags": 0,
           "OnComponentDestroy": null,
@@ -6332,7 +6322,7 @@
         "b4ca6d36-f647-49b3-9151-8ef4c63aeddd": "c3d37ae4-8a0e-4bce-bed4-3d04533932d1",
         "50de49ef-0287-435d-b570-e48047718014": "763e6fa6-a202-45b5-bbea-9d82eedd998a",
         "4dc414cd-ed6d-4fcd-bd26-0c4c340b5301": "9558a8af-a8fd-48e9-ab59-c37582c938bb",
-        "c7016aa2-b7c2-4c03-933a-87edc2748175": "e4aa4425-f625-4280-9743-8b4d98c67553"
+        "a2f35476-05f1-40dc-80f9-8cbff102de8d": "afe9e7fa-ba56-489f-816c-278dc5417e4b"
       }
     },
     {
@@ -6435,12 +6425,12 @@
         "5b253708-de7c-4c86-8893-b86fb4822642": "28eea75e-0524-4316-8ed3-aee9aca11b7b",
         "c167e62e-6407-4edf-9ac5-dffe5f0688c1": "edfc86a1-ffd8-41fb-a669-0901e97ff04d",
         "49109783-18b2-44e7-8f29-0dcddd0a6da9": "06dbe3df-9541-4279-ae33-4630a5c9ad93",
-        "572ee8e5-9b82-4531-b849-e84136532d8e": "c034786c-e09d-4609-9341-18162875416c",
+        "bc1cdab7-2bd3-4903-bcbd-0d3f0e183205": "2fa616e6-e201-48e7-8c0e-b4422eceb3bd",
         "c82d52b1-a9e2-4e71-9bbe-496694888959": "245cf061-9d1e-4be8-813e-fd329fd979f0",
         "83a62c25-6c75-4ee0-abb7-7d7f1d033fe6": "9c97ec19-db4b-4b76-a566-0e05c098d5a9",
         "c041252e-1262-42a4-b630-c032cce27ace": "12d78807-3fb5-44d6-901c-85168b176a81",
         "2d5f9694-5062-485f-9ea2-0ca6c18d167d": "0b314106-6512-4aba-a5fc-7ece54cb8021",
-        "8a4fbcf9-bc24-4c0c-b5be-789dd635b67e": "451822ad-2bb6-40c8-b8a0-b2776fb66cf7",
+        "5c63d8e9-18c4-4ff7-b5af-9ac89cd0e3db": "cc6c8fe7-813a-4fde-bb4b-7b34eba14afc",
         "91ab47da-c178-479c-8af6-c7515eba5759": "1d939730-c4c2-4d20-8284-fc66c1e4197c",
         "fec41e74-67b6-4ce4-9d93-31e46c97da45": "24fecfd6-7667-4d7c-972d-94b1f44be2f1",
         "e3523077-dc7e-4d0a-a45f-e8598919832a": "e56eaf5d-292f-434a-b2c0-4d5367b0f92e",
@@ -6504,7 +6494,7 @@
         "35f22135-8476-417b-b33c-fea8b2524a75": "8fa2fdcc-f92f-4437-a280-56e3fe644bb9",
         "ec32f16b-5053-4522-8948-4eaef65a809a": "f91348cf-ba3c-4b18-8728-94b8290ed9ac",
         "7e1e5a0a-7cef-4388-aa2f-44ac5088662e": "8446a516-b995-442d-906b-2d3b26462e56",
-        "f2892047-547c-47db-8b5c-79b300b7da0c": "b7cb323e-f5c8-43b2-8665-077ef454ce01"
+        "51c0ce43-f465-4bcd-ba45-07078a086827": "7bd9e4c5-e85e-46b5-a60f-6c9c6e4f7f19"
       }
     },
     {
@@ -7309,6 +7299,9 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "f6a4e778-9e0a-4a01-99de-02f16b043c10"
@@ -7318,9 +7311,6 @@
         "Data": {
           "SelectionSets": []
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

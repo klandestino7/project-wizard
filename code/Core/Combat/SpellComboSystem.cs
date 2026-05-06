@@ -1,3 +1,5 @@
+using Sandbox;
+
 namespace Warlocks;
 
 /// <summary>
@@ -134,8 +136,7 @@ public sealed class SpellComboSystem : Component
 	[Rpc.Broadcast]
 	private void BroadcastCombo( string label, Vector3 position )
 	{
-		Log.Info( $"[Combo] {label} at {position}" );
-		// TODO: spawn combo VFX / screen notification here
+		Warlocks.UI.ComboPopup.Show( label );
 	}
 }
 

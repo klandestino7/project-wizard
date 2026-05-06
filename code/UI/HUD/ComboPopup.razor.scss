@@ -1,0 +1,65 @@
+/* ─── ComboPopup ─────────────────────────────────────────────────── */
+
+.combo-popup {
+	position: absolute;
+	left: 50%;
+	top: 38%;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 8px 24px;
+	border-radius: 6px;
+	background-color: rgba(10, 8, 20, 0.75);
+	border: 1px solid rgba(255,255,255,0.15);
+	animation: combo-in 0.2s ease-out;
+	pointer-events: none;
+}
+
+.combo-tag {
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 3px;
+	color: rgba(255,255,255,0.5);
+}
+
+.combo-name {
+	font-size: 28px;
+	font-weight: 700;
+	letter-spacing: 4px;
+}
+
+/* ─── Per-combo accent colours ───────────────────────────────────── */
+
+.combo-freeze {
+	border-color: rgba(130, 200, 255, 0.6);
+	.combo-name { color: #82caff; text-shadow: 0 0 12px rgba(130, 200, 255, 0.8); }
+}
+
+.combo-evaporate {
+	border-color: rgba(255, 140, 40, 0.6);
+	.combo-name { color: #ff8c28; text-shadow: 0 0 12px rgba(255, 140, 40, 0.8); }
+}
+
+.combo-silence {
+	border-color: rgba(180, 80, 255, 0.6);
+	.combo-name { color: #b450ff; text-shadow: 0 0 12px rgba(180, 80, 255, 0.8); }
+}
+
+.combo-shatter {
+	border-color: rgba(80, 200, 200, 0.6);
+	.combo-name { color: #50c8c8; text-shadow: 0 0 12px rgba(80, 200, 200, 0.8); }
+}
+
+/* ─── Entrance animation ─────────────────────────────────────────── */
+@keyframes combo-in {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) scale(0.85);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) scale(1);
+	}
+}
