@@ -43,7 +43,8 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 	[Property]
 	public GameObject HoldGameObject { get; set; }
 
-	public bool CanBuy => true; //HealthComponent.State == LifeState.Alive && IsInBuyZone;
+	public bool CanConfigureBuild => true; // Transitional gate while modes are still migrating.
+	public bool CanBuy => CanConfigureBuild;
 	private bool IsInBuyZone => Client?.BuyMenuMode is BuyMenuMode.EnabledEverywhere
 		|| Client?.BuyMenuMode is BuyMenuMode.EnabledInBuyZone && GetZone<BuyZone>() is not null;
 

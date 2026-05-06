@@ -41,6 +41,7 @@ public abstract class BaseSpell
 	public float CooldownFraction => IsReady ? 1f : 1f - CooldownRemaining / CooldownDuration;
 
 	public void StartCooldown() => _cooldownEnd = Time.Now + CooldownDuration;
+	public void StartCooldown( float durationOverride ) => _cooldownEnd = Time.Now + MathF.Max( 0f, durationOverride );
 	public void ResetCooldown() => _cooldownEnd = 0f;
 
 	/// <summary>

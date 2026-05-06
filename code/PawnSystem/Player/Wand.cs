@@ -25,8 +25,25 @@ public sealed class Wand : Component
 
 	private PlayerPawn _player;
 	private SpellsDeck _deck;
+	private ResolvedSpellData _currentResolvedSpell;
 
 	public PlayerPawn Player => _player;
+	public ResolvedSpellData CurrentResolvedSpell => _currentResolvedSpell;
+
+	public float ResolveDamage( float baseDamage )
+	{
+		return baseDamage * (_currentResolvedSpell?.DamageMultiplier ?? 1f);
+	}
+
+	public float ResolveDuration( float baseDuration )
+	{
+		return baseDuration * (_currentResolvedSpell?.DurationMultiplier ?? 1f);
+	}
+
+	public int ResolveDamageInt( int baseDamage )
+	{
+		return (int)MathF.Round( ResolveDamage( baseDamage ) );
+	}
 
 	protected override void OnStart()
 	{
@@ -49,8 +66,11 @@ public sealed class Wand : Component
 	private void ExecuteSpell( BaseSpell spell )
 	{
 		if ( spell == null || !_player.IsValid() || !_player.IsAlive ) return;
-		_player.ManaSystem?.TrySpend( spell.ManaCost );
+		var resolved = SpellModifierResolver.Resolve( _player, spell );
+		_currentResolvedSpell = resolved;
+		_player.ManaSystem?.TrySpend( resolved.ManaCost );
 		spell.Execute( this );
+		_currentResolvedSpell = null;
 	}
 
 	// ─── API pública (chamada por PlayerPawn.HandleAbilityInput) ────
@@ -85,11 +105,12 @@ public sealed class Wand : Component
 		if ( !_player.IsValid() || !_player.IsAlive || _player.IsStunned ) return false;
 		if ( !spell.IsReady ) return false;
 
+		var resolved = SpellModifierResolver.Resolve( _player, spell );
 		var mana = _player.ManaSystem;
-		if ( mana != null && spell.ManaCost > 0f && !mana.HasMana( spell.ManaCost ) && !mana.FelixActive )
+		if ( mana != null && resolved.ManaCost > 0f && !mana.HasMana( resolved.ManaCost ) && !mana.FelixActive )
 			return false;
 
-		spell.StartCooldown();
+		spell.StartCooldown( resolved.Cooldown );
 		_player.WandHolder?.TriggerCastAnimation();
 		return true;
 	}

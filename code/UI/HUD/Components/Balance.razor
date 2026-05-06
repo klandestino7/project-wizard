@@ -6,7 +6,7 @@
 
 <root class="row">
     <InputHint Action="BuyMenu" class="small @(!CanOpen ? "hidden" : "")" Size="@InputGlyphSize.Small" />
-    <label class="important @(GameMode.Instance?.UnlimitedMoney is true ? "hidden" : "")">@Client.Balance.ToString("N0")</label>
+    <label class="important">BUILD</label>
 </root>
 
 @code
@@ -17,7 +17,7 @@
     /// The player state
     public Client Client => Client.Viewer;
 
-    public bool CanOpen => Player.CanBuy;
+    public bool CanOpen => Player.CanConfigureBuild;
 
     protected override int BuildHash()
     {
@@ -25,6 +25,6 @@
         if ( !Client.IsValid() ) return 0;
         if ( !GameMode.Instance.IsValid() ) return 0;
 
-        return HashCode.Combine(Client?.Balance, CanOpen, GameMode.Instance?.UnlimitedMoney);
+        return HashCode.Combine(CanOpen, Player?.PlayerBuild?.Affinity, Player?.PlayerBuild?.Discipline);
     }   
 }
