@@ -33,7 +33,7 @@ public sealed class SectumsempraSpell : BaseSpell
 		float mult = isHeadshot ? HeadshotMultByTier[t] : 1f;
 		int   dmg  = (int)(DamageByTier[t] * mult);
 
-		victim.TakeDamage( dmg, wand.Player, isHeadshot );
+		// victim.HealthComponent.TakeDamage( dmg );
 
 		if ( Tier >= 2 )
 			victim.ApplyBurning( 15f, 3f, wand.Player ); // bleeding via burning

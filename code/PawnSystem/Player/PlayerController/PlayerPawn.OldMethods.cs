@@ -3,28 +3,22 @@ namespace Warlocks;
 public partial class PlayerPawn
 {
 	// ─── Constantes ───────────────────────────────────────────────────
-	public const int MaxHealth = 150;
-	public const int MaxShield = 50;
 	public const float EyeHeight = 64f;
-	public const float WalkSpeed = 180f;
-	public const float RunSpeed = 300f;
-	public const float CrouchSpeed = 80f;
 
 	// ─── Propriedades sincronizadas ───────────────────────────────────
-	[Property, Sync] public int Health { get; set; } = MaxHealth;
-	[Property, Sync] public int Shield { get; set; } = 0;
 	[Property, Sync] public int Balance { get; set; } = 0;
 	[Property, Sync] public Team Team { get; set; } = Team.Unassigned;
-	[Property, Sync] public bool IsAlive { get; set; } = true;
-	// [Property, Sync] public Angles EyeAngles { get; set; }
 	[Property, Sync] public int Kills { get; set; } = 0;
 	[Property, Sync] public int Deaths { get; set; } = 0;
+
+	/// <summary>Alias de conveniência — delega para HealthComponent.</summary>
+	public bool IsAlive => HealthComponent.IsValid() && HealthComponent.State == LifeState.Alive;
 
 	// ─── Estado de combate (Hogwarts Legacy style) ────────────────────
 	[Sync] public CombatState CombatState { get; set; } = CombatState.Normal;
 	[Sync] public float CombatStateEndTime { get; set; } = 0f;
 
-	/// <summary>I-frames ativos (dodge). TakeDamage ignorado enquanto true.</summary>
+	/// <summary>I-frames ativos (dodge). Dano ignorado enquanto true.</summary>
 	[Sync] public bool IsInvincible { get; set; } = false;
 
 	// ─── Stun / Burning / Slow ────────────────────────────────────────
@@ -42,10 +36,7 @@ public partial class PlayerPawn
 	/// <summary>True enquanto no ar (lançado). Spells de burst fazem +50% dmg.</summary>
 	public bool IsAirborne => CombatState == CombatState.Airborne;
 
-	// ─── Referências (setar no editor ou via GameManager) ─────────────
-	// [Property] public CharacterController CharacterController { get; set; }
-	// [Property] public CameraComponent Camera { get; set; }
-	// [Property] public ModelRenderer BodyRenderer { get; set; }
+	// ─── Referências ─────────────────────────────────────────────────
 	[Property] public ManaSystem ManaSystem { get; set; }
 	[Property] public DodgeSystem DodgeSystem { get; set; }
 	[Property] public LockOnSystem LockOnSystem { get; set; }
@@ -66,10 +57,9 @@ public partial class PlayerPawn
 	// ─── Lifecycle ────────────────────────────────────────────────────
 	public void OnStartOldMethods()
 	{
-		// 3ª pessoa: corpo visível no cliente local também
 		if ( !IsProxy && BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
-		
+
 		if ( !IsLocallyControlled )
 			return;
 
@@ -84,31 +74,23 @@ public partial class PlayerPawn
 		if ( IsProxy )
 			return;
 
-		// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
-		// HandleLook();
 		HandleAbilityInput();
 		HandleInteractInput();
 
-		// Expirar estados de combate
 		if ( Networking.IsHost && CombatStateEndTime > 0f && Time.Now >= CombatStateEndTime )
 			SetCombatState( CombatState.Normal );
 	}
 
 	public void OnFixedUpdateOldMethods()
 	{
-		if ( IsProxy || !IsAlive ) return;
+		if ( IsProxy || !IsAlive || !Networking.IsHost ) return;
 
-		// NÃO PRECISA DESSE HandleMovement, O prefab do player já possui
-		// HandleMovement();
-
-		if ( !Networking.IsHost ) return;
-
-		// Burning DoT
+		// Burning DoT — delega dano ao HealthComponent
 		if ( BurningEndTime > 0f && Time.Now < BurningEndTime )
 		{
-			int dot = (int)(BurningDPS * Time.Delta);
-			if ( dot > 0 )
-				TakeDamage( dot, BurningSource );
+			var dot = BurningDPS * Time.Delta;
+			if ( dot > 0f )
+				HealthComponent.TakeDamage( new DamageInfo( BurningSource, dot, Flags: DamageFlags.Burn ) );
 		}
 		else if ( BurningEndTime > 0f )
 		{
@@ -119,78 +101,24 @@ public partial class PlayerPawn
 		}
 	}
 
-	// ─── Input: Look ──────────────────────────────────────────────────
-	private void HandleLook()
-	{
-		var delta = Input.AnalogLook;
-		var angles = EyeAngles;
-		angles += delta;
-		angles.pitch = angles.pitch.Clamp( -89f, 89f );
-		angles.roll = 0f;
-		EyeAngles = angles;
-
-		WorldRotation = Rotation.FromYaw( EyeAngles.yaw );
-
-		if ( Camera.IsValid() )
-			Camera.LocalRotation = Rotation.FromPitch( EyeAngles.pitch );
-	}
-
-	// ─── Input: Movimento ─────────────────────────────────────────────
-	private void HandleMovement()
-	{
-		var cc = CharacterController;
-		if ( !cc.IsValid() ) return;
-
-		if ( !cc.IsOnGround )
-			cc.Velocity += Vector3.Down * 850f * Time.Delta;
-
-		var forward = Rotation.FromYaw( EyeAngles.yaw ).Forward;
-		var right = Rotation.FromYaw( EyeAngles.yaw ).Right;
-		var wishDir = Vector3.Zero;
-
-		if ( Input.Down( "Forward" ) ) wishDir += forward;
-		if ( Input.Down( "Backward" ) ) wishDir -= forward;
-		if ( Input.Down( "Left" ) ) wishDir -= right;
-		if ( Input.Down( "Right" ) ) wishDir += right;
-
-		wishDir = wishDir.WithZ( 0f ).Normal;
-
-		float speed = Input.Down( "Duck" ) ? CrouchSpeed
-				: Input.Down( "Run" ) ? RunSpeed
-				: WalkSpeed;
-
-		if ( IsStunned ) speed *= 0.2f;
-		if ( IsSlowed ) speed *= (1f - SlowFraction);
-
-		cc.Accelerate( wishDir * speed );
-		cc.ApplyFriction( cc.IsOnGround ? 6f : 0.5f );
-
-		if ( cc.IsOnGround && Input.Pressed( "Jump" ) )
-			cc.Punch( Vector3.Up * 330f );
-
-		cc.Move();
-	}
-
 	// ─── Input: Abilities + Dodge + Lock-on ───────────────────────────
 	private void HandleAbilityInput()
 	{
-		// Dodge — Space (Hogwarts Legacy style, i-frames)
 		if ( Input.Pressed( "Dodge" ) )
 			DodgeSystem?.TryDodge();
 
-		// Lock-on — Middle Mouse / L
 		if ( Input.Pressed( "LockOn" ) )
 			LockOnSystem?.ToggleLockOn();
 
-		if ( IsStunned ) return; // stunado não lança feitiços
+		if ( IsStunned ) return;
 
 		if ( Input.Pressed( "Attack1" ) )
 			Wand?.TryCastBasic();
 
-		if ( Input.Pressed( "Ability1" ) ) Wand?.TryCastSlot( 0 ); // Q
-		if ( Input.Pressed( "Ability2" ) ) Wand?.TryCastSlot( 1 ); // E (Protego)
-		if ( Input.Pressed( "Ability3" ) ) Wand?.TryCastSlot( 2 ); // R
-		if ( Input.Pressed( "Ability4" ) ) Wand?.TryCastSlot( 3 ); // F
+		if ( Input.Pressed( "Ability1" ) ) Wand?.TryCastSlot( 0 );
+		if ( Input.Pressed( "Ability2" ) ) Wand?.TryCastSlot( 1 );
+		if ( Input.Pressed( "Ability3" ) ) Wand?.TryCastSlot( 2 );
+		if ( Input.Pressed( "Ability4" ) ) Wand?.TryCastSlot( 3 );
 
 		if ( Input.Pressed( "Item1" ) ) ItemSlot1?.TryUse();
 		if ( Input.Pressed( "Item2" ) ) ItemSlot2?.TryUse();
@@ -215,74 +143,12 @@ public partial class PlayerPawn
 		nearbySites.FirstOrDefault( site => site.CanInteract( this ) )?.TryInteract( this );
 	}
 
-	// ─── Proxy (outros jogadores) ─────────────────────────────────────
-	private void UpdateProxy()
-	{
-		if ( BodyRenderer.IsValid() )
-			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
-
-		WorldRotation = Rotation.FromYaw( EyeAngles.yaw );
-	}
-
 	// ─── Estado de combate ────────────────────────────────────────────
 	public void SetCombatState( CombatState state, float duration = 0f )
 	{
 		if ( !Networking.IsHost ) return;
 		CombatState = state;
 		CombatStateEndTime = duration > 0f ? Time.Now + duration : 0f;
-	}
-
-	// ─── Dano ─────────────────────────────────────────────────────────
-	public void TakeDamage( int amount, PlayerPawn attacker = null, bool isHeadshot = false )
-	{
-		if ( !Networking.IsHost || !IsAlive ) return;
-		if ( IsInvincible ) return; // i-frames do dodge
-
-		// Bônus de dano por estado (Hogwarts Legacy combo system)
-		if ( CombatState == CombatState.Airborne )
-			amount = (int)(amount * 1.5f);  // +50% em alvo no ar
-		else if ( CombatState == CombatState.Stunned )
-			amount = (int)(amount * 1.25f); // +25% em alvo stunado
-
-		// ProtegoComponent absorve dano (verifica perfect block)
-		var protego = Components.Get<ProtegoComponent>( FindMode.EverythingInSelf );
-		if ( protego != null && protego.IsShieldUp )
-		{
-			var (passthrough, reflected) = protego.AbsorbDamage( amount, attacker );
-			if ( reflected > 0 && attacker != null )
-				attacker.TakeDamage( reflected );
-			amount = passthrough;
-		}
-
-		if ( amount <= 0 ) return;
-
-		int remaining = amount;
-		if ( Shield > 0 )
-		{
-			int abs = Shield < remaining ? Shield : remaining;
-			Shield -= abs;
-			remaining -= abs;
-		}
-
-		int newHealth = Health - remaining;
-		Health = newHealth < 0 ? 0 : newHealth;
-
-		if ( Health <= 0 )
-			Die( attacker );
-	}
-
-	public void Heal( int amount )
-	{
-		if ( !Networking.IsHost ) return;
-		int healed = Health + amount;
-		Health = healed > MaxHealth ? MaxHealth : healed;
-	}
-
-	public void ApplyShield( int amount )
-	{
-		if ( !Networking.IsHost ) return;
-		int newShield = Shield + amount;
-		Shield = newShield > MaxShield ? MaxShield : newShield;
 	}
 
 	public void ApplyBurning( float dps, float duration, PlayerPawn source )
@@ -313,61 +179,6 @@ public partial class PlayerPawn
 			CharacterController.Punch( Vector3.Up * height );
 	}
 
-	// ─── Morte ────────────────────────────────────────────────────────
-	public void Die( PlayerPawn killer = null )
-	{
-		if ( !IsAlive ) return;
-		IsAlive = false;
-		Deaths++;
-
-		if ( killer != null )
-			killer.Kills++;
-
-		BurningEndTime = 0f;
-		BurningDPS = 0f;
-		SlowEndTime = 0f;
-		SlowFraction = 0f;
-		CombatState = CombatState.Normal;
-		IsInvincible = false;
-
-		SpellsDeck?.ClearOwned();
-
-		var rm = Scene.GetAllComponents<RoundManager>().FirstOrDefault();
-		rm?.OnPlayerDied( this, killer );
-
-		BroadcastDeath();
-	}
-
-	[Rpc.Broadcast]
-	private void BroadcastDeath()
-	{
-		if ( BodyRenderer.IsValid() )
-			BodyRenderer.Enabled = false;
-	}
-
-	// ─── Respawn ──────────────────────────────────────────────────────
-	public void Respawn( Vector3 position )
-	{
-		WorldPosition = position;
-		Health = MaxHealth;
-		Shield = 0;
-		IsAlive = true;
-		StunEndTime = 0f;
-		BurningEndTime = 0f;
-		BurningDPS = 0f;
-		SlowEndTime = 0f;
-		SlowFraction = 0f;
-		CombatState = CombatState.Normal;
-		IsInvincible = false;
-
-		if ( BodyRenderer.IsValid() )
-			BodyRenderer.Enabled = true;
-
-		SpellsDeck?.ResetAllCooldowns();
-		ManaSystem?.ResetFull();
-		DodgeSystem?.ResetStamina();
-	}
-
 	// ─── Economia ─────────────────────────────────────────────────────
 	public void GiveGalleons( int amount )
 	{
@@ -377,23 +188,23 @@ public partial class PlayerPawn
 
 	public bool SpendGalleons( int amount )
 	{
-		Log.Info($"SpendGalleons{Networking.IsHost} :: {Client.Balance} :: {amount}");
 		if ( !Networking.IsHost || Client.Balance < amount ) return false;
 		Client.Balance -= amount;
 		return true;
 	}
 
-	// ─── Spell aim ───────────────────────────────────────────────────
+	// ─── Spell aim ────────────────────────────────────────────────────
 	/// <summary>Ponto de origem do feitiço: muzzle da varinha ou EyePosition.</summary>
 	public Vector3 GetSpellMuzzle()
 	{
-		if ( WandHolder is not null )
+		// Bones de animação não são sincronizados confiávelmente para players remotos no host.
+		if ( !IsProxy && WandHolder is not null )
 			return WandHolder.GetMuzzlePosition();
 		return EyePosition;
 	}
 
 	/// <summary>
-	/// Direção do feitiço: muzzle → aim point (centro da tela via trace, ou lock-on).
+	/// Direção do feitiço: muzzle → aim point (centro da tela via trace).
 	/// Passe o muzzle calculado por GetSpellMuzzle() para que a direção aponte corretamente.
 	/// </summary>
 	public Vector3 GetSpellDirection( Vector3 fromMuzzle )
@@ -401,9 +212,8 @@ public partial class PlayerPawn
 		Vector3 rayOrigin;
 		Vector3 rayForward;
 
-		// Usa câmera apenas para o jogador local (onde a câmera é atualizada frame a frame).
-		// Para jogadores remotos e bots, a câmera no host não é atualizada via UpdateFromEyes,
-		// então EyeAngles (sincronizado via [Sync]) é a fonte confiável.
+		// Câmera local é confiável apenas para o próprio jogador.
+		// Para remotos e bots no host, EyeAngles ([Sync]) é a fonte correta.
 		if ( !IsProxy && Camera.IsValid() )
 		{
 			rayOrigin = Camera.WorldPosition;
@@ -423,7 +233,6 @@ public partial class PlayerPawn
 			.Run();
 
 		var aimPoint = tr.Hit ? tr.HitPosition : rayOrigin + rayForward * 5000f;
-
 		return (aimPoint - fromMuzzle).Normal;
 	}
 

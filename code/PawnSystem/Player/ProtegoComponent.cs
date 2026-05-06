@@ -54,7 +54,7 @@ public sealed class ProtegoComponent : Component
 		ShieldEndTime = Time.Now + DurationByTier[t];
 		ActivatedAt = Time.Now;
 
-		_player.ApplyShield( ShieldHP );
+		_player.HealthComponent.ApplyShield( ShieldHP );
 		_player.SetCombatState( CombatState.Shielded, DurationByTier[t] );
 		ShowEffect();
 	}
@@ -95,7 +95,7 @@ public sealed class ProtegoComponent : Component
 	private void DeactivateShield()
 	{
 		ShieldActive = false;
-		_player.ApplyShield( -_player.Shield );
+		_player.HealthComponent.ApplyShield( -_player.HealthComponent.Shield );
 
 		if ( _player.CombatState == CombatState.Shielded )
 			_player.SetCombatState( CombatState.Normal );

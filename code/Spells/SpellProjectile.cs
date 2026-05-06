@@ -106,43 +106,42 @@ public sealed class SpellProjectile : Component
 
 		if ( victim != null && victim.Team != ShooterTeam )
 		{
-			if ( PierceShield )
+			var finalDamage = ApplyStateBonuses( Damage, victim );
+
+			// Protego absorve dano antes do HealthComponent (exceto PierceShield)
+			if ( !PierceShield )
 			{
-				// Bônus de estado aplicado manualmente (bypassa TakeDamage)
-				int dmg = ApplyStateBonuses( Damage, victim );
-				int newHp = victim.Health - dmg;
-				victim.Health = newHp < 0 ? 0 : newHp;
-				if ( victim.Health <= 0 )
-					victim.Die( _shooter );
-			}
-			else
-			{
-				victim.TakeDamage( Damage, _shooter );
+				var protego = victim.Components.Get<ProtegoComponent>( FindMode.EverythingInSelf );
+				if ( protego != null && protego.IsShieldUp )
+				{
+					var (passthrough, reflected) = protego.AbsorbDamage( (int)finalDamage, _shooter );
+					if ( reflected > 0 && _shooter != null )
+						_shooter.HealthComponent.TakeDamage( new DamageInfo( victim, reflected, Position: tr.EndPosition ) );
+					finalDamage = passthrough;
+				}
 			}
 
-			// Stun → seta CombatState
+			if ( finalDamage > 0f )
+				victim.HealthComponent.TakeDamage( new DamageInfo( _shooter, finalDamage, Position: tr.EndPosition ) );
+
 			if ( StunDuration > 0f )
 			{
 				victim.StunEndTime = Time.Now + StunDuration;
 				victim.SetCombatState( CombatState.Stunned, StunDuration );
 			}
 
-			// Lança ao ar (Stupefy T2)
 			if ( LaunchAirborne )
 				victim.LaunchIntoAir();
 
-			// Burning DoT
 			if ( BurningDPS > 0f && BurningDuration > 0f )
 				victim.ApplyBurning( BurningDPS, BurningDuration, _shooter );
 
-			// Slow
 			if ( SlowFraction > 0f && SlowDuration > 0f )
 			{
 				victim.SlowEndTime = Time.Now + SlowDuration;
 				victim.SlowFraction = SlowFraction;
 			}
 
-			// Mastery — usa o nome da spell de origem, não "SpellProjectile"
 			if ( _shooter != null && !string.IsNullOrEmpty( SourceSpellClass ) )
 			{
 				var mastery = _shooter.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
@@ -154,12 +153,10 @@ public sealed class SpellProjectile : Component
 	}
 
 	/// <summary>Aplica bônus de dano pelo CombatState do alvo (+50% Airborne, +25% Stunned).</summary>
-	private static int ApplyStateBonuses( int damage, PlayerPawn victim )
+	private static float ApplyStateBonuses( float damage, PlayerPawn victim )
 	{
-		if ( victim.CombatState == CombatState.Airborne )
-			return (int)(damage * 1.5f);
-		if ( victim.CombatState == CombatState.Stunned )
-			return (int)(damage * 1.25f);
+		if ( victim.CombatState == CombatState.Airborne ) return damage * 1.5f;
+		if ( victim.CombatState == CombatState.Stunned ) return damage * 1.25f;
 		return damage;
 	}
 

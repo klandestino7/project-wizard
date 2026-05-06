@@ -21,6 +21,11 @@ public partial class HealthComponent : Component, IRespawnable
 	[Property] public Action<float, float> OnHealthChanged { get; set; }
 
 	/// <summary>
+	/// An action (mainly for ActionGraphs) to respond to when a GameObject's shield changes.
+	/// </summary>
+	[Property] public Action<float, float> OnShieldChanged { get; set; }
+
+	/// <summary>
 	/// How long has it been since life state changed?
 	/// </summary>
 	public TimeSince TimeSinceLifeStateChanged { get; private set; } = 1f;
@@ -42,6 +47,15 @@ public partial class HealthComponent : Component, IRespawnable
 	public float MaxHealth { get; set; } = 100f;
 
 	/// <summary>
+	/// What's our shield?
+	/// </summary>
+	[Sync( SyncFlags.FromHost ), Change( nameof( OnShieldPropertyChanged ) )]
+	public float Shield { get; set; } = 0f;
+
+	[Property, Group( "Setup" )]
+	public float MaxShield { get; set; } = 100f;
+
+	/// <summary>
 	/// What's our life state?
 	/// </summary>
 	[Group( "Life State" ), Sync( SyncFlags.FromHost ), Change( nameof( OnStatePropertyChanged ) )]
@@ -55,6 +69,16 @@ public partial class HealthComponent : Component, IRespawnable
 	protected void OnHealthPropertyChanged( float oldValue, float newValue )
 	{
 		OnHealthChanged?.Invoke( oldValue, newValue );
+	}
+
+	/// <summary>
+	/// Called when <see cref="Shield"/> is changed across the network.
+	/// </summary>
+	/// <param name="oldValue"></param>
+	/// <param name="newValue"></param>
+	protected void OnShieldPropertyChanged( float oldValue, float newValue )
+	{
+		OnShieldChanged?.Invoke( oldValue, newValue );
 	}
 
 	protected void OnStatePropertyChanged( LifeState oldValue, LifeState newValue )
@@ -144,6 +168,13 @@ public partial class HealthComponent : Component, IRespawnable
 			damageInfo.Hitbox, damageInfo.Flags );
 
 		KillFeed.RecordEvent( damageInfo );
+	}
+
+	public void ApplyShield( float amount )
+	{
+		if ( !Networking.IsHost ) return;
+		float newShield = Shield + amount;
+		Shield = newShield > MaxShield ? MaxShield : newShield;
 	}
 
 	[Rpc.Broadcast]

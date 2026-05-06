@@ -1,3 +1,4 @@
+namespace Warlocks;
 
 /// <summary>
 /// Episkey (F): cura instantânea em si mesmo.
@@ -22,16 +23,16 @@ public sealed class EpiskeySpell : BaseSpell
 	{
 		if ( !Networking.IsHost ) return;
 
+		var hc = wand.Player.HealthComponent;
+		if ( !hc.IsValid() ) return;
+
 		int t = Math.Clamp( Tier, 0, 2 );
-		wand.Player.Heal( HealByTier[t] );
+		hc.Health = Math.Min( hc.Health + HealByTier[t], hc.MaxHealth );
 
 		if ( Tier >= 1 )
 			wand.Player.ExtinguishBurning();
 
 		if ( Tier >= 2 )
-			wand.Player.Health = Math.Min(
-				wand.Player.Health + TempHpByTier[t],
-				PlayerPawn.MaxHealth + TempHpByTier[t]
-			);
+			hc.Health = Math.Min( hc.Health + TempHpByTier[t], hc.MaxHealth + TempHpByTier[t] );
 	}
 }

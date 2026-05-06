@@ -15,6 +15,8 @@ public sealed class HealPotion : BaseConsumable
 	protected override void Use()
 	{
 		if ( !Networking.IsHost ) return;
-		Player.Heal( 50 );
+		var hc = Player.HealthComponent;
+		if ( hc.IsValid() )
+			hc.Health = Math.Min( hc.Health + 50f, hc.MaxHealth );
 	}
 }

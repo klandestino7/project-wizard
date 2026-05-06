@@ -30,7 +30,7 @@
 						<span>@p.Kills</span>
 						<span>@p.Deaths</span>
 						<span class="sb-gold">@p.Balance</span>
-						<span class="sb-hp">@p.Health</span>
+						<span class="sb-hp">@p.HealthComponent.Health.CeilToInt()</span>
 					</div>
 				}
 			</div>
@@ -51,7 +51,7 @@
 						<span>@p.Kills</span>
 						<span>@p.Deaths</span>
 						<span class="sb-gold">@p.Balance</span>
-						<span class="sb-hp">@p.Health</span>
+						<span class="sb-hp">@p.HealthComponent.Health.CeilToInt()</span>
 					</div>
 				}
 			</div>

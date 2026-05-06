@@ -1005,15 +1005,14 @@
           "__guid": "a7f84a30-283d-4b5a-9ddf-3aaf183cd776",
           "__enabled": true,
           "Flags": 0,
-          "GameScene": "scenes/maps/depot/depot.scene",
           "MaxPlayers": 10,
-          "MinPlayers": 2,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "ServerUrl": "ws://177.130.255.91:8080/ws"
         }
       ],
       "Children": []
@@ -1046,13 +1045,13 @@
           "SelectionSets": []
         }
       },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "a4bee8de-838d-4c87-b3d3-4dc96a3d205c"
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },
