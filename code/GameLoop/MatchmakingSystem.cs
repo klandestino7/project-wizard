@@ -300,18 +300,12 @@ public sealed class MatchmakingSystem : SingletonComponent<MatchmakingSystem>
 
 	private void StartHostedMatch()
 	{
-		var selectedMap = GameUtils.GetAvailableMaps().FirstOrDefault();
+		var selectedMap = WarlocksPlaylist.GetWarlocksScene();
 		if ( selectedMap is null )
 		{
-			Log.Warning( "MatchmakingSystem: No playable map was found for matchmaking." );
+			Log.Warning( $"MatchmakingSystem: Warlocks scene '{WarlocksPlaylist.WarlocksScenePath}' was not found." );
 			SetState( SearchState.Idle );
 			return;
-		}
-
-		var selectedGameMode = GameMode.GetAll( selectedMap ).FirstOrDefault();
-		if ( selectedGameMode is not null )
-		{
-			GameMode.SetCurrent( selectedGameMode );
 		}
 
 		Log.Info( $"MatchmakingSystem: Loading hosted match scene {selectedMap.ResourcePath}" );

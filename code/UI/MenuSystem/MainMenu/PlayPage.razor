@@ -135,7 +135,7 @@
 	{
 		if ( !IsIdle ) return;
 		MatchmakingSystem.IsMultiplayerSession = false;
-		var scene = ResourceLibrary.Get<SceneFile>( "scenes/minimal.scene" );
+		var scene = WarlocksPlaylist.GetWarlocksScene();
 		if ( scene is not null )
 			Game.ActiveScene.Load( scene );
 	}

@@ -158,8 +158,8 @@ public sealed class RoundManager : Component, Component.INetworkListener
 
 	private void RespawnAllPlayers()
 	{
-		RespawnTeam( GetPlayers( Team.Aurors ), AurorSpawns );
-		RespawnTeam( GetPlayers( Team.DarkFollowers ), ComensalSpawns );
+		RespawnTeam( GetPlayers( Team.Aurors ), ResolveSpawns( Team.Aurors, AurorSpawns ) );
+		RespawnTeam( GetPlayers( Team.DarkFollowers ), ResolveSpawns( Team.DarkFollowers, ComensalSpawns ) );
 	}
 
 	private static void RespawnTeam( List<PlayerPawn> players, List<GameObject> spawns )
@@ -183,7 +183,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 			if ( player.Team == Team.DarkFollowers && _comensalLossStreak >= 2 )
 				bonus = LossStreakBonus;
 
-			player.GiveGalleons( BaseRoundMoney + bonus );
+			// player.GiveGalleons( BaseRoundMoney + bonus );
 		}
 	}
 
@@ -333,6 +333,30 @@ public sealed class RoundManager : Component, Component.INetworkListener
 			player.IsFrozen = frozen;
 	}
 
+	private List<GameObject> ResolveSpawns( Team team, List<GameObject> configuredSpawns )
+	{
+		var resolved = configuredSpawns?
+			.Where( spawn => spawn.IsValid() )
+			.ToList() ?? new List<GameObject>();
+
+		if ( resolved.Count > 0 )
+			return resolved;
+
+		resolved = Scene.GetAllComponents<TeamSpawnPoint>()
+			.Where( spawn => spawn.Team == team )
+			.Select( spawn => spawn.GameObject )
+			.Where( gameObject => gameObject.IsValid() )
+			.ToList();
+
+		if ( resolved.Count > 0 )
+			return resolved;
+
+		return Scene.GetAllComponents<SpawnPoint>()
+			.Select( spawn => spawn.GameObject )
+			.Where( gameObject => gameObject.IsValid() )
+			.ToList();
+	}
+
 	private List<PlayerPawn> GetAllPlayers() =>
 		Scene.GetAllComponents<PlayerPawn>().ToList();
 
@@ -355,7 +379,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 		var comensais = GetAllPlayers().Count( player => player.Team == Team.DarkFollowers );
 		var newTeam = aurors <= comensais ? Team.Aurors : Team.DarkFollowers;
 
-		var spawns = newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns;
+		var spawns = ResolveSpawns( newTeam, newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns );
 		var spawnPosition = spawns.Count > 0
 			? spawns[Game.Random.Int( spawns.Count - 1 )].WorldPosition
 			: Vector3.Zero;

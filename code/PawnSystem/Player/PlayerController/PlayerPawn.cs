@@ -112,7 +112,7 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 			UpdateDead();
 		}
 
-		OnUpdateMovement();
+		// OnUpdateMovement();
 
 		_smoothEyeHeight = _smoothEyeHeight.LerpTo( _eyeHeightOffset * (IsCrouching ? 1 : 0), Time.Delta * 10f );
 		CharacterController.Height = Height + _smoothEyeHeight;
