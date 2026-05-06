@@ -81,13 +81,8 @@ public partial class PlayerPawn
 
 	public void OnUpdateOldMethods()
 	{
-		// if ( IsProxy )
-		// {
-		// 	UpdateProxy();
-		// 	return;
-		// }
-
-		// if ( !IsAlive ) return;
+		if ( !IsLocallyControlled )
+			return;
 
 		// NÃO PRECISA DESSE HandleLook, O prefab do player já possui
 		// HandleLook();
@@ -403,32 +398,30 @@ public partial class PlayerPawn
 	/// </summary>
 	public Vector3 GetSpellDirection( Vector3 fromMuzzle )
 	{
-		// 1. Pegamos a posição e a rotação da câmera
-		var camPos = Camera.WorldPosition;
+		Vector3 rayOrigin;
+		Vector3 rayForward;
 
-		// O SEGREDO: Pegamos o Forward da rotação para virar um Vector3 de direção
-		var camForward = Camera.WorldRotation.Forward;
+		if ( Camera.IsValid() )
+		{
+			rayOrigin = Camera.WorldPosition;
+			rayForward = Camera.WorldRotation.Forward;
+		}
+		else
+		{
+			// Bots e casos sem câmera: usa EyeAngles diretamente
+			rayOrigin = EyePosition;
+			rayForward = EyeAngles.ToRotation().Forward;
+		}
 
 		var tr = Scene.Trace
-			.Ray( camPos, camPos + camForward * 10000f ) // Agora é Vector3 + (Vector3 * float)
+			.Ray( rayOrigin, rayOrigin + rayForward * 10000f )
 			.UseHitboxes()
 			.IgnoreGameObjectHierarchy( GameObject )
 			.WithoutTags( "projectile" )
 			.Run();
 
-		Vector3 aimPoint;
+		var aimPoint = tr.Hit ? tr.HitPosition : rayOrigin + rayForward * 5000f;
 
-		if ( tr.Hit )
-		{
-			aimPoint = tr.HitPosition;
-		}
-		else
-		{
-			// Se não bater em nada, projeta um ponto no "infinito" à frente da câmera
-			aimPoint = camPos + camForward * 5000f;
-		}
-
-		// 3. Retorna a direção do muzzle até esse ponto de impacto
 		return (aimPoint - fromMuzzle).Normal;
 	}
 

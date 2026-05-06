@@ -3,7 +3,7 @@ namespace Warlocks;
 /// <summary>
 /// Core match flow for the Warlocks round-based Horcrux mode.
 /// </summary>
-public sealed class RoundManager : Component, Component.INetworkListener
+public sealed class RoundManager : Component
 {
 	[Property] public GameObject PlayerPrefab { get; set; }
 	[Property] public List<GameObject> AurorSpawns { get; set; } = new();
@@ -191,7 +191,7 @@ public sealed class RoundManager : Component, Component.INetworkListener
 	{
 		foreach ( var player in GetAllPlayers() )
 		{
-			player.GiveGalleons( player.Team == winner ? WinMoney : LossMoney );
+			// player.GiveGalleons( player.Team == winner ? WinMoney : LossMoney );
 		}
 	}
 
@@ -370,32 +370,32 @@ public sealed class RoundManager : Component, Component.INetworkListener
 			.Where( player => player.Team == team && player.IsAlive )
 			.ToList();
 
-	public void OnActive( Connection connection )
-	{
-		if ( !Networking.IsHost || PlayerPrefab == null )
-			return;
+	// public void OnActive( Connection connection )
+	// {
+	// 	if ( !Networking.IsHost || PlayerPrefab == null )
+	// 		return;
 
-		var aurors = GetAllPlayers().Count( player => player.Team == Team.Aurors );
-		var comensais = GetAllPlayers().Count( player => player.Team == Team.DarkFollowers );
-		var newTeam = aurors <= comensais ? Team.Aurors : Team.DarkFollowers;
+	// 	var aurors = GetAllPlayers().Count( player => player.Team == Team.Aurors );
+	// 	var comensais = GetAllPlayers().Count( player => player.Team == Team.DarkFollowers );
+	// 	var newTeam = aurors <= comensais ? Team.Aurors : Team.DarkFollowers;
 
-		var spawns = ResolveSpawns( newTeam, newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns );
-		var spawnPosition = spawns.Count > 0
-			? spawns[Game.Random.Int( spawns.Count - 1 )].WorldPosition
-			: Vector3.Zero;
+	// 	var spawns = ResolveSpawns( newTeam, newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns );
+	// 	var spawnPosition = spawns.Count > 0
+	// 		? spawns[Game.Random.Int( spawns.Count - 1 )].WorldPosition
+	// 		: Vector3.Zero;
 
-		var gameObject = PlayerPrefab.Clone( spawnPosition );
-		var player = gameObject.Components.Get<PlayerPawn>( FindMode.EverythingInSelfAndDescendants );
+	// 	var gameObject = PlayerPrefab.Clone( spawnPosition );
+	// 	var player = gameObject.Components.Get<PlayerPawn>( FindMode.EverythingInSelfAndDescendants );
 
-		if ( player != null )
-			player.Team = newTeam;
+	// 	if ( player != null )
+	// 		player.Team = newTeam;
 
-		gameObject.NetworkSpawn( connection );
-	}
+	// 	gameObject.NetworkSpawn( connection );
+	// }
 
-	public void OnDisconnected( Connection connection )
-	{
-	}
+	// public void OnDisconnected( Connection connection )
+	// {
+	// }
 
 	[Rpc.Broadcast]
 	private void BroadcastRoundStart( int round )

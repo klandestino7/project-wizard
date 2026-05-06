@@ -15,11 +15,11 @@ public sealed class BasicCastSpell : BaseSpell
 
 	public override void Execute( Wand wand )
 	{
-
+		// Log.Info($" WAND {wand}");
 		int t = Math.Clamp( Tier, 0, 2 );
-		wand.SpawnProjectile(
+		wand?.SpawnProjectile(
 			sourceClass:    nameof( StupefySpell ),
-			speed:          2000f,
+			speed:          5000f,
 			damage:         BaseDamage,
 			color:          new Color( 0.9f, 0.1f, 0.1f ),
 			stun:           0,
