@@ -1,0 +1,102 @@
+@using Sandbox
+@using Sandbox.UI
+
+@namespace Warlocks.UI
+@inherits PanelComponent
+
+<root>
+@if ( IsVisible && _options.Count > 0 && !_chosen )
+{
+	<div class="upgrade-panel">
+		<div class="upgrade-title">ROUND END — CHOOSE AN UPGRADE</div>
+		<div class="upgrade-options">
+			@foreach ( var opt in _options )
+			{
+				var entry = SpellCatalog.All[opt.CatalogIdx];
+				<div class="upgrade-card" onclick=@( () => ChooseUpgrade( opt ) )>
+					<div class="upgrade-card-icon" style="border-color: @entry.AccentColor;">
+						<div style="background: url(@entry.Image); width: 100%; height: 100%; background-size: cover;"></div>
+					</div>
+					<div class="upgrade-card-name" style="color: @entry.AccentColor;">@entry.Name.ToUpper()</div>
+					<div class="upgrade-card-tier">TIER @(opt.TargetTier + 1)</div>
+					<div class="upgrade-card-desc">@entry.TierBehaviors.ElementAtOrDefault( opt.TargetTier )</div>
+				</div>
+			}
+		</div>
+		<div class="upgrade-sub">Upgrades expire when the next round starts.</div>
+	</div>
+}
+</root>
+
+@code {
+	struct UpgradeOption
+	{
+		public int CatalogIdx;
+		public int TargetTier;
+	}
+
+	PlayerPawn Player => PlayerPawn.Local;
+	SpellsDeck Deck   => Player?.SpellsDeck;
+	RoundManager Round => RoundManager.Instance;
+
+	bool IsVisible => Round?.State == RoundState.PostRound;
+
+	readonly List<UpgradeOption> _options = new();
+	bool _chosen;
+	int  _lastRound = -1;
+
+	protected override void OnUpdate()
+	{
+		int currentRound = Round?.CurrentRound ?? 0;
+
+		if ( currentRound != _lastRound )
+		{
+			_lastRound = currentRound;
+			_chosen = false;
+			RefreshOptions();
+		}
+
+		if ( Round?.State != RoundState.PostRound )
+			_chosen = false;
+	}
+
+	void RefreshOptions()
+	{
+		_options.Clear();
+
+		if ( Deck == null ) return;
+
+		var candidates = new List<UpgradeOption>();
+
+		for ( int i = 0; i < SpellCatalog.All.Length; i++ )
+		{
+			if ( !Deck.IsOwned( i ) ) continue;
+
+			int tier = Deck.GetTier( i );
+			if ( tier < 2 )
+				candidates.Add( new UpgradeOption { CatalogIdx = i, TargetTier = tier + 1 } );
+		}
+
+		// Shuffle with a per-round seed so all clients see the same 3 options
+		var rng = new Random( (Round?.CurrentRound ?? 0) * 1000 + (Player?.Network.Owner?.SteamId.GetHashCode() ?? 0) );
+		candidates.Sort( (a, b) => rng.Next(-1, 2) );
+
+		for ( int i = 0; i < Math.Min( 3, candidates.Count ); i++ )
+			_options.Add( candidates[i] );
+	}
+
+	void ChooseUpgrade( UpgradeOption opt )
+	{
+		if ( _chosen ) return;
+		Deck?.ClientUpgrade( opt.CatalogIdx, opt.TargetTier );
+		_chosen = true;
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(
+		Round?.State,
+		Round?.CurrentRound,
+		_chosen,
+		Deck?.OwnedMask,
+		Deck?.TierPacked
+	);
+}

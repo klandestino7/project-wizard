@@ -11,10 +11,17 @@
 			<Vitals />
 
 			<div class="abilities">
-				@RenderAbilitySlot( "Q", _deck.GetSlot( 0 ) )
-				@RenderAbilitySlot( "E", _deck.GetSlot( 1 ) )
-				@RenderAbilitySlot( "R", _deck.GetSlot( 2 ) )
-				@RenderAbilitySlot( "F", _deck.GetSlot( 3 ) )
+				@RenderAbilitySlot( "1", _deck.GetSlot( 0 ) )
+				@RenderAbilitySlot( "2", _deck.GetSlot( 1 ) )
+				@RenderAbilitySlot( "3", _deck.GetSlot( 2 ) )
+				@RenderAbilitySlot( "4", _deck.GetSlot( 3 ) )
+				@RenderAbilitySlot( "5", _deck.GetSlot( 4 ) )
+				@RenderAbilitySlot( "6", _deck.GetSlot( 5 ) )
+			</div>
+
+			<div class="ultimate-bar">
+				<div class="ultimate-fill" style="width: @( (_ult?.Charge ?? 0f).ToString( "0.##" ) )%"></div>
+				<div class="ultimate-label">@( _ult?.IsReady == true ? "ULTIMATE READY" : "ULTIMATE" )</div>
 			</div>
 
 			<div class="item-slots">
@@ -78,6 +85,7 @@
 @code {
 	PlayerPawn Player => PlayerPawn.Local;
 	SpellsDeck _deck => Player?.SpellsDeck;
+	UltimateChargeComponent _ult => Player?.UltimateCharge;
 	PlayerBuildComponent Build => Player?.PlayerBuild;
 	RoundManager Round => RoundManager.Instance;
 

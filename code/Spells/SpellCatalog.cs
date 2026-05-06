@@ -17,8 +17,6 @@ public static class SpellCatalog
 		public ComboTag ComboTags { get; init; }
 		public string[] TierBehaviors { get; init; } = Array.Empty<string>();
 		public int BuyCost { get; init; }
-		public int Tier1Cost { get; init; }
-		public int Tier2Cost { get; init; }
 		public float ManaCost { get; init; }
 		public float BaseCooldown { get; init; }
 		public string AccentColor { get; init; }
@@ -51,8 +49,6 @@ public static class SpellCatalog
 				"Pierces shields and launches targets airborne."
 			},
 			BuyCost = 300,
-			Tier1Cost = 400,
-			Tier2Cost = 700,
 			ManaCost = 20f,
 			BaseCooldown = 6f,
 			AccentColor = "#ff4444",
@@ -74,8 +70,6 @@ public static class SpellCatalog
 				"Explodes on impact and threatens an area."
 			},
 			BuyCost = 400,
-			Tier1Cost = 500,
-			Tier2Cost = 900,
 			ManaCost = 25f,
 			BaseCooldown = 7f,
 			AccentColor = "#ff7722",
@@ -97,8 +91,6 @@ public static class SpellCatalog
 				"Applies bleeding for finisher pressure."
 			},
 			BuyCost = 600,
-			Tier1Cost = 700,
-			Tier2Cost = 1100,
 			ManaCost = 30f,
 			BaseCooldown = 8f,
 			AccentColor = "#cc44ff",
@@ -120,8 +112,6 @@ public static class SpellCatalog
 				"Area control denial with stronger crowd control."
 			},
 			BuyCost = 500,
-			Tier1Cost = 600,
-			Tier2Cost = 1000,
 			ManaCost = 30f,
 			BaseCooldown = 9f,
 			AccentColor = "#4488ff",
@@ -143,8 +133,6 @@ public static class SpellCatalog
 				"Perfect block punishes the attacker harder."
 			},
 			BuyCost = 400,
-			Tier1Cost = 500,
-			Tier2Cost = 900,
 			ManaCost = 30f,
 			BaseCooldown = 6f,
 			AccentColor = "#22ddcc",
@@ -166,8 +154,6 @@ public static class SpellCatalog
 				"Also clears debuffs and stabilizes recovery."
 			},
 			BuyCost = 500,
-			Tier1Cost = 600,
-			Tier2Cost = 1000,
 			ManaCost = 25f,
 			BaseCooldown = 10f,
 			AccentColor = "#44ff88",
@@ -189,8 +175,6 @@ public static class SpellCatalog
 				"More aggressive mobility and spacing control."
 			},
 			BuyCost = 700,
-			Tier1Cost = 900,
-			Tier2Cost = 1400,
 			ManaCost = 0f,
 			BaseCooldown = 20f,
 			AccentColor = "#ffcc44",
