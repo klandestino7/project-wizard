@@ -1,0 +1,1582 @@
+{
+  "Header": {
+    "Version": 140,
+    "SoundBankId": 934986316,
+    "LanguageId": 393239870,
+    "FeedbackInBank": false,
+    "AltValues": "UAlignment",
+    "ProjectId": 4167,
+    "SoundBankType": "User",
+    "BankHash": ""
+  },
+  "WemIndexes": [
+    {
+      "Id": 19258368,
+      "Offset": 0,
+      "Size": 155487
+    },
+    {
+      "Id": 311037332,
+      "Offset": 155488,
+      "Size": 475748
+    },
+    {
+      "Id": 434155725,
+      "Offset": 631248,
+      "Size": 2248
+    },
+    {
+      "Id": 700400337,
+      "Offset": 633504,
+      "Size": 389196
+    },
+    {
+      "Id": 929064168,
+      "Offset": 1022704,
+      "Size": 189706
+    },
+    {
+      "Id": 1066122459,
+      "Offset": 1212416,
+      "Size": 7984
+    }
+  ],
+  "Hierarchies": [
+    {
+      "Type": "Attenuation",
+      "Id": "453671041",
+      "Data": {
+        "IsHeightSpreadEnabled": true,
+        "IsConeEnabled": false,
+        "Curves": [
+          {
+            "Scaling": "dB",
+            "Size": 2,
+            "GraphPoints": [
+              {
+                "From": 0.0,
+                "To": 0.0,
+                "Interpolation": "Log3"
+              },
+              {
+                "From": 15000.0,
+                "To": -1.0,
+                "Interpolation": "Linear"
+              }
+            ]
+          },
+          {
+            "Scaling": "None",
+            "Size": 2,
+            "GraphPoints": [
+              {
+                "From": 0.0,
+                "To": 0.0,
+                "Interpolation": "SineRecip"
+              },
+              {
+                "From": 15000.0,
+                "To": 30.0,
+                "Interpolation": "Linear"
+              }
+            ]
+          },
+          {
+            "Scaling": "None",
+            "Size": 2,
+            "GraphPoints": [
+              {
+                "From": 0.0,
+                "To": 0.0,
+                "Interpolation": "Exp1"
+              },
+              {
+                "From": 15000.0,
+                "To": 50.0,
+                "Interpolation": "Linear"
+              }
+            ]
+          },
+          {
+            "Scaling": "None",
+            "Size": 2,
+            "GraphPoints": [
+              {
+                "From": 0.0,
+                "To": 35.0,
+                "Interpolation": "Log3"
+              },
+              {
+                "From": 15000.0,
+                "To": 0.0,
+                "Interpolation": "Linear"
+              }
+            ]
+          }
+        ],
+        "RTPCs": []
+      }
+    },
+    {
+      "Type": "TimeMod",
+      "Id": "827902056",
+      "Data": {
+        "Props": [
+          {
+            "Id": 0,
+            "Value": 1.0
+          },
+          {
+            "Id": 16,
+            "Value": 0.5
+          }
+        ],
+        "PropRanges": [],
+        "RtpcCurves": []
+      }
+    },
+    {
+      "Type": "TimeMod",
+      "Id": "881720292",
+      "Data": {
+        "Props": [
+          {
+            "Id": 0,
+            "Value": 1.0
+          },
+          {
+            "Id": 16,
+            "Value": 2.4
+          }
+        ],
+        "PropRanges": [],
+        "RtpcCurves": []
+      }
+    },
+    {
+      "Type": "State",
+      "Id": "1072088297",
+      "Data": {
+        "Settings": {
+          "VoiceVolume": -108.0
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "189932740",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 434155725,
+          "InMemoryMediaSize": 2248,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "DirectParentId": 286313696,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [
+            {
+              "Id": 1908348854,
+              "GroupType": "Immediate",
+              "States": [
+                {
+                  "Id": 2376466361,
+                  "StateInstanceId": 1072088297,
+                  "Properties": []
+                }
+              ]
+            }
+          ],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "916885962",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 1066122459,
+          "InMemoryMediaSize": 7984,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "DirectParentId": 286313696,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "ContinueToPlay",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "LayerContainer",
+      "Id": "286313696",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "OverrideBusId": 3891755778,
+        "DirectParentId": 456387640,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 7,
+              "Value": 80.0
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverrideGameAux",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          189932740,
+          916885962
+        ],
+        "Layers": [],
+        "IsContinuousValidation": false
+      }
+    },
+    {
+      "Type": "State",
+      "Id": "295819582",
+      "Data": {
+        "Settings": {
+          "VoiceVolume": -108.0
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "546980443",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 434155725,
+          "InMemoryMediaSize": 2248,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "DirectParentId": 975160581,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [
+            {
+              "Id": 1908348854,
+              "GroupType": "Immediate",
+              "States": [
+                {
+                  "Id": 2376466361,
+                  "StateInstanceId": 295819582,
+                  "Properties": []
+                }
+              ]
+            }
+          ],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "882418940",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 1066122459,
+          "InMemoryMediaSize": 7984,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "DirectParentId": 975160581,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "ContinueToPlay",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "LayerContainer",
+      "Id": "975160581",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "OverrideBusId": 1246556232,
+        "DirectParentId": 456387640,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 7,
+              "Value": 80.0
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverrideGameAux",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          546980443,
+          882418940
+        ],
+        "Layers": [],
+        "IsContinuousValidation": false
+      }
+    },
+    {
+      "Type": "FxCustom",
+      "Id": "1017894035",
+      "Data": {
+        "MediaList": [],
+        "RTPCs": [
+          {
+            "RtpcId": 827902056,
+            "RtpcType": "Switch",
+            "RtpcAccum": "Additive",
+            "ParamId": 1,
+            "RtpcCurveId": 237677123,
+            "ConversionTable": {
+              "Scaling": "None",
+              "Size": 3,
+              "GraphPoints": [
+                {
+                  "From": 0.0,
+                  "To": 1.0,
+                  "Interpolation": "Constant"
+                },
+                {
+                  "From": 0.14963,
+                  "To": 1.0,
+                  "Interpolation": "Linear"
+                },
+                {
+                  "From": 0.5,
+                  "To": 0.36564,
+                  "Interpolation": "Linear"
+                }
+              ]
+            }
+          }
+        ],
+        "StateGroups": [],
+        "RtpcInitList": [],
+        "PluginPropertyValues": [
+          {
+            "PropertyId": 1,
+            "RtpcAccum": 2,
+            "Value": 0.0
+          }
+        ],
+        "Plugin": {
+          "PluginId": "AkMotionSourceSource",
+          "CompanyId": "Audiokinetic",
+          "Type": "Source"
+        },
+        "PluginParams": {
+          "Params": {
+            "m_fChannel1": 0.0,
+            "m_fChannel2": 0.0,
+            "m_fChannel3": 0.0,
+            "m_fChannel4": 0.0,
+            "m_fChannel5": 0.0,
+            "m_fChannel6": 0.0,
+            "m_fChannel7": 0.0,
+            "m_fChannel8": 0.0,
+            "m_uNumCurves": 4,
+            "m_uCurveType": "Amplitude",
+            "m_uAssigns": [
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "981208076",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "AkMotionSourceSource",
+            "CompanyId": "Audiokinetic",
+            "Type": "Source"
+          },
+          "SourceType": "Data",
+          "SourceId": 1017894035,
+          "BankSourceFlags": "None",
+          "HasPluginParams": true
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "OverrideBusId": 1156359885,
+          "DirectParentId": 456387640,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 0,
+                "Value": 6.0
+              },
+              {
+                "Id": 7,
+                "Value": 80.0
+              },
+              {
+                "Id": 70,
+                "Value": 1.1454029E-22
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": "PositioningInfoOverrideParent, HasListenerRelativeRouting, Unknown2d_2",
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "SwitchContainer",
+      "Id": "456387640",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "DirectParentId": 203496283,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 7,
+              "Value": 80.0
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverrideGameAux",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "GroupType": 1,
+        "GroupId": 1908348854,
+        "DefaultSwitch": 748895195,
+        "IsContinuousValidation": false,
+        "ChildIds": [
+          286313696,
+          975160581,
+          981208076
+        ],
+        "SwitchPackages": [
+          {
+            "SwitchId": 748895195,
+            "NodeIds": []
+          },
+          {
+            "SwitchId": 1014453119,
+            "NodeIds": [
+              286313696
+            ]
+          },
+          {
+            "SwitchId": 2376466361,
+            "NodeIds": [
+              981208076
+            ]
+          },
+          {
+            "SwitchId": 782826392,
+            "NodeIds": []
+          },
+          {
+            "SwitchId": 2207473611,
+            "NodeIds": [
+              975160581
+            ]
+          }
+        ],
+        "SwitchParams": [
+          {
+            "NodeId": 286313696,
+            "IsFirstOnly": false,
+            "ContinuePlayback": false,
+            "OnSwitchMode": "Stop",
+            "FadeOutTime": 0,
+            "FadeInTime": 0
+          },
+          {
+            "NodeId": 981208076,
+            "IsFirstOnly": false,
+            "ContinuePlayback": false,
+            "OnSwitchMode": "Stop",
+            "FadeOutTime": 0,
+            "FadeInTime": 0
+          },
+          {
+            "NodeId": 975160581,
+            "IsFirstOnly": false,
+            "ContinuePlayback": false,
+            "OnSwitchMode": "Stop",
+            "FadeOutTime": 0,
+            "FadeInTime": 0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "312725430",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 700400337,
+          "InMemoryMediaSize": 389196,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "OverrideBusId": 2943983771,
+          "DirectParentId": 500276808,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 4,
+                "Value": 26.0
+              },
+              {
+                "Id": 12,
+                "Value": 100.0
+              },
+              {
+                "Id": 25,
+                "Value": 14.0
+              },
+              {
+                "Id": 26,
+                "Value": 81.0
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": "PositioningInfoOverrideParent, Unknown2d_2",
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "OverrideGameAux",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "871679542",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "VORBIS",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 929064168,
+          "InMemoryMediaSize": 189706,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "DirectParentId": 500276808,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 19,
+                "Value": -3.0
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "OverrideUserAuxSends, HasAux",
+            "AuxIds": [
+              1132646833,
+              0,
+              0,
+              0
+            ],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "ContinueToPlay",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "LayerContainer",
+      "Id": "500276808",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "OverrideBusId": 393239870,
+        "DirectParentId": 203496283,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 0,
+              "Value": 6.0
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverridePriority",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          312725430,
+          871679542
+        ],
+        "Layers": [],
+        "IsContinuousValidation": false
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "754280246",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "VORBIS",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 19258368,
+          "InMemoryMediaSize": 155487,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "OverrideBusId": 393239870,
+          "DirectParentId": 707975045,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 0,
+                "Value": 9.0
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "ContinueToPlay",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "FxCustom",
+      "Id": "67632849",
+      "Data": {
+        "MediaList": [],
+        "RTPCs": [
+          {
+            "RtpcId": 881720292,
+            "RtpcType": "Switch",
+            "RtpcAccum": "Additive",
+            "ParamId": 1,
+            "RtpcCurveId": 531697101,
+            "ConversionTable": {
+              "Scaling": "None",
+              "Size": 9,
+              "GraphPoints": [
+                {
+                  "From": 0.0,
+                  "To": 0.1145,
+                  "Interpolation": "Exp3"
+                },
+                {
+                  "From": 0.32865,
+                  "To": 0.26718,
+                  "Interpolation": "Linear"
+                },
+                {
+                  "From": 1.40502,
+                  "To": 0.25576,
+                  "Interpolation": "SCurve"
+                },
+                {
+                  "From": 1.83617,
+                  "To": 0.12809,
+                  "Interpolation": "Linear"
+                },
+                {
+                  "From": 1.89648,
+                  "To": 0.27006,
+                  "Interpolation": "SCurve"
+                },
+                {
+                  "From": 1.95076,
+                  "To": 0.97241,
+                  "Interpolation": "SCurve"
+                },
+                {
+                  "From": 2.09548,
+                  "To": 0.57762,
+                  "Interpolation": "SCurve"
+                },
+                {
+                  "From": 2.26132,
+                  "To": 0.29772,
+                  "Interpolation": "SCurve"
+                },
+                {
+                  "From": 2.4,
+                  "To": 0.03562,
+                  "Interpolation": "Linear"
+                }
+              ]
+            }
+          }
+        ],
+        "StateGroups": [],
+        "RtpcInitList": [],
+        "PluginPropertyValues": [
+          {
+            "PropertyId": 1,
+            "RtpcAccum": 2,
+            "Value": 0.0
+          }
+        ],
+        "Plugin": {
+          "PluginId": "AkMotionSourceSource",
+          "CompanyId": "Audiokinetic",
+          "Type": "Source"
+        },
+        "PluginParams": {
+          "Params": {
+            "m_fChannel1": 0.0,
+            "m_fChannel2": 0.0,
+            "m_fChannel3": 0.0,
+            "m_fChannel4": 0.0,
+            "m_fChannel5": 0.0,
+            "m_fChannel6": 0.0,
+            "m_fChannel7": 0.0,
+            "m_fChannel8": 0.0,
+            "m_uNumCurves": 2,
+            "m_uCurveType": "HapticsWave",
+            "m_uAssigns": [
+              1,
+              0
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "523896100",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "AkMotionSourceSource",
+            "CompanyId": "Audiokinetic",
+            "Type": "Source"
+          },
+          "SourceType": "Data",
+          "SourceId": 67632849,
+          "BankSourceFlags": "None",
+          "HasPluginParams": true
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "OverrideBusId": 2943983771,
+          "DirectParentId": 1072981172,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 0,
+                "Value": -10.0
+              },
+              {
+                "Id": 59,
+                "Value": 1.6
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": 0,
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "None",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "ContinueToPlay",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "SoundSfxVoice",
+      "Id": "791795269",
+      "Data": {
+        "Source": {
+          "Plugin": {
+            "PluginId": "PCM",
+            "CompanyId": "Audiokinetic",
+            "Type": "Codec"
+          },
+          "SourceType": "Data",
+          "SourceId": 311037332,
+          "InMemoryMediaSize": 475748,
+          "BankSourceFlags": "None",
+          "HasPluginParams": false
+        },
+        "BaseParams": {
+          "OverrideFx": false,
+          "FxParams": {
+            "BypassAll": false,
+            "Effects": []
+          },
+          "OverrideParentMetadataFlag": false,
+          "FxChunks": [],
+          "OverrideAttachmentParams": false,
+          "OverrideBusId": 2943983771,
+          "DirectParentId": 1072981172,
+          "Priority": false,
+          "PriorityOverrideParent": false,
+          "PriorityApplyDistFactor": false,
+          "DistOffset": 0,
+          "MidiBehaviorFlags": "None",
+          "PropBundle": {
+            "Props": [
+              {
+                "Id": 0,
+                "Value": -5.0
+              },
+              {
+                "Id": 12,
+                "Value": 100.0
+              },
+              {
+                "Id": 25,
+                "Value": 10.0
+              },
+              {
+                "Id": 26,
+                "Value": 85.0
+              }
+            ],
+            "PropRanges": []
+          },
+          "PositioningParams": {
+            "BitsPositioning": "PositioningInfoOverrideParent, Unknown2d_2",
+            "PathMode": "StepSequence",
+            "TransitionTime": 0,
+            "Vertices": [],
+            "PlaylistItems": [],
+            "PlaylistRanges": []
+          },
+          "AuxParams": {
+            "AuxParams": "OverrideGameAux, OverrideUserAuxSends",
+            "AuxIds": [],
+            "ReflectionsAuxBus": 0
+          },
+          "AdvSettingsParams": "None",
+          "VirtualQueueBehavior": "FromElapsedTime",
+          "MaxNumInstance": 0,
+          "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+          "HdrEnvelopeFlags": "None",
+          "StateGroups": [],
+          "RtpcList": []
+        }
+      }
+    },
+    {
+      "Type": "LayerContainer",
+      "Id": "1072981172",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "DirectParentId": 707975045,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverrideGameAux, OverrideUserAuxSends, HasAux",
+          "AuxIds": [
+            1132646833,
+            0,
+            0,
+            0
+          ],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "ContinueToPlay",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          523896100,
+          791795269
+        ],
+        "Layers": [],
+        "IsContinuousValidation": false
+      }
+    },
+    {
+      "Type": "LayerContainer",
+      "Id": "707975045",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "DirectParentId": 203496283,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 0,
+              "Value": 5.0
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": 0,
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverridePriority",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          754280246,
+          1072981172
+        ],
+        "Layers": [],
+        "IsContinuousValidation": false
+      }
+    },
+    {
+      "Type": "ActorMixer",
+      "Id": "203496283",
+      "Data": {
+        "OverrideFx": false,
+        "FxParams": {
+          "BypassAll": false,
+          "Effects": []
+        },
+        "OverrideParentMetadataFlag": false,
+        "FxChunks": [],
+        "OverrideAttachmentParams": false,
+        "OverrideBusId": 4160437992,
+        "Priority": false,
+        "PriorityOverrideParent": false,
+        "PriorityApplyDistFactor": false,
+        "DistOffset": 0,
+        "MidiBehaviorFlags": "None",
+        "PropBundle": {
+          "Props": [
+            {
+              "Id": 0,
+              "Value": -5.0
+            },
+            {
+              "Id": 4,
+              "Value": 11.0
+            },
+            {
+              "Id": 7,
+              "Value": 80.0
+            },
+            {
+              "Id": 14,
+              "Value": 65.0
+            },
+            {
+              "Id": 70,
+              "Value": 1.1454029E-22
+            }
+          ],
+          "PropRanges": []
+        },
+        "PositioningParams": {
+          "BitsPositioning": "PositioningInfoOverrideParent, HasListenerRelativeRouting",
+          "PathMode": "StepSequence",
+          "TransitionTime": 0,
+          "Vertices": [],
+          "PlaylistItems": [],
+          "PlaylistRanges": []
+        },
+        "AuxParams": {
+          "AuxParams": "OverridePriority",
+          "AuxIds": [],
+          "ReflectionsAuxBus": 0
+        },
+        "AdvSettingsParams": "None",
+        "VirtualQueueBehavior": "FromElapsedTime",
+        "MaxNumInstance": 0,
+        "BelowThresholdBehavior": "KillIfOneShotElseVirtual",
+        "HdrEnvelopeFlags": "None",
+        "StateGroups": [],
+        "RtpcList": [],
+        "ChildIds": [
+          456387640,
+          500276808,
+          707975045
+        ]
+      }
+    },
+    {
+      "Type": "EventAction",
+      "Id": "469348169",
+      "Data": {
+        "EventActionScope": "GameObjectId",
+        "EventActionType": "Play",
+        "ReferencedId": 500276808,
+        "IsBus": false,
+        "PropBundle": {
+          "Props": [],
+          "PropRanges": []
+        },
+        "ActionData": {
+          "ActionParams": {
+            "TTime": 0,
+            "TTimeMin": 0,
+            "TTimeMax": 0,
+            "FadeCurve": "Linear"
+          },
+          "BankId": 934986316,
+          "BankType": "User"
+        }
+      }
+    },
+    {
+      "Type": "Event",
+      "Id": "2233558873",
+      "Data": {
+        "EventActionIds": [
+          469348169
+        ]
+      }
+    },
+    {
+      "Type": "EventAction",
+      "Id": "391669039",
+      "Data": {
+        "EventActionScope": "GameObjectId",
+        "EventActionType": "Play",
+        "ReferencedId": 456387640,
+        "IsBus": false,
+        "PropBundle": {
+          "Props": [],
+          "PropRanges": []
+        },
+        "ActionData": {
+          "ActionParams": {
+            "TTime": 0,
+            "TTimeMin": 0,
+            "TTimeMax": 0,
+            "FadeCurve": "Linear"
+          },
+          "BankId": 934986316,
+          "BankType": "User"
+        }
+      }
+    },
+    {
+      "Type": "Event",
+      "Id": "2480632219",
+      "Data": {
+        "EventActionIds": [
+          391669039
+        ]
+      }
+    },
+    {
+      "Type": "EventAction",
+      "Id": "1035942445",
+      "Data": {
+        "EventActionScope": "GameObjectId",
+        "EventActionType": "Play",
+        "ReferencedId": 707975045,
+        "IsBus": false,
+        "PropBundle": {
+          "Props": [],
+          "PropRanges": []
+        },
+        "ActionData": {
+          "ActionParams": {
+            "TTime": 0,
+            "TTimeMin": 0,
+            "TTimeMax": 0,
+            "FadeCurve": "Linear"
+          },
+          "BankId": 934986316,
+          "BankType": "User"
+        }
+      }
+    },
+    {
+      "Type": "Event",
+      "Id": "2817860319",
+      "Data": {
+        "EventActionIds": [
+          1035942445
+        ]
+      }
+    }
+  ]
+}
