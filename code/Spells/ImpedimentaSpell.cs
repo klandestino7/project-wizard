@@ -24,6 +24,7 @@ public sealed class ImpedimentaSpell : BaseSpell
 		int t      = Math.Clamp( Tier, 0, 2 );
 		var origin = wand.Player.GetSpellMuzzle();
 		var dir    = wand.Player.GetSpellDirection( origin );
+		var duration = wand.ResolveDuration( DurationByTier[t] );
 
 		var go = new GameObject( true, "Impedimenta_Projectile" );
 		go.WorldPosition = origin;
@@ -34,7 +35,7 @@ public sealed class ImpedimentaSpell : BaseSpell
 		proj.OwnerTeam    = wand.Player.Team;
 		proj.Shooter      = wand.Player;
 		proj.SlowFraction = SlowByTier[t];
-		proj.SlowDuration = DurationByTier[t];
+		proj.SlowDuration = duration;
 		proj.AoERadius    = AoEByTier[t];
 		proj.SpellColor   = new Color( 0.3f, 0.3f, 0.9f );
 

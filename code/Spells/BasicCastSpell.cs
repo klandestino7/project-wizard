@@ -15,28 +15,15 @@ public sealed class BasicCastSpell : BaseSpell
 
 	public override void Execute( Wand wand )
 	{
-		// Log.Info($" WAND {wand}");
-		int t = Math.Clamp( Tier, 0, 2 );
+		int damage = wand.ResolveDamageInt( BaseDamage );
 		wand?.SpawnProjectile(
 			sourceClass:    nameof( StupefySpell ),
 			speed:          5000f,
-			damage:         BaseDamage,
+			damage:         damage,
 			color:          new Color( 0.9f, 0.1f, 0.1f ),
 			stun:           0,
 			pierceShield:   Tier >= 2,
 			launchAirborne: Tier >= 2
 		);
-		// var tr = wand.FireHitscan( Range );
-		// var start = wand.Player.GetSpellMuzzle();
-
-		// wand.ShowBeamEffect( start, tr.EndPosition );
-
-		// if ( !tr.Hit ) return;
-
-		// var victim = tr.GameObject?.Components.Get<PlayerPawn>();
-		// if ( victim == null || victim.Team == wand.Player.Team ) return;
-
-		// bool headshot = tr.Hitbox?.Tags.Has( "head" ) ?? false;
-		// victim.TakeDamage( headshot ? HeadshotDamage : BaseDamage, wand.Player, headshot );
 	}
 }

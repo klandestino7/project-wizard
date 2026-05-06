@@ -17,6 +17,18 @@ public sealed class ProtegoSpell : BaseSpell
 	public override void Execute( Wand wand )
 	{
 		var shield = wand.Player.Components.Get<ProtegoComponent>( FindMode.EverythingInSelf );
-		shield?.Activate( Tier );
+		var shieldHp = wand.ResolveDamageInt( Tier switch
+		{
+			0 => 100,
+			1 => 200,
+			_ => 350
+		} );
+		var duration = wand.ResolveDuration( Tier switch
+		{
+			0 => 3f,
+			1 => 4f,
+			_ => 5f
+		} );
+		shield?.Activate( Tier, shieldHp, duration );
 	}
 }

@@ -27,12 +27,14 @@ public sealed class EpiskeySpell : BaseSpell
 		if ( !hc.IsValid() ) return;
 
 		int t = Math.Clamp( Tier, 0, 2 );
-		hc.Health = Math.Min( hc.Health + HealByTier[t], hc.MaxHealth );
+		var heal = wand.ResolveDamageInt( HealByTier[t] );
+		var tempHp = wand.ResolveDamageInt( TempHpByTier[t] );
+		hc.Health = Math.Min( hc.Health + heal, hc.MaxHealth );
 
 		if ( Tier >= 1 )
 			wand.Player.ExtinguishBurning();
 
 		if ( Tier >= 2 )
-			hc.Health = Math.Min( hc.Health + TempHpByTier[t], hc.MaxHealth + TempHpByTier[t] );
+			hc.Health = Math.Min( hc.Health + tempHp, hc.MaxHealth + tempHp );
 	}
 }

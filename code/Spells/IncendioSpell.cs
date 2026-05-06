@@ -22,13 +22,16 @@ public sealed class IncendioSpell : BaseSpell
 	public override void Execute( Wand wand )
 	{
 		int t = Math.Clamp( Tier, 0, 2 );
+		var damage = wand.ResolveDamageInt( DamageByTier[t] );
+		var burnDps = wand.ResolveDamage( BurnDpsByTier[t] );
+		var burnDuration = wand.ResolveDuration( BurnDurByTier[t] );
 		wand.SpawnProjectile(
 			sourceClass:  nameof( IncendioSpell ),
 			speed:        1800f,
-			damage:       DamageByTier[t],
+			damage:       damage,
 			color:        new Color( 1f, 0.4f, 0.05f ),
-			burnDPS:      BurnDpsByTier[t],
-			burnDuration: BurnDurByTier[t]
+			burnDPS:      burnDps,
+			burnDuration: burnDuration
 		);
 	}
 }

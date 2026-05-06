@@ -43,19 +43,20 @@ public sealed class ProtegoComponent : Component
 	// ─── Ativação (chamada por ProtegoSpell.Execute) ──────────────────
 
 	/// <summary>Ativa o escudo com o tier do feitiço. Host-only.</summary>
-	public void Activate( int tier )
+	public void Activate( int tier, int shieldHpOverride = -1, float durationOverride = -1f )
 	{
 		if ( !Networking.IsHost ) return;
 
 		int t = Math.Clamp( tier, 0, 2 );
 		_activatedTier = t;
 		ShieldActive = true;
-		ShieldHP = ShieldByTier[t];
-		ShieldEndTime = Time.Now + DurationByTier[t];
+		ShieldHP = shieldHpOverride >= 0 ? shieldHpOverride : ShieldByTier[t];
+		var duration = durationOverride >= 0f ? durationOverride : DurationByTier[t];
+		ShieldEndTime = Time.Now + duration;
 		ActivatedAt = Time.Now;
 
 		_player.HealthComponent.ApplyShield( ShieldHP );
-		_player.SetCombatState( CombatState.Shielded, DurationByTier[t] );
+		_player.SetCombatState( CombatState.Shielded, duration );
 		ShowEffect();
 	}
 

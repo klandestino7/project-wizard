@@ -21,12 +21,14 @@ public sealed class StupefySpell : BaseSpell
 	public override void Execute( Wand wand )
 	{
 		int t = Math.Clamp( Tier, 0, 2 );
+		var damage = wand.ResolveDamageInt( DamageByTier[t] );
+		var stunDuration = wand.ResolveDuration( StunByTier[t] );
 		wand.SpawnProjectile(
 			sourceClass:    nameof( StupefySpell ),
 			speed:          2000f,
-			damage:         DamageByTier[t],
+			damage:         damage,
 			color:          new Color( 0.9f, 0.1f, 0.1f ),
-			stun:           StunByTier[t],
+			stun:           stunDuration,
 			pierceShield:   Tier >= 2,
 			launchAirborne: Tier >= 2
 		);

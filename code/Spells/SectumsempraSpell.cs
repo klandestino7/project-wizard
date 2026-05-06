@@ -31,12 +31,13 @@ public sealed class SectumsempraSpell : BaseSpell
 		float hitHeight = tr.EndPosition.z - victim.WorldPosition.z;
 		bool  isHeadshot = hitHeight > PlayerPawn.EyeHeight * 0.75f;
 		float mult = isHeadshot ? HeadshotMultByTier[t] : 1f;
-		int   dmg  = (int)(DamageByTier[t] * mult);
+		float baseDamage = wand.ResolveDamage( DamageByTier[t] );
+		float finalDamage = baseDamage * mult;
 
-		// victim.HealthComponent.TakeDamage( dmg );
+		victim.HealthComponent.TakeDamage( new DamageInfo( wand.Player, finalDamage, Position: tr.EndPosition ) );
 
 		if ( Tier >= 2 )
-			victim.ApplyBurning( 15f, 3f, wand.Player ); // bleeding via burning
+			victim.ApplyBurning( wand.ResolveDamage( 15f ), wand.ResolveDuration( 3f ), wand.Player ); // bleeding via burning
 
 		var mastery = wand.Player.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
 		mastery?.RegisterSpellHit( nameof( SectumsempraSpell ) );
