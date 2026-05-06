@@ -12,8 +12,6 @@ public sealed class DashSpell : BaseSpell
 	public override float   ManaCost       => 0f;
 	public override float   BaseCooldown   => 20f;
 	public override float[] CooldownByTier => new[] { 20f, 16f, 12f };
-	public override int     Tier1Cost      => 400;
-	public override int     Tier2Cost      => 1000;
 
 	public override void Execute( Wand wand )
 	{

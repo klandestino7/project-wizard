@@ -25,12 +25,6 @@ public abstract class BaseSpell
 	/// <summary>Cooldowns por tier. Override para valores personalizados.</summary>
 	public virtual float[] CooldownByTier => new[] { BaseCooldown, BaseCooldown * 0.85f, BaseCooldown * 0.7f };
 
-	/// <summary>Custo em galleons para tier 1.</summary>
-	public virtual int Tier1Cost => 400;
-
-	/// <summary>Custo em galleons para tier 2.</summary>
-	public virtual int Tier2Cost => 1000;
-
 	private float _cooldownEnd = 0f;
 	private int SafeTier => Math.Clamp( Tier, 0, 2 );
 

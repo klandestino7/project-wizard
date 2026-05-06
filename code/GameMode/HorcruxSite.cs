@@ -2,8 +2,9 @@ namespace Warlocks;
 
 /// <summary>
 /// Horcrux plant / defuse objective used by the Warlocks main mode.
+/// Implements IInteractable so PlayerPawn can interact without knowing the type.
 /// </summary>
-public sealed class HorcruxSite : Component
+public sealed class HorcruxSite : Component, IInteractable
 {
 	[Property] public string SiteName { get; set; } = "A";
 	[Property] public float PlantTime { get; set; } = 3f;
@@ -146,7 +147,8 @@ public sealed class HorcruxSite : Component
 		IsPlanted = true;
 		ExplosionTime = Time.Now + ExplosionDelay;
 
-		planter?.GiveGalleons( RoundManager.PlantMoney );
+		if ( planter?.Client is not null )
+			planter.Client.Balance += RoundManager.PlantMoney;
 
 		var round = RoundManager.Instance;
 		round?.OnHorcruxPlanted( this );
@@ -159,7 +161,8 @@ public sealed class HorcruxSite : Component
 	{
 		IsDefused = true;
 
-		defuser?.GiveGalleons( RoundManager.DefuseMoney );
+		if ( defuser?.Client is not null )
+			defuser.Client.Balance += RoundManager.DefuseMoney;
 
 		var round = RoundManager.Instance;
 		round?.OnHorcruxDefused( this );

@@ -11,8 +11,6 @@ public sealed class ProtegoSpell : BaseSpell
 	public override float   ManaCost       => 30f;
 	public override float   BaseCooldown   => 6f;
 	public override float[] CooldownByTier => new[] { 6f, 5f, 4f };
-	public override int     Tier1Cost      => 500;
-	public override int     Tier2Cost      => 1200;
 
 	public override void Execute( Wand wand )
 	{

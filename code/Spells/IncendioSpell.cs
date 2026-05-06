@@ -16,8 +16,6 @@ public sealed class IncendioSpell : BaseSpell
 	public override float   ManaCost       => 25f;
 	public override float   BaseCooldown   => 7f;
 	public override float[] CooldownByTier => new[] { 7f, 6f, 5f };
-	public override int     Tier1Cost      => 500;
-	public override int     Tier2Cost      => 1400;
 
 	public override void Execute( Wand wand )
 	{

@@ -16,8 +16,6 @@ public sealed class ImpedimentaSpell : BaseSpell
 	public override float   ManaCost       => 30f;
 	public override float   BaseCooldown   => 9f;
 	public override float[] CooldownByTier => new[] { 9f, 8f, 7f };
-	public override int     Tier1Cost      => 600;
-	public override int     Tier2Cost      => 1600;
 
 	public override void Execute( Wand wand )
 	{

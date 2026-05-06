@@ -147,6 +147,15 @@ public sealed class SpellProjectile : Component
 				var mastery = _shooter.Components.Get<MasterySystem>( FindMode.EverythingInSelf );
 				mastery?.RegisterSpellHit( SourceSpellClass );
 			}
+
+			// Feed combo system on the victim
+			var catalogEntry = SpellCatalog.Find( SourceSpellClass );
+			if ( catalogEntry != null && catalogEntry.ComboTags != ComboTag.None )
+				victim.ComboSystem?.RecordHit( catalogEntry.ComboTags, _shooter );
+
+			// Feed ultimate charge on the attacker
+			if ( finalDamage > 0f )
+				_shooter?.UltimateCharge?.AddDamageCharge( finalDamage );
 		}
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );

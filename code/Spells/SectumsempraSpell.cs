@@ -15,8 +15,6 @@ public sealed class SectumsempraSpell : BaseSpell
 	public override float   ManaCost       => 30f;
 	public override float   BaseCooldown   => 8f;
 	public override float[] CooldownByTier => new[] { 8f, 7f, 6f };
-	public override int     Tier1Cost      => 700;
-	public override int     Tier2Cost      => 1800;
 
 	public override void Execute( Wand wand )
 	{

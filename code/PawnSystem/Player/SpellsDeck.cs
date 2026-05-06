@@ -144,11 +144,9 @@ public sealed class SpellsDeck : Component
 		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = -1;
 	}
 
-	public void ClientBuy( int catalogIdx ) => Send( 0, catalogIdx, 0 );
 	public void ClientSelect( int catalogIdx ) => Send( 0, catalogIdx, 0 );
 	public void ClientAssign( int slot, int catalogIdx ) => Send( 1, catalogIdx, slot );
 	public void ClientUnassign( int slot ) => Send( 2, -1, slot );
-	public void ClientSell( int catalogIdx ) => Send( 3, catalogIdx, 0 );
 	public void ClientDeselect( int catalogIdx ) => Send( 3, catalogIdx, 0 );
 	public void ClientUpgrade( int catalogIdx, int targetTier ) => Send( 4, catalogIdx, targetTier );
 

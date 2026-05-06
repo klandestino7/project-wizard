@@ -6,7 +6,6 @@ public partial class PlayerPawn
 	public const float EyeHeight = 64f;
 
 	// ─── Propriedades sincronizadas ───────────────────────────────────
-	[Property, Sync] public int Balance { get; set; } = 0;
 	[Property, Sync] public Team Team { get; set; } = Team.Unassigned;
 	[Property, Sync] public int Kills { get; set; } = 0;
 	[Property, Sync] public int Deaths { get; set; } = 0;
@@ -46,6 +45,8 @@ public partial class PlayerPawn
 	[Property] public Wand Wand { get; set; }
 	[Property] public SpellsDeck SpellsDeck { get; set; }
 	[Property] public PlayerBuildComponent PlayerBuild { get; set; }
+	[Property] public UltimateChargeComponent UltimateCharge { get; set; }
+	[Property] public SpellComboSystem ComboSystem { get; set; }
 
 	// ─── Itens consumíveis ────────────────────────────────────────────
 	[Property] public BaseConsumable ItemSlot1 { get; set; }
@@ -61,7 +62,9 @@ public partial class PlayerPawn
 		if ( !IsProxy && BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 
-		PlayerBuild ??= Components.Get<PlayerBuildComponent>() ?? Components.Create<PlayerBuildComponent>();
+		PlayerBuild     ??= Components.Get<PlayerBuildComponent>()      ?? Components.Create<PlayerBuildComponent>();
+		UltimateCharge  ??= Components.Get<UltimateChargeComponent>()   ?? Components.Create<UltimateChargeComponent>();
+		ComboSystem     ??= Components.Get<SpellComboSystem>()          ?? Components.Create<SpellComboSystem>();
 
 		if ( !IsLocallyControlled )
 			return;
@@ -127,24 +130,27 @@ public partial class PlayerPawn
 		if ( Input.Pressed( "Item2" ) ) ItemSlot2?.TryUse();
 	}
 
-	// ─── Input: Interação (plant/defuse) ──────────────────────────────
+	// ─── Input: Interação (genérico via IInteractable) ────────────────
 	private void HandleInteractInput()
 	{
-		var nearbySites = Scene.GetAllComponents<HorcruxSite>()
-			.Where( site => site.WorldPosition.Distance( WorldPosition ) < site.InteractDistance )
-			.OrderBy( site => site.WorldPosition.Distance( WorldPosition ) )
+		var nearby = Scene.GetAllComponents<IInteractable>()
+			.Where( i => PositionOf( i ).Distance( WorldPosition ) < i.InteractDistance )
+			.OrderBy( i => PositionOf( i ).Distance( WorldPosition ) )
 			.ToList();
 
 		if ( !Input.Down( "PlantDefuse" ) )
 		{
-			foreach ( var site in nearbySites )
-				site.StopInteract( this );
+			foreach ( var interactable in nearby )
+				interactable.StopInteract( this );
 
 			return;
 		}
 
-		nearbySites.FirstOrDefault( site => site.CanInteract( this ) )?.TryInteract( this );
+		nearby.FirstOrDefault( i => i.CanInteract( this ) )?.TryInteract( this );
 	}
+
+	private static Vector3 PositionOf( IInteractable i ) =>
+		i is Component c ? c.WorldPosition : Vector3.Zero;
 
 	// ─── Estado de combate ────────────────────────────────────────────
 	public void SetCombatState( CombatState state, float duration = 0f )
@@ -180,20 +186,6 @@ public partial class PlayerPawn
 		SetCombatState( CombatState.Airborne, duration );
 		if ( CharacterController.IsValid() )
 			CharacterController.Punch( Vector3.Up * height );
-	}
-
-	// ─── Economia ─────────────────────────────────────────────────────
-	public void GiveGalleons( int amount )
-	{
-		if ( !Networking.IsHost ) return;
-		Client.Balance += amount;
-	}
-
-	public bool SpendGalleons( int amount )
-	{
-		if ( !Networking.IsHost || Client.Balance < amount ) return false;
-		Client.Balance -= amount;
-		return true;
 	}
 
 	// ─── Spell aim ────────────────────────────────────────────────────

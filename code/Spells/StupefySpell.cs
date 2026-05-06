@@ -15,8 +15,6 @@ public sealed class StupefySpell : BaseSpell
 	public override float   ManaCost        => 20f;
 	public override float   BaseCooldown    => 6f;
 	public override float[] CooldownByTier  => new[] { 6f, 5f, 4f };
-	public override int     Tier1Cost       => 400;
-	public override int     Tier2Cost       => 1000;
 
 	public override void Execute( Wand wand )
 	{

@@ -16,8 +16,6 @@ public sealed class EpiskeySpell : BaseSpell
 	public override float   ManaCost       => 25f;
 	public override float   BaseCooldown   => 10f;
 	public override float[] CooldownByTier => new[] { 10f, 8f, 7f };
-	public override int     Tier1Cost      => 600;
-	public override int     Tier2Cost      => 1600;
 
 	public override void Execute( Wand wand )
 	{

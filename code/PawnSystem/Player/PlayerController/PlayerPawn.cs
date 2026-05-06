@@ -44,9 +44,6 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 	public GameObject HoldGameObject { get; set; }
 
 	public bool CanConfigureBuild => true; // Transitional gate while modes are still migrating.
-	public bool CanBuy => CanConfigureBuild;
-	private bool IsInBuyZone => Client?.BuyMenuMode is BuyMenuMode.EnabledEverywhere
-		|| Client?.BuyMenuMode is BuyMenuMode.EnabledInBuyZone && GetZone<BuyZone>() is not null;
 
 	/// <summary>
 	/// Get a quick reference to the real Camera GameObject.
