@@ -1,0 +1,27 @@
+{
+  "UI": false,
+  "Volume": "0.92,1.02",
+  "Pitch": "0.99,1.03",
+  "Decibels": 78,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/spells/spells_reparo_akb/1023495669.vsnd",
+    "sounds/spells/spells_reparo_akb/126594731.vsnd",
+    "sounds/spells/spells_reparo_akb/142473227.vsnd",
+    "sounds/spells/spells_reparo_akb/275699628.vsnd",
+    "sounds/spells/spells_reparo_akb/331736964.vsnd",
+    "sounds/spells/spells_reparo_akb/345763936.vsnd",
+    "sounds/spells/spells_reparo_akb/372201008.vsnd",
+    "sounds/spells/spells_reparo_akb/417734297.vsnd",
+    "sounds/spells/spells_reparo_akb/42196770.vsnd",
+    "sounds/spells/spells_reparo_akb/433097144.vsnd"
+  ],
+  "Occlusion": false,
+  "AirAbsorption": true,
+  "Transmission": true,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": true,
+  "Distance": 2400,
+  "__references": [],
+  "__version": 1
+}

@@ -1,0 +1,27 @@
+{
+  "UI": false,
+  "Volume": "0.95,1.05",
+  "Pitch": "0.97,1.03",
+  "Decibels": 84,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/spells/spells_apparition_akb/1045372189.vsnd",
+    "sounds/spells/spells_apparition_akb/134649033.vsnd",
+    "sounds/spells/spells_apparition_akb/154952585.vsnd",
+    "sounds/spells/spells_apparition_akb/250534888.vsnd",
+    "sounds/spells/spells_apparition_akb/363601995.vsnd",
+    "sounds/spells/spells_apparition_akb/502980189.vsnd",
+    "sounds/spells/spells_apparition_akb/584354147.vsnd",
+    "sounds/spells/spells_apparition_akb/721369711.vsnd",
+    "sounds/spells/spells_apparition_akb/76793160.vsnd",
+    "sounds/spells/spells_apparition_akb/822374046.vsnd"
+  ],
+  "Occlusion": false,
+  "AirAbsorption": true,
+  "Transmission": true,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": true,
+  "Distance": 3200,
+  "__references": [],
+  "__version": 1
+}

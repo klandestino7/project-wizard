@@ -56,6 +56,7 @@ public sealed class ImpedimentaProjectile : Component
 	private const float Lifetime = 3f;
 	private float _spawnTime;
 	private bool  _hit;
+	private bool _playedPassBy;
 
 	protected override void OnStart()
 	{
@@ -78,6 +79,7 @@ public sealed class ImpedimentaProjectile : Component
 
 	protected override void OnFixedUpdate()
 	{
+		TryPlayPassBy();
 		if ( !Networking.IsHost || _hit ) return;
 
 		if ( Time.Now - _spawnTime > Lifetime )
@@ -99,6 +101,7 @@ public sealed class ImpedimentaProjectile : Component
 			_hit = true;
 			ApplySlow( tr.EndPosition );
 			BroadcastHitEffect( tr.EndPosition, tr.Normal );
+			BroadcastImpactSound( tr.EndPosition );
 			GameObject.Destroy();
 			return;
 		}
@@ -118,6 +121,28 @@ public sealed class ImpedimentaProjectile : Component
 		fx.WorldRotation = Rotation.LookAt( normal );
 		if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
 			fx.Components.Create<AutoDestroy>();
+	}
+
+	[Rpc.Broadcast]
+	private void BroadcastImpactSound( Vector3 position )
+	{
+		SpellSoundLibrary.PlayAtPosition( SpellSoundLibrary.GenericProjectileImpact, position );
+	}
+
+	private void TryPlayPassBy()
+	{
+		if ( _playedPassBy || Time.Now - _spawnTime < 0.05f )
+			return;
+
+		var local = PlayerPawn.Local;
+		if ( local == null || !local.IsAlive )
+			return;
+
+		if ( WorldPosition.Distance( local.EyePosition ) > 110f )
+			return;
+
+		_playedPassBy = true;
+		SpellSoundLibrary.PlayLocal( SpellSoundLibrary.GenericProjectilePassBy );
 	}
 
 	private void ApplySlow( Vector3 hitPos )

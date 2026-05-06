@@ -73,9 +73,16 @@ public sealed class Wand : Component
 		var resolved = SpellModifierResolver.Resolve( _player, spell );
 		_currentResolvedSpell = resolved;
 		_player.ManaSystem?.TrySpend( resolved.ManaCost );
+		BroadcastSpellCastSound( SpellSoundLibrary.GetCastSound( spell ), _player.GetSpellMuzzle() );
 		spell.Execute( this );
 		_player.PassiveEffects?.OnSpellCast( spell );
 		_currentResolvedSpell = null;
+	}
+
+	[Rpc.Broadcast]
+	private void BroadcastSpellCastSound( string soundPath, Vector3 worldPosition )
+	{
+		SpellSoundLibrary.PlayAtPosition( soundPath, worldPosition );
 	}
 
 	// ─── API pública (chamada por PlayerPawn.HandleAbilityInput) ────
@@ -211,6 +218,12 @@ public sealed class Wand : Component
 			fx.WorldPosition = end;
 			fx.WorldRotation = Rotation.LookAt( -dir );
 		}
+	}
+
+	[Rpc.Broadcast]
+	public void BroadcastImpactSound( Vector3 worldPosition )
+	{
+		SpellSoundLibrary.PlayAtPosition( SpellSoundLibrary.GenericProjectileImpact, worldPosition );
 	}
 
 	/// <summary>Teleporta o jogador local (usado por DashSpell).</summary>

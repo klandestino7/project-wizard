@@ -1,0 +1,27 @@
+{
+  "UI": false,
+  "Volume": "0.95,1.05",
+  "Pitch": "0.98,1.02",
+  "Decibels": 82,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/spells/spells_protego_akb/1001237417.vsnd",
+    "sounds/spells/spells_protego_akb/102241640.vsnd",
+    "sounds/spells/spells_protego_akb/117446138.vsnd",
+    "sounds/spells/spells_protego_akb/167204424.vsnd",
+    "sounds/spells/spells_protego_akb/181306089.vsnd",
+    "sounds/spells/spells_protego_akb/269125489.vsnd",
+    "sounds/spells/spells_protego_akb/284951963.vsnd",
+    "sounds/spells/spells_protego_akb/303380450.vsnd",
+    "sounds/spells/spells_protego_akb/348896768.vsnd",
+    "sounds/spells/spells_protego_akb/366268266.vsnd"
+  ],
+  "Occlusion": false,
+  "AirAbsorption": true,
+  "Transmission": true,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": true,
+  "Distance": 2800,
+  "__references": [],
+  "__version": 1
+}

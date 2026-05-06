@@ -39,6 +39,7 @@ public sealed class SpellProjectile : Component
 	private PlayerPawn _shooter;
 	private float _spawnTime;
 	private bool _hit = false;
+	private bool _playedPassBy = false;
 
 	protected override void OnStart()
 	{
@@ -72,6 +73,7 @@ public sealed class SpellProjectile : Component
 
 	protected override void OnFixedUpdate()
 	{
+		TryPlayPassBy();
 		if ( !Networking.IsHost || _hit ) return;
 
 		if ( Time.Now - _spawnTime > Lifetime )
@@ -162,6 +164,26 @@ public sealed class SpellProjectile : Component
 		}
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );
+		PlayImpactSound( tr.EndPosition );
+	}
+
+	private void TryPlayPassBy()
+	{
+		if ( _playedPassBy || Time.Now - _spawnTime < 0.05f )
+			return;
+
+		var local = PlayerPawn.Local;
+		if ( local == null || !local.IsAlive )
+			return;
+
+		if ( SpawnOrigin.Distance( local.EyePosition ) < 140f )
+			return;
+
+		if ( WorldPosition.Distance( local.EyePosition ) > 110f )
+			return;
+
+		_playedPassBy = true;
+		SpellSoundLibrary.PlayLocal( SpellSoundLibrary.GenericProjectilePassBy );
 	}
 
 	/// <summary>Aplica bônus de dano pelo CombatState do alvo (+50% Airborne, +25% Stunned).</summary>
@@ -185,5 +207,11 @@ public sealed class SpellProjectile : Component
 
 		if ( !fx.Components.TryGet<AutoDestroy>( out _ ) )
 			fx.Components.Create<AutoDestroy>();
+	}
+
+	[Rpc.Broadcast]
+	private void PlayImpactSound( Vector3 position )
+	{
+		SpellSoundLibrary.PlayAtPosition( SpellSoundLibrary.GenericProjectileImpact, position );
 	}
 }

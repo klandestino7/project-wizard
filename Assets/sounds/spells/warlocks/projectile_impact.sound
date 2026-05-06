@@ -1,0 +1,27 @@
+{
+  "UI": false,
+  "Volume": "0.95,1.05",
+  "Pitch": "0.97,1.03",
+  "Decibels": 84,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1016277700.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1039867180.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1040612861.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1043346286.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1046511923.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/1071556234.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/134182164.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/146943587.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/15688071.vsnd",
+    "sounds/spells/spells_generic_spell_surface_impact_akb/171028166.vsnd"
+  ],
+  "Occlusion": false,
+  "AirAbsorption": true,
+  "Transmission": true,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": true,
+  "Distance": 3000,
+  "__references": [],
+  "__version": 1
+}

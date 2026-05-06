@@ -1,0 +1,27 @@
+{
+  "UI": false,
+  "Volume": "0.95,1.05",
+  "Pitch": "0.97,1.03",
+  "Decibels": 82,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/spells/spells_arresto_akb/154855409.vsnd",
+    "sounds/spells/spells_arresto_akb/338864923.vsnd",
+    "sounds/spells/spells_arresto_akb/468333989.vsnd",
+    "sounds/spells/spells_arresto_akb/513278722.vsnd",
+    "sounds/spells/spells_arresto_akb/637015925.vsnd",
+    "sounds/spells/spells_arresto_akb/639337914.vsnd",
+    "sounds/spells/spells_arresto_akb/705004284.vsnd",
+    "sounds/spells/spells_arresto_akb/754548337.vsnd",
+    "sounds/spells/spells_arresto_akb/774599414.vsnd",
+    "sounds/spells/spells_arresto_akb/792319654.vsnd"
+  ],
+  "Occlusion": false,
+  "AirAbsorption": true,
+  "Transmission": true,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": true,
+  "Distance": 3000,
+  "__references": [],
+  "__version": 1
+}

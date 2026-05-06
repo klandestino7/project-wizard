@@ -33,6 +33,7 @@ public sealed class SectumsempraSpell : BaseSpell
 		float finalDamage = baseDamage * mult;
 
 		victim.HealthComponent.TakeDamage( new Warlocks.DamageInfo( wand.Player, finalDamage, Position: tr.EndPosition ) );
+		wand.BroadcastImpactSound( tr.EndPosition );
 
 		if ( Tier >= 2 )
 			victim.ApplyBurning( wand.ResolveDamage( 15f ), wand.ResolveDuration( 3f ), wand.Player ); // bleeding via burning

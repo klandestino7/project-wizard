@@ -136,6 +136,8 @@ public sealed class ProtegoComponent : Component
 	[Rpc.Broadcast]
 	private void BroadcastPerfectBlock()
 	{
+		SpellSoundLibrary.PlayAtPosition( SpellSoundLibrary.ProtegoBlock, WorldPosition );
+
 		if ( ShieldFx == null ) return;
 		var renderer = ShieldFx.Components.Get<ModelRenderer>();
 		if ( renderer != null )
