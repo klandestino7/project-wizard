@@ -116,13 +116,13 @@ public sealed class SpellProjectile : Component
 				{
 					var (passthrough, reflected) = protego.AbsorbDamage( (int)finalDamage, _shooter );
 					if ( reflected > 0 && _shooter != null )
-						_shooter.HealthComponent.TakeDamage( new DamageInfo( victim, reflected, Position: tr.EndPosition ) );
+						_shooter.HealthComponent.TakeDamage( new Warlocks.DamageInfo( victim, reflected, Position: tr.EndPosition ) );
 					finalDamage = passthrough;
 				}
 			}
 
 			if ( finalDamage > 0f )
-				victim.HealthComponent.TakeDamage( new DamageInfo( _shooter, finalDamage, Position: tr.EndPosition ) );
+				victim.HealthComponent.TakeDamage( new Warlocks.DamageInfo( _shooter, finalDamage, Position: tr.EndPosition ) );
 
 			if ( StunDuration > 0f )
 			{
