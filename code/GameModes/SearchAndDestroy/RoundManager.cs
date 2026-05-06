@@ -1,9 +1,10 @@
 namespace Warlocks;
 
 /// <summary>
-/// Core match flow for the Warlocks round-based Horcrux mode.
+/// Search-and-destroy match flow for the Warlocks Horcrux mode.
+/// Implements IMatchRule and IScoringRule so the core never depends on this class directly.
 /// </summary>
-public sealed class RoundManager : Component
+public sealed class RoundManager : Component, IMatchRule, IScoringRule
 {
 	[Property] public GameObject PlayerPrefab { get; set; }
 	[Property] public List<GameObject> AurorSpawns { get; set; } = new();
@@ -429,4 +430,46 @@ public sealed class RoundManager : Component
 	{
 		Log.Info( $"[Warlocks] Match ended. Winner={winner}" );
 	}
+
+	// ─── IMatchRule ───────────────────────────────────────────────────
+
+	void IMatchRule.OnMatchStart()
+	{
+		if ( !Networking.IsHost ) return;
+		State = RoundState.Warmup;
+		PhaseEndTime = Time.Now + WarmupTime;
+	}
+
+	void IMatchRule.OnMatchTick()
+	{
+		// Forwarded to OnUpdate which already runs on host.
+	}
+
+	void IMatchRule.OnPlayerEliminated( PlayerPawn victim, PlayerPawn killer ) =>
+		OnPlayerDied( victim, killer );
+
+	// ─── IScoringRule ─────────────────────────────────────────────────
+
+	void IScoringRule.OnKill( PlayerPawn killer, PlayerPawn victim )
+	{
+		if ( !Networking.IsHost || killer == null ) return;
+		if ( killer.Client is not null )
+			killer.Client.Balance += KillMoney;
+		killer.PassiveEffects?.OnKill();
+		killer.UltimateCharge?.AddKillCharge();
+	}
+
+	void IScoringRule.OnAssist( PlayerPawn assistant, PlayerPawn victim )
+	{
+		if ( !Networking.IsHost || assistant?.Client is null ) return;
+		assistant.Client.Balance += AssistMoney;
+		assistant.UltimateCharge?.AddAssistCharge();
+	}
+
+	void IScoringRule.OnObjectiveScore( PlayerPawn player, string objectiveTag )
+	{
+		// Handled by HorcruxSite calling OnHorcruxPlanted / OnHorcruxDefused.
+	}
+
+	void IScoringRule.OnRoundWon( Team winner ) => EndRound( winner, RoundEndReason.TimeExpired );
 }

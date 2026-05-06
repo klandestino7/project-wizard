@@ -25,35 +25,47 @@
 					<div class="wiz-coin"></div>
 					<span>@EnergyLabel</span>
 				</div>
-				<div class="wiz-page-title">SPELL LOADOUT</div>
+				<div class="wiz-tabs">
+					<div class="wiz-tab @( ActiveTab == Tab.Spells ? "active" : "" )"
+					     onclick=@( () => ActiveTab = Tab.Spells )>SPELLS</div>
+					<div class="wiz-tab @( ActiveTab == Tab.Identity ? "active" : "" )"
+					     onclick=@( () => ActiveTab = Tab.Identity )>IDENTITY</div>
+				</div>
 				<div class="wiz-hint-txt">[ B ] Close</div>
 			</div>
 
-			<div class="wiz-spell-container">
-				<div class="wiz-spell-grid">
-					@RenderSpellCol( "Ofensiva", "OFFENSE" )
-					@RenderSpellCol( "Controle", "CONTROL" )
-					@RenderSpellCol( "Defesa", "DEFENSE" )
-					@RenderSpellCol( "Utilidade", "UTILITY" )
+			@if ( ActiveTab == Tab.Spells )
+			{
+				<div class="wiz-spell-container">
+					<div class="wiz-spell-grid">
+						@RenderSpellCol( "Ofensiva", "OFFENSE" )
+						@RenderSpellCol( "Controle", "CONTROL" )
+						@RenderSpellCol( "Defesa", "DEFENSE" )
+						@RenderSpellCol( "Utilidade", "UTILITY" )
+					</div>
 				</div>
-			</div>
 
-			<div class="wiz-deck-bar">
-				<div class="wiz-deck-label">ACTIVE SPELLS</div>
-				<div class="wiz-deck-row">
-					@RenderDeckSlot( "1", 0 )
-					@RenderDeckSlot( "2", 1 )
-					@RenderDeckSlot( "3", 2 )
-					@RenderDeckSlot( "4", 3 )
-					@RenderDeckSlot( "5", 4 )
-					@RenderDeckSlot( "6", 5 )
+				<div class="wiz-deck-bar">
+					<div class="wiz-deck-label">ACTIVE SPELLS</div>
+					<div class="wiz-deck-row">
+						@RenderDeckSlot( "1", 0 )
+						@RenderDeckSlot( "2", 1 )
+						@RenderDeckSlot( "3", 2 )
+						@RenderDeckSlot( "4", 3 )
+						@RenderDeckSlot( "5", 4 )
+						@RenderDeckSlot( "6", 5 )
+					</div>
 				</div>
-			</div>
+			}
+			else
+			{
+				@RenderIdentityPanel()
+			}
 		</div>
 
 		<div class="wiz-right">
 			@RenderRoundInfo()
-			@if ( SelectedIdx >= 0 )
+			@if ( ActiveTab == Tab.Spells && SelectedIdx >= 0 )
 			{
 				@RenderDetail( SelectedIdx )
 			}
@@ -67,6 +79,8 @@
 </root>
 
 @code {
+	enum Tab { Spells, Identity }
+
 	public Client Client => Client.Viewer;
 	public PlayerPawn Player => Client.Viewer?.PlayerPawn;
 	RoundManager Round => RoundManager.Instance;
@@ -76,6 +90,7 @@
 
 	int SelectedIdx = -1;
 	int PendingSlot = -1;
+	Tab ActiveTab = Tab.Spells;
 
 	const int MaxTeamSize = 5;
 
@@ -102,6 +117,88 @@
 			IsOpen = false;
 		}
 	}
+
+	// ─── Identity panel ───────────────────────────────────────────────
+
+	RenderFragment RenderIdentityPanel() => __builder =>
+	{
+		<div class="wiz-identity">
+			<div class="wiz-id-section">
+				<div class="wiz-id-title">AFFINITY</div>
+				<div class="wiz-id-desc">Buffs spells of the matching element.</div>
+				<div class="wiz-id-options">
+					@foreach ( AffinityType aff in Enum.GetValues( typeof(AffinityType) ) )
+					{
+						var a = aff;
+						bool sel = Build?.Affinity == a;
+						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetAffinity( a ) )>
+							<div class="wiz-id-opt-name">@a.ToString().ToUpper()</div>
+							<div class="wiz-id-opt-sub">@AffinityDescription( a )</div>
+						</div>
+					}
+				</div>
+			</div>
+
+			<div class="wiz-id-section">
+				<div class="wiz-id-title">DISCIPLINE</div>
+				<div class="wiz-id-desc">Defines your combat profile.</div>
+				<div class="wiz-id-options">
+					@foreach ( DisciplineType disc in Enum.GetValues( typeof(DisciplineType) ) )
+					{
+						var d = disc;
+						bool sel = Build?.Discipline == d;
+						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetDiscipline( d ) )>
+							<div class="wiz-id-opt-name">@d.ToString().ToUpper()</div>
+							<div class="wiz-id-opt-sub">@DisciplineDescription( d )</div>
+						</div>
+					}
+				</div>
+			</div>
+
+			<div class="wiz-id-section">
+				<div class="wiz-id-title">PASSIVE</div>
+				<div class="wiz-id-desc">A permanent trait that shapes your playstyle.</div>
+				<div class="wiz-id-options">
+					@foreach ( PassiveType pass in Enum.GetValues( typeof(PassiveType) ) )
+					{
+						var p = pass;
+						bool sel = Build?.Passive == p;
+						<div class="wiz-id-opt @( sel ? "selected" : "" )" onclick=@( () => Build?.ClientSetPassive( p ) )>
+							<div class="wiz-id-opt-name">@p.ToString().ToUpper()</div>
+							<div class="wiz-id-opt-sub">@PassiveDescription( p )</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	};
+
+	static string AffinityDescription( AffinityType a ) => a switch
+	{
+		AffinityType.Fire   => "+15% damage, applies burn",
+		AffinityType.Ice    => "+20% effect duration",
+		AffinityType.Arcane => "-15% cooldown",
+		AffinityType.Shadow => "-10% mana cost",
+		_                   => "Balanced with no bonus"
+	};
+
+	static string DisciplineDescription( DisciplineType d ) => d switch
+	{
+		DisciplineType.Duelist    => "+dmg on offense, -efficiency on defense",
+		DisciplineType.Guardian   => "+power on defense, -mobility",
+		DisciplineType.Controller => "+duration on control, -direct damage",
+		_                         => "No modifiers"
+	};
+
+	static string PassiveDescription( PassiveType p ) => p switch
+	{
+		PassiveType.SwiftCaster  => "+20% move speed for 2s after casting",
+		PassiveType.ManaSurge    => "Restore 12% of damage dealt as mana",
+		PassiveType.Executioner  => "Reset all cooldowns on kill",
+		_                        => "No passive"
+	};
+
+	// ─── Spell panel ──────────────────────────────────────────────────
 
 	RenderFragment RenderBuildSummary() => __builder =>
 	{
@@ -352,6 +449,8 @@
 		</div>
 	};
 
+	// ─── Actions ──────────────────────────────────────────────────────
+
 	void SelectSpell( int idx )
 	{
 		if ( PendingSlot >= 0 )
@@ -426,7 +525,8 @@
 			buildHash,
 			Deck?.OwnedMask,
 			Deck?.Slot0Idx,
-			SelectedIdx
+			SelectedIdx,
+			(int)ActiveTab
 		);
 	}
 }
