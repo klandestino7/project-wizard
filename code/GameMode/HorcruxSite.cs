@@ -1,79 +1,93 @@
 namespace Warlocks;
 
 /// <summary>
-/// Site de plant/defuse do Horcrux (equivalente ao bomb site do CS/Valorant).
-/// Adicione em um GameObject posicionado nos sites A, B, C do mapa.
+/// Horcrux plant / defuse objective used by the Warlocks main mode.
 /// </summary>
 public sealed class HorcruxSite : Component
 {
 	[Property] public string SiteName { get; set; } = "A";
-
-	// ─── Timings ──────────────────────────────────────────────────────
 	[Property] public float PlantTime { get; set; } = 3f;
 	[Property] public float DefuseTime { get; set; } = 7f;
 	[Property] public float ExplosionDelay { get; set; } = 45f;
+	[Property] public float InteractDistance { get; set; } = 150f;
+	[Property] public bool EnabledForRound { get; set; } = true;
 
-	// ─── Estado (sincronizado) ────────────────────────────────────────
-	[Sync] public bool IsPlanted { get; private set; } = false;
-	[Sync] public bool IsDefused { get; private set; } = false;
-	[Sync] public bool HasExploded { get; private set; } = false;
-	[Sync] public float ExplosionTime { get; private set; } = 0f;
-
-	// ─── Interação em progresso ───────────────────────────────────────
-	[Sync] public float InteractProgress { get; private set; } = 0f;  // 0..1
-	[Sync] public bool IsBeingInteracted { get; private set; } = false;
+	[Sync] public bool IsPlanted { get; private set; }
+	[Sync] public bool IsDefused { get; private set; }
+	[Sync] public bool HasExploded { get; private set; }
+	[Sync] public float ExplosionTime { get; private set; }
+	[Sync] public float InteractProgress { get; private set; }
+	[Sync] public bool IsBeingInteracted { get; private set; }
+	[Sync] public Team InteractingTeam { get; private set; } = Team.Unassigned;
 
 	private PlayerPawn _interactingPlayer;
 	private float _interactStartTime;
 
-	public float TimeUntilExplosion => IsPlanted 
-		? Math.Max( 0f, (float)(ExplosionTime - Time.Now) ) 
+	public float TimeUntilExplosion => IsPlanted
+		? Math.Max( 0f, (float)(ExplosionTime - Time.Now) )
 		: 0f;
-	// ─── Lifecycle ────────────────────────────────────────────────────
+
 	protected override void OnUpdate()
 	{
-		if ( !Networking.IsHost ) return;
+		if ( !Networking.IsHost )
+			return;
 
-		// Checar explosão
 		if ( IsPlanted && !IsDefused && !HasExploded && Time.Now >= ExplosionTime )
 		{
 			Explode();
 			return;
 		}
 
-		// Tick de interação
-		if ( IsBeingInteracted && _interactingPlayer.IsValid() )
+		if ( !IsBeingInteracted )
+			return;
+
+		if ( !_interactingPlayer.IsValid() || !_interactingPlayer.IsAlive )
 		{
-			// Verificar se o jogador ainda está próximo e segurando F
-			if ( _interactingPlayer.WorldPosition.Distance( WorldPosition ) > 150f )
-			{
-				CancelInteraction();
-				return;
-			}
+			CancelInteraction();
+			return;
+		}
 
-			float duration = IsPlanted ? DefuseTime : PlantTime;
-			InteractProgress = (Time.Now - _interactStartTime) / duration;
+		if ( _interactingPlayer.WorldPosition.Distance( WorldPosition ) > InteractDistance )
+		{
+			CancelInteraction();
+			return;
+		}
 
-			if ( InteractProgress >= 1f )
-			{
-				InteractProgress = 1f;
-				CompleteInteraction();
-			}
+		var duration = IsPlanted ? DefuseTime : PlantTime;
+		InteractProgress = (Time.Now - _interactStartTime) / duration;
+
+		if ( InteractProgress >= 1f )
+		{
+			InteractProgress = 1f;
+			CompleteInteraction();
 		}
 	}
 
-	// ─── API pública ──────────────────────────────────────────────────
+	public bool CanInteract( PlayerPawn player )
+	{
+		if ( !EnabledForRound || player == null )
+			return false;
+
+		if ( IsDefused || HasExploded )
+			return false;
+
+		var round = RoundManager.Instance;
+		if ( !round.IsValid() )
+			return false;
+
+		if ( !IsPlanted )
+			return round.CanPlantHorcruxAt( this, player );
+
+		return round.CanDefuseHorcruxAt( this, player );
+	}
+
 	public void TryInteract( PlayerPawn player )
 	{
-		if ( !Networking.IsHost ) return;
-		if ( IsDefused || HasExploded ) return;
+		if ( !Networking.IsHost || !CanInteract( player ) )
+			return;
 
-		// Atacante planta, defensor desarma
-		bool canPlant = !IsPlanted && player.Team == Team.DarkFollowers;
-		bool canDefuse = IsPlanted && player.Team == Team.Aurors;
-
-		if ( !canPlant && !canDefuse ) return;
-		if ( IsBeingInteracted && _interactingPlayer != player ) return;
+		if ( IsBeingInteracted && _interactingPlayer != player )
+			return;
 
 		if ( !IsBeingInteracted )
 			StartInteraction( player );
@@ -93,13 +107,14 @@ public sealed class HorcruxSite : Component
 		ExplosionTime = 0f;
 		InteractProgress = 0f;
 		IsBeingInteracted = false;
+		InteractingTeam = Team.Unassigned;
 		_interactingPlayer = null;
 	}
 
-	// ─── Interação ────────────────────────────────────────────────────
 	private void StartInteraction( PlayerPawn player )
 	{
 		IsBeingInteracted = true;
+		InteractingTeam = player.Team;
 		_interactingPlayer = player;
 		_interactStartTime = Time.Now;
 		InteractProgress = 0f;
@@ -108,6 +123,7 @@ public sealed class HorcruxSite : Component
 	private void CancelInteraction()
 	{
 		IsBeingInteracted = false;
+		InteractingTeam = Team.Unassigned;
 		_interactingPlayer = null;
 		InteractProgress = 0f;
 	}
@@ -115,15 +131,12 @@ public sealed class HorcruxSite : Component
 	private void CompleteInteraction()
 	{
 		IsBeingInteracted = false;
+		InteractingTeam = Team.Unassigned;
 
 		if ( !IsPlanted )
-		{
 			Plant( _interactingPlayer );
-		}
 		else
-		{
 			Defuse( _interactingPlayer );
-		}
 
 		_interactingPlayer = null;
 	}
@@ -133,55 +146,51 @@ public sealed class HorcruxSite : Component
 		IsPlanted = true;
 		ExplosionTime = Time.Now + ExplosionDelay;
 
-		planter.GiveGalleons( 300 ); // bônus de plant
+		planter?.GiveGalleons( RoundManager.PlantMoney );
 
-		var rm = RoundManager.Instance;
-		rm?.OnHorcruxPlanted();
+		var round = RoundManager.Instance;
+		round?.OnHorcruxPlanted( this );
 
 		BroadcastPlant( SiteName );
-		Log.Info( $"[Horcrux] Plantada no Site {SiteName}!" );
+		Log.Info( $"[Warlocks] Horcrux planted at site {SiteName}." );
 	}
 
 	private void Defuse( PlayerPawn defuser )
 	{
 		IsDefused = true;
 
-		defuser.GiveGalleons( 300 ); // bônus de desarme
+		defuser?.GiveGalleons( RoundManager.DefuseMoney );
 
-		var rm = RoundManager.Instance;
-		rm?.OnHorcruxDefused();
+		var round = RoundManager.Instance;
+		round?.OnHorcruxDefused( this );
 
 		BroadcastDefuse( SiteName );
-		Log.Info( $"[Horcrux] Desarmada no Site {SiteName}!" );
+		Log.Info( $"[Warlocks] Horcrux defused at site {SiteName}." );
 	}
 
 	private void Explode()
 	{
 		HasExploded = true;
 
-		var rm = RoundManager.Instance;
-		rm?.OnHorcruxExploded();
+		var round = RoundManager.Instance;
+		round?.OnHorcruxExploded( this );
 
 		BroadcastExplosion( WorldPosition );
-		Log.Info( $"[Horcrux] Explodiu no Site {SiteName}!" );
+		Log.Info( $"[Warlocks] Horcrux exploded at site {SiteName}." );
 	}
 
-	// ─── Broadcasts ───────────────────────────────────────────────────
 	[Rpc.Broadcast]
 	private void BroadcastPlant( string site )
 	{
-		// TODO: tocar som de plant + anuncio "Horcrux plantada no Site X!"
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastDefuse( string site )
 	{
-		// TODO: tocar som de defuse + anuncio "Horcrux desarmada!"
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastExplosion( Vector3 position )
 	{
-		// TODO: spawnar VFX de explosão mágica
 	}
 }

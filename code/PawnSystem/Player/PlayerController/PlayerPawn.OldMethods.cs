@@ -204,12 +204,20 @@ public partial class PlayerPawn
 	// ─── Input: Interação (plant/defuse) ──────────────────────────────
 	private void HandleInteractInput()
 	{
-		if ( !Input.Down( "PlantDefuse" ) ) return;
+		var nearbySites = Scene.GetAllComponents<HorcruxSite>()
+			.Where( site => site.WorldPosition.Distance( WorldPosition ) < site.InteractDistance )
+			.OrderBy( site => site.WorldPosition.Distance( WorldPosition ) )
+			.ToList();
 
-		var site = Scene.GetAllComponents<HorcruxSite>()
-			.FirstOrDefault( s => s.WorldPosition.Distance( WorldPosition ) < 150f );
+		if ( !Input.Down( "PlantDefuse" ) )
+		{
+			foreach ( var site in nearbySites )
+				site.StopInteract( this );
 
-		site?.TryInteract( this );
+			return;
+		}
+
+		nearbySites.FirstOrDefault( site => site.CanInteract( this ) )?.TryInteract( this );
 	}
 
 	// ─── Proxy (outros jogadores) ─────────────────────────────────────

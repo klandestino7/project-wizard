@@ -41,6 +41,10 @@
 			<div class="score auror-score">@( Round?.AurorScore ?? 0 )</div>
 			<div class="round-info">
 				<div class="round-num">ROUND @( Round?.CurrentRound ?? 0 ) / @RoundManager.MaxRounds</div>
+				@if ( Round?.IsOvertime == true )
+				{
+					<div class="round-overtime">OVERTIME</div>
+				}
 				<div class="round-state">@( GetStateLabel() )</div>
 				<div class="round-timer @( IsLowTime ? "timer-low" : "" )">@( TimerLabel )</div>
 			</div>
@@ -55,6 +59,7 @@
 		{
 			<div class="horcrux-timer">
 				<div class="horcrux-label">HORCRUX</div>
+				<div class="horcrux-site">SITE @plantedSite.SiteName</div>
 				<div class="horcrux-countdown @( plantedSite.TimeUntilExplosion < 10f ? "critical" : "" )">
 					@plantedSite.TimeUntilExplosion.ToString( "0.0" )
 				</div>

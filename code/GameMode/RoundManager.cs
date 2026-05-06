@@ -1,73 +1,78 @@
 namespace Warlocks;
 
 /// <summary>
-/// Gerencia rounds, economia e vitória da partida.
-/// Adicione em um GameObject vazio na cena. Requer referências a SpawnPoints
-/// e ao prefab de jogador configuradas no inspetor.
+/// Core match flow for the Warlocks round-based Horcrux mode.
 /// </summary>
 public sealed class RoundManager : Component, Component.INetworkListener
 {
-	// ─── Configuração ─────────────────────────────────────────────────
 	[Property] public GameObject PlayerPrefab { get; set; }
 	[Property] public List<GameObject> AurorSpawns { get; set; } = new();
 	[Property] public List<GameObject> ComensalSpawns { get; set; } = new();
+	[Property] public float WarmupTime { get; set; } = 3f;
+	[Property] public bool FreezePlayersOutsideCombat { get; set; } = true;
 
-	// ─── Constantes de partida ────────────────────────────────────────
 	public const int RoundsToWin = 13;
 	public const int MaxRounds = 24;
+	public const int FirstHalfRounds = 12;
 	public const float BuyPhaseTime = 30f;
 	public const float CombatPhaseTime = 90f;
 	public const float PostRoundTime = 7f;
 
-	// ─── Constantes de economia ───────────────────────────────────────
 	public const int BaseRoundMoney = 800;
 	public const int KillMoney = 200;
+	public const int AssistMoney = 100;
+	public const int PlantMoney = 300;
+	public const int DefuseMoney = 300;
 	public const int WinMoney = 3000;
 	public const int LossMoney = 1900;
 	public const int LossStreakBonus = 500;
 
-	// ─── Estado sincronizado ──────────────────────────────────────────
-	[Property, Sync] public int CurrentRound { get; set; } = 0;
-	[Property, Sync] public int AurorScore { get; set; } = 0;
-	[Property, Sync] public int ComensalScore { get; set; } = 0;
+	[Property, Sync] public int CurrentRound { get; set; }
+	[Property, Sync] public int AurorScore { get; set; }
+	[Property, Sync] public int ComensalScore { get; set; }
 	[Property, Sync] public RoundState State { get; set; } = RoundState.Warmup;
-	[Property, Sync] public float PhaseEndTime { get; set; } = 0f;
+	[Property, Sync] public float PhaseEndTime { get; set; }
+	[Property, Sync] public Team LastRoundWinner { get; set; } = Team.Unassigned;
+	[Property, Sync] public RoundEndReason LastRoundReason { get; set; } = RoundEndReason.TimeExpired;
+	[Property, Sync] public string ActiveObjectiveSiteName { get; set; } = "";
+	[Property, Sync] public bool IsOvertime { get; set; }
+
+	private int _aurorLossStreak;
+	private int _comensalLossStreak;
+	private bool _sidesSwapped;
+	private HorcruxSite _plantedSite;
+
+	public static RoundManager Instance => Game.ActiveScene
+		.GetAllComponents<RoundManager>()
+		.FirstOrDefault();
+
+	public bool HasPlantedHorcrux => _plantedSite.IsValid() && _plantedSite.IsPlanted && !_plantedSite.IsDefused && !_plantedSite.HasExploded;
 
 	public float TimeRemaining
 	{
 		get
 		{
-			float r = PhaseEndTime - Time.Now;
-			return r > 0f ? r : 0f;
+			var remaining = PhaseEndTime - Time.Now;
+			return remaining > 0f ? remaining : 0f;
 		}
 	}
 
-	// ─── Estado interno (servidor) ────────────────────────────────────
-	private int _aurorLossStreak = 0;
-	private int _comensalLossStreak = 0;
-	private bool _horcruxPlanted = false;
-	// ─── Singleton ────────────────────────────────────────────────────
-	public static RoundManager Instance => Game.ActiveScene
-		.GetAllComponents<RoundManager>().FirstOrDefault();
-
-	// ─── Lifecycle ────────────────────────────────────────────────────
 	protected override void OnStart()
 	{
-		if ( !Networking.IsHost ) return;
+		if ( !Networking.IsHost )
+			return;
+
 		State = RoundState.Warmup;
-		PhaseEndTime = Time.Now + 3f; // pequeno delay antes do primeiro round
+		PhaseEndTime = Time.Now + WarmupTime;
 	}
 
 	protected override void OnUpdate()
 	{
-		if ( !Networking.IsHost ) return;
-		TickState();
-	}
+		if ( !Networking.IsHost )
+			return;
 
-	// ─── Máquina de estados ───────────────────────────────────────────
-	private void TickState()
-	{
-		if ( Time.Now < PhaseEndTime ) return;
+		if ( Time.Now < PhaseEndTime )
+			return;
 
 		switch ( State )
 		{
@@ -87,211 +92,308 @@ public sealed class RoundManager : Component, Component.INetworkListener
 		}
 	}
 
-	// ─── Fases ────────────────────────────────────────────────────────
 	private void StartNewRound()
 	{
 		CurrentRound++;
-		_horcruxPlanted = false;
+		IsOvertime = CurrentRound > MaxRounds;
+		_plantedSite = null;
+		ActiveObjectiveSiteName = "";
+		LastRoundWinner = Team.Unassigned;
+		LastRoundReason = RoundEndReason.TimeExpired;
 
-		if ( CurrentRound == 13 )
+		if ( !_sidesSwapped && CurrentRound == FirstHalfRounds + 1 )
+		{
 			SwapTeams();
+			_sidesSwapped = true;
+		}
+
+		foreach ( var site in Scene.GetAllComponents<HorcruxSite>() )
+			site.Reset();
 
 		RespawnAllPlayers();
 		DistributeRoundStartMoney();
+		SetFrozenState( true );
 
 		State = RoundState.BuyPhase;
 		PhaseEndTime = Time.Now + BuyPhaseTime;
 
 		BroadcastRoundStart( CurrentRound );
-
-		foreach ( var site in Scene.GetAllComponents<HorcruxSite>() )
-			site.Reset();
 	}
 
 	private void StartCombat()
 	{
 		State = RoundState.Combat;
 		PhaseEndTime = Time.Now + CombatPhaseTime;
+		SetFrozenState( false );
 		BroadcastCombatStart();
 	}
 
 	private void EndRound( Team winner, RoundEndReason reason )
 	{
-		if ( State != RoundState.Combat ) return;
+		if ( State != RoundState.Combat )
+			return;
 
 		State = RoundState.PostRound;
 		PhaseEndTime = Time.Now + PostRoundTime;
+		LastRoundWinner = winner;
+		LastRoundReason = reason;
+		SetFrozenState( true );
 
 		if ( winner == Team.Aurors )
 		{
 			AurorScore++;
 			_aurorLossStreak = 0;
 			_comensalLossStreak++;
-			DistributeEndMoney( Team.Aurors );
 		}
 		else
 		{
 			ComensalScore++;
 			_comensalLossStreak = 0;
 			_aurorLossStreak++;
-			DistributeEndMoney( Team.DarkFollowers );
 		}
 
+		DistributeEndMoney( winner );
 		BroadcastRoundEnd( winner, reason );
 	}
 
-	// ─── Spawning ─────────────────────────────────────────────────────
 	private void RespawnAllPlayers()
 	{
-		RespawnTeam( GetAlivePlayers( Team.Aurors ), AurorSpawns );
-		RespawnTeam( GetAlivePlayers( Team.DarkFollowers ), ComensalSpawns );
+		RespawnTeam( GetPlayers( Team.Aurors ), AurorSpawns );
+		RespawnTeam( GetPlayers( Team.DarkFollowers ), ComensalSpawns );
 	}
 
-	private void RespawnTeam( List<PlayerPawn> players, List<GameObject> spawns )
+	private static void RespawnTeam( List<PlayerPawn> players, List<GameObject> spawns )
 	{
-		for ( int i = 0; i < players.Count; i++ )
+		for ( var i = 0; i < players.Count; i++ )
 		{
-			var sp = spawns.Count > 0 ? spawns[i % spawns.Count] : null;
-			players[i].Respawn( sp != null ? sp.WorldPosition : Vector3.Zero );
+			var spawn = spawns.Count > 0 ? spawns[i % spawns.Count] : null;
+			players[i].Respawn( spawn?.WorldPosition ?? Vector3.Zero );
 		}
 	}
 
-	// ─── Economia ─────────────────────────────────────────────────────
 	private void DistributeRoundStartMoney()
 	{
-		foreach ( var p in GetAllPlayers() )
+		foreach ( var player in GetAllPlayers() )
 		{
-			int bonus = 0;
-			if ( p.Team == Team.Aurors && _aurorLossStreak >= 2 ) bonus = LossStreakBonus;
-			if ( p.Team == Team.DarkFollowers && _comensalLossStreak >= 2 ) bonus = LossStreakBonus;
-			p.GiveGalleons( BaseRoundMoney + bonus );
+			var bonus = 0;
+
+			if ( player.Team == Team.Aurors && _aurorLossStreak >= 2 )
+				bonus = LossStreakBonus;
+
+			if ( player.Team == Team.DarkFollowers && _comensalLossStreak >= 2 )
+				bonus = LossStreakBonus;
+
+			player.GiveGalleons( BaseRoundMoney + bonus );
 		}
 	}
 
 	private void DistributeEndMoney( Team winner )
 	{
-		foreach ( var p in GetAllPlayers() )
-			p.GiveGalleons( p.Team == winner ? WinMoney : LossMoney );
+		foreach ( var player in GetAllPlayers() )
+		{
+			player.GiveGalleons( player.Team == winner ? WinMoney : LossMoney );
+		}
 	}
 
-	// ─── Eventos de round ─────────────────────────────────────────────
 	public void OnPlayerDied( PlayerPawn victim, PlayerPawn killer )
 	{
-		if ( !Networking.IsHost || State != RoundState.Combat ) return;
+		if ( !Networking.IsHost || State != RoundState.Combat )
+			return;
+
 		if ( killer != null && killer.Team != victim.Team )
 			killer.GiveGalleons( KillMoney );
+
 		CheckRoundEndConditions();
 	}
 
-	public void OnHorcruxPlanted()
+	public bool CanPlantHorcruxAt( HorcruxSite site, PlayerPawn player )
 	{
-		if ( !Networking.IsHost ) return;
-		_horcruxPlanted = true;
-		PhaseEndTime = Time.Now + CombatPhaseTime;
+		if ( State != RoundState.Combat )
+			return false;
+
+		if ( player?.Team != Team.DarkFollowers )
+			return false;
+
+		if ( HasPlantedHorcrux )
+			return false;
+
+		return site.IsValid() && !site.IsPlanted && !site.IsDefused && !site.HasExploded;
 	}
 
-	public void OnHorcruxExploded()
+	public bool CanDefuseHorcruxAt( HorcruxSite site, PlayerPawn player )
 	{
-		if ( !Networking.IsHost ) return;
+		if ( State != RoundState.Combat )
+			return false;
+
+		if ( player?.Team != Team.Aurors )
+			return false;
+
+		return site.IsValid() && site == _plantedSite && site.IsPlanted && !site.IsDefused && !site.HasExploded;
+	}
+
+	public void OnHorcruxPlanted( HorcruxSite site )
+	{
+		if ( !Networking.IsHost || !site.IsValid() )
+			return;
+
+		_plantedSite = site;
+		ActiveObjectiveSiteName = site.SiteName;
+		PhaseEndTime = Time.Now + site.ExplosionDelay;
+	}
+
+	public void OnHorcruxExploded( HorcruxSite site )
+	{
+		if ( !Networking.IsHost || site != _plantedSite )
+			return;
+
 		EndRound( Team.DarkFollowers, RoundEndReason.HorcruxExploded );
 	}
 
-	public void OnHorcruxDefused()
+	public void OnHorcruxDefused( HorcruxSite site )
 	{
-		if ( !Networking.IsHost ) return;
+		if ( !Networking.IsHost || site != _plantedSite )
+			return;
+
 		EndRound( Team.Aurors, RoundEndReason.HorcruxDefused );
 	}
 
 	private void CheckRoundEndConditions()
 	{
-		if ( GetAlivePlayers( Team.DarkFollowers ).Count == 0 && !_horcruxPlanted )
+		if ( GetAlivePlayers( Team.DarkFollowers ).Count == 0 && !HasPlantedHorcrux )
 		{
 			EndRound( Team.Aurors, RoundEndReason.AttackersEliminated );
 			return;
 		}
+
 		if ( GetAlivePlayers( Team.Aurors ).Count == 0 )
 			EndRound( Team.DarkFollowers, RoundEndReason.DefendersEliminated );
 	}
 
-	// ─── Fim de partida ───────────────────────────────────────────────
 	private bool CheckMatchEnd()
 	{
-		if ( AurorScore >= RoundsToWin ) { EndMatch( Team.Aurors ); return true; }
-		if ( ComensalScore >= RoundsToWin ) { EndMatch( Team.DarkFollowers ); return true; }
-		if ( CurrentRound >= MaxRounds && AurorScore != ComensalScore )
+		if ( !IsOvertime )
+		{
+			if ( AurorScore >= RoundsToWin )
+			{
+				EndMatch( Team.Aurors );
+				return true;
+			}
+
+			if ( ComensalScore >= RoundsToWin )
+			{
+				EndMatch( Team.DarkFollowers );
+				return true;
+			}
+		}
+		else
+		{
+			if ( AurorScore >= RoundsToWin && AurorScore - ComensalScore >= 2 )
+			{
+				EndMatch( Team.Aurors );
+				return true;
+			}
+
+			if ( ComensalScore >= RoundsToWin && ComensalScore - AurorScore >= 2 )
+			{
+				EndMatch( Team.DarkFollowers );
+				return true;
+			}
+		}
+
+		if ( CurrentRound == MaxRounds && AurorScore != ComensalScore )
 		{
 			EndMatch( AurorScore > ComensalScore ? Team.Aurors : Team.DarkFollowers );
 			return true;
 		}
+
 		return false;
 	}
 
 	private void EndMatch( Team winner )
 	{
 		State = RoundState.MatchEnd;
+		SetFrozenState( true );
 		BroadcastMatchEnd( winner );
 	}
 
-	// ─── Side swap ────────────────────────────────────────────────────
 	private void SwapTeams()
 	{
-		foreach ( var p in GetAllPlayers() )
-			p.Team = p.Team == Team.Aurors ? Team.DarkFollowers : Team.Aurors;
+		foreach ( var player in GetAllPlayers() )
+		{
+			player.Team = player.Team == Team.Aurors ? Team.DarkFollowers : Team.Aurors;
+		}
 	}
 
-	// ─── Helpers ──────────────────────────────────────────────────────
+	private void SetFrozenState( bool frozen )
+	{
+		if ( !FreezePlayersOutsideCombat )
+			return;
+
+		foreach ( var player in GetAllPlayers() )
+			player.IsFrozen = frozen;
+	}
+
 	private List<PlayerPawn> GetAllPlayers() =>
 		Scene.GetAllComponents<PlayerPawn>().ToList();
 
-	private List<PlayerPawn> GetAlivePlayers( Team team ) =>
+	private List<PlayerPawn> GetPlayers( Team team ) =>
 		Scene.GetAllComponents<PlayerPawn>()
-			.Where( p => p.Team == team && p.IsAlive )
+			.Where( player => player.Team == team )
 			.ToList();
 
-	// ─── INetworkListener ─────────────────────────────────────────────
+	private List<PlayerPawn> GetAlivePlayers( Team team ) =>
+		Scene.GetAllComponents<PlayerPawn>()
+			.Where( player => player.Team == team && player.IsAlive )
+			.ToList();
+
 	public void OnActive( Connection connection )
 	{
-		if ( !Networking.IsHost || PlayerPrefab == null ) return;
+		if ( !Networking.IsHost || PlayerPrefab == null )
+			return;
 
-		int aurors = GetAllPlayers().Count( p => p.Team == Team.Aurors );
-		int comensais = GetAllPlayers().Count( p => p.Team == Team.DarkFollowers );
+		var aurors = GetAllPlayers().Count( player => player.Team == Team.Aurors );
+		var comensais = GetAllPlayers().Count( player => player.Team == Team.DarkFollowers );
 		var newTeam = aurors <= comensais ? Team.Aurors : Team.DarkFollowers;
 
-		var spawnList = newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns;
-		var spawnPos = spawnList.Count > 0
-			? spawnList[Game.Random.Int( spawnList.Count - 1 )].WorldPosition
+		var spawns = newTeam == Team.Aurors ? AurorSpawns : ComensalSpawns;
+		var spawnPosition = spawns.Count > 0
+			? spawns[Game.Random.Int( spawns.Count - 1 )].WorldPosition
 			: Vector3.Zero;
 
-		var go = PlayerPrefab.Clone( spawnPos );
-		var player = go.Components.Get<PlayerPawn>( FindMode.EverythingInSelfAndDescendants );
-		if ( player != null ) player.Team = newTeam;
-		go.NetworkSpawn( connection );
+		var gameObject = PlayerPrefab.Clone( spawnPosition );
+		var player = gameObject.Components.Get<PlayerPawn>( FindMode.EverythingInSelfAndDescendants );
+
+		if ( player != null )
+			player.Team = newTeam;
+
+		gameObject.NetworkSpawn( connection );
 	}
 
-	public void OnDisconnected( Connection connection ) { }
+	public void OnDisconnected( Connection connection )
+	{
+	}
 
-	// ─── Broadcasts (sem parâmetros struct) ───────────────────────────
 	[Rpc.Broadcast]
 	private void BroadcastRoundStart( int round )
 	{
-		Log.Info( $"[Round {round}] BuyPhase" );
+		Log.Info( $"[Warlocks] Round {round} start. Overtime={IsOvertime}" );
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastCombatStart()
 	{
-		Log.Info( $"[Round {CurrentRound}] Combate!" );
+		Log.Info( $"[Warlocks] Round {CurrentRound} combat live." );
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastRoundEnd( Team winner, RoundEndReason reason )
 	{
-		Log.Info( $"[Round {CurrentRound}] {winner} venceu - {reason}" );
+		Log.Info( $"[Warlocks] Round {CurrentRound} winner={winner} reason={reason}" );
 	}
 
 	[Rpc.Broadcast]
 	private void BroadcastMatchEnd( Team winner )
 	{
-		Log.Info( $"[Partida] {winner} venceu!" );
+		Log.Info( $"[Warlocks] Match ended. Winner={winner}" );
 	}
 }
