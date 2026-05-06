@@ -5,14 +5,15 @@
   "Decibels": 80,
   "SelectionMode": "Random",
   "Sounds": [
-    "sounds/spells/spells_wand_akb/1059539488.vsnd"
+    "sounds/spells/spells_wand_akb/1059539488.vsnd",
+    "sounds/spells/spells_stupefy_akb/220994479.vsnd"
   ],
   "Occlusion": false,
   "AirAbsorption": true,
   "Transmission": true,
   "OcclusionRadius": 64,
   "DistanceAttenuation": true,
-  "Distance": 2500,
+  "Distance": 30000,
   "Falloff": [
     {
       "x": 0,

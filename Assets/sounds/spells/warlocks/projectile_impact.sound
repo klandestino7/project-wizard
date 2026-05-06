@@ -1,20 +1,12 @@
 {
   "UI": false,
-  "Volume": "0.95,1.05",
-  "Pitch": "0.97,1.03",
+  "Volume": "0.949999988 1.04999995",
+  "Pitch": "0.970000029 1.02999997",
   "Decibels": 84,
   "SelectionMode": "Random",
   "Sounds": [
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1016277700.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1039867180.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1040612861.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1043346286.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1046511923.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/1071556234.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/134182164.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/146943587.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/15688071.vsnd",
-    "sounds/spells/spells_generic_spell_surface_impact_akb/171028166.vsnd"
+    "sounds/spells/spells_stupefy_akb/18741705.vsnd",
+    "sounds/spells/spells_stupefy_akb/1054832324.vsnd"
   ],
   "Occlusion": false,
   "AirAbsorption": true,
@@ -22,6 +14,40 @@
   "OcclusionRadius": 64,
   "DistanceAttenuation": true,
   "Distance": 3000,
+  "Falloff": [
+    {
+      "x": 0,
+      "y": 1,
+      "in": 0,
+      "out": -1.8,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 0.05,
+      "y": 0.22,
+      "in": 3.5,
+      "out": -3.5,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 0.2,
+      "y": 0.04,
+      "in": 0.16,
+      "out": -0.16,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "DefaultMixer": {
+    "Name": "unknown",
+    "Id": "00000000-0000-0000-0000-000000000000"
+  },
   "__references": [],
   "__version": 1
 }
