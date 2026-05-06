@@ -45,6 +45,7 @@ public partial class PlayerPawn
 	// ─── Sistema de feitiços ──────────────────────────────────────────
 	[Property] public Wand Wand { get; set; }
 	[Property] public SpellsDeck SpellsDeck { get; set; }
+	[Property] public PlayerBuildComponent PlayerBuild { get; set; }
 
 	// ─── Itens consumíveis ────────────────────────────────────────────
 	[Property] public BaseConsumable ItemSlot1 { get; set; }
@@ -59,6 +60,8 @@ public partial class PlayerPawn
 	{
 		if ( !IsProxy && BodyRenderer.IsValid() )
 			BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+
+		PlayerBuild ??= Components.Get<PlayerBuildComponent>() ?? Components.Create<PlayerBuildComponent>();
 
 		if ( !IsLocallyControlled )
 			return;

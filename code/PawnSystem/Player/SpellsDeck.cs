@@ -15,6 +15,8 @@ namespace Warlocks;
 /// </summary>
 public sealed class SpellsDeck : Component
 {
+	public const int RuntimeSlotCount = 4;
+
 	// ─── Estado owned ──────────────────────────────────────────────
 	[Sync] public int OwnedMask { get; set; } = 0;   // bitmask de owned
 	[Sync] public int TierPacked { get; set; } = 0;   // 2 bits por spell
@@ -81,8 +83,44 @@ public sealed class SpellsDeck : Component
 	/// <summary>Spell ativa no slot 0–3. Null se vazio.</summary>
 	public BaseSpell GetSlot( int index )
 	{
-		if ( index < 0 || index >= 4 ) return null;
+		if ( index < 0 || index >= RuntimeSlotCount ) return null;
 		return _slots[index];
+	}
+
+	public IReadOnlyList<int> GetEquippedSpellIndices()
+	{
+		var result = new List<int>( RuntimeSlotCount );
+
+		for ( int i = 0; i < RuntimeSlotCount; i++ )
+		{
+			var idx = GetSlotIdx( i );
+			if ( idx >= 0 && !result.Contains( idx ) )
+				result.Add( idx );
+		}
+
+		return result;
+	}
+
+	public SpellLoadout GetCurrentLoadout()
+	{
+		return new SpellLoadout
+		{
+			SpellIndices = GetEquippedSpellIndices()
+		};
+	}
+
+	public BuildValidationResult ValidateCurrentLoadout()
+	{
+		var build = _player?.PlayerBuild?.GetBuildSnapshot() ?? new PlayerBuildSnapshot
+		{
+			Affinity = AffinityType.Neutral,
+			Discipline = DisciplineType.Generalist,
+			Passive = PassiveType.None,
+			EnergyBudget = PlayerBuildComponent.DefaultEnergyBudget,
+			PreparedSpellLimit = RuntimeSlotCount
+		};
+
+		return BuildValidationService.Validate( build, GetCurrentLoadout() );
 	}
 
 	public void ResetAllCooldowns()
@@ -97,7 +135,7 @@ public sealed class SpellsDeck : Component
 	{
 		if ( !Networking.IsHost ) return;
 		for ( int i = 0; i < _owned.Length; i++ ) _owned[i] = null;
-		for ( int i = 0; i < 4; i++ ) _slots[i] = null;
+		for ( int i = 0; i < RuntimeSlotCount; i++ ) _slots[i] = null;
 		OwnedMask = 0;
 		TierPacked = 0;
 		Slot0Idx = Slot1Idx = Slot2Idx = Slot3Idx = -1;
@@ -189,12 +227,12 @@ public sealed class SpellsDeck : Component
 
 	private void ServerAssign( int slot, int idx )
 	{
-		if ( slot < 0 || slot >= 4 ) return;
+		if ( slot < 0 || slot >= RuntimeSlotCount ) return;
 		if ( idx < 0 || idx >= SpellCatalog.All.Length ) return;
 		if ( _owned[idx] == null ) return;
 
 		// Remove da posição anterior se necessário
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < RuntimeSlotCount; i++ )
 			if ( i != slot && _slots[i] == _owned[idx] ) _slots[i] = null;
 
 		_slots[slot] = _owned[idx];
@@ -203,7 +241,7 @@ public sealed class SpellsDeck : Component
 
 	private void ServerUnassign( int slot )
 	{
-		if ( slot < 0 || slot >= 4 ) return;
+		if ( slot < 0 || slot >= RuntimeSlotCount ) return;
 		_slots[slot] = null;
 		SyncSlots();
 	}
@@ -220,7 +258,7 @@ public sealed class SpellsDeck : Component
 		if ( spell.Tier >= 2 ) refund += entry.Tier2Cost / 2;
 		_player.GiveGalleons( refund );
 
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < RuntimeSlotCount; i++ )
 			if ( _slots[i] == spell ) _slots[i] = null;
 
 		_owned[idx] = null;
