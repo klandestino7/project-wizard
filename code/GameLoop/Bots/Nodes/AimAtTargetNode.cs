@@ -62,6 +62,9 @@ public class AimAtTargetNode : BaseBehaviorNode
 	{
 		InitializeHitboxData();
 
+		if ( _hitboxWeights == null || _cachedHitBoxSet == null )
+			return Vector3.Zero;
+
 		float totalWeight = _hitboxWeights.Values.Sum();
 		float randomValue = Random.Shared.Float( 0, totalWeight );
 		float cumulativeWeight = 0f;

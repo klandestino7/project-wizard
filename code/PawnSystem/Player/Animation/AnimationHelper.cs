@@ -127,6 +127,7 @@ public sealed class AnimationHelper : Component
 	{
 		set
 		{
+			if ( Target == null ) return;
 			value = Target.WorldRotation.Inverse * value;
 			var ang = value.Angles();
 
