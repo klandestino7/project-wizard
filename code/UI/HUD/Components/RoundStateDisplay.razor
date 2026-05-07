@@ -96,10 +96,15 @@
         if ( MyTeam == Team.Unassigned || EnemyTeam == Team.Unassigned )
             return;
 
-        if ( GameMode.Instance.IsValid() && GameMode.Instance.Get<TeamScoring>() is { IsValid: true } teamScoring )
+        if ( Round.IsValid() )
         {
-            MyTeamScore = teamScoring.MyTeamScoreFormatted;
-            EnemyTeamScore = teamScoring.OpposingTeamScoreFormatted;
+            MyTeamScore = MyTeam == Team.Aurors
+                ? Round.AurorScore.ToString()
+                : Round.ComensalScore.ToString();
+
+            EnemyTeamScore = EnemyTeam == Team.Aurors
+                ? Round.AurorScore.ToString()
+                : Round.ComensalScore.ToString();
         }
         else
         {
@@ -122,6 +127,8 @@
         hash.Add( IconPath );
         hash.Add( Time );
         hash.Add( Time?.TotalSeconds );
+        hash.Add( Round?.AurorScore );
+        hash.Add( Round?.ComensalScore );
 
         foreach ( var player in MyTeamPlayers )
         {

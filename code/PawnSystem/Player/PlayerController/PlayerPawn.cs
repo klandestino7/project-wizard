@@ -92,13 +92,23 @@ public sealed partial class PlayerPawn : Pawn, IDescription, IAreaDamageReceiver
 	protected override void OnStart()
 	{
 		// TODO: expose these parameters please
-		TagBinder.BindTag( "no_shooting", () => IsSprinting || TimeSinceSprintChanged < 0.25f );
-		TagBinder.BindTag( "no_aiming", () => IsSprinting || TimeSinceSprintChanged < 0.25f || TimeSinceGroundedChanged < 0.25f );
+		TagBinder.BindTag( "no_shooting", ShouldBlockShooting );
+		TagBinder.BindTag( "no_aiming", ShouldBlockAiming );
 
 		GameObject.Name = $"Player ({DisplayName})";
 
 		CameraController.SetActive( IsViewer );
 		OnStartOldMethods();
+	}
+
+	private bool ShouldBlockShooting()
+	{
+		return IsSprinting || TimeSinceSprintChanged < 0.25f;
+	}
+
+	private bool ShouldBlockAiming()
+	{
+		return IsSprinting || TimeSinceSprintChanged < 0.25f || TimeSinceGroundedChanged < 0.25f;
 	}
 
 	public SceneTraceResult CachedEyeTrace { get; private set; }

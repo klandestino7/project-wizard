@@ -9,15 +9,37 @@ public partial class TagBinder : Component
 	/// <summary>
 	/// A cache of binds.
 	/// </summary>
-	private Dictionary<string, Func<bool>> binds = new();
+	private readonly Dictionary<string, Func<bool>> binds = new();
 
 	protected override void OnUpdate()
 	{
 		if ( IsProxy ) return;
 
+		if ( binds.Count == 0 )
+			return;
+
+		List<string> invalidBinds = null;
+
 		foreach ( var kv in binds )
 		{
-			GameObject.Tags.Set( kv.Key, kv.Value() );
+			try
+			{
+				GameObject.Tags.Set( kv.Key, kv.Value() );
+			}
+			catch ( NotImplementedException )
+			{
+				invalidBinds ??= new();
+				invalidBinds.Add( kv.Key );
+			}
+		}
+
+		if ( invalidBinds == null )
+			return;
+
+		foreach ( var tag in invalidBinds )
+		{
+			binds.Remove( tag );
+			Log.Warning( $"Removed stale TagBinder bind '{tag}'. Rebind it with a named method after hot reload." );
 		}
 	}
 
