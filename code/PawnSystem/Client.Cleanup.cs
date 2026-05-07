@@ -22,6 +22,14 @@ public partial class Client : Component.INetworkListener
 
 	protected override void OnUpdate()
 	{
+		if ( IsLocalPlayer )
+		{
+			Local = this;
+
+			if ( !Viewer.IsValid() && PlayerPawn.IsValid() )
+				Viewer = this;
+		}
+
 		if ( IsConnected ) return;
 		if ( IsProxy ) return;
 

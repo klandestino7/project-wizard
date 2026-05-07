@@ -26,11 +26,13 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 
 	// ─── Action bus (client → host) ──────────────────────────────────
 	[Sync] public int BuildActionId { get; set; } = 0;
+	[Sync] public int ConfirmBuildActionId { get; set; } = 0;
 	[Sync] public int PendingAffinityRaw { get; set; } = (int)AffinityType.Arcane;
 	[Sync] public int PendingDisciplineRaw { get; set; } = (int)DisciplineType.Generalist;
 	[Sync] public int PendingPassiveRaw { get; set; } = (int)PassiveType.None;
 
 	private int _lastActionId;
+	private int _lastConfirmBuildActionId;
 
 	protected override void OnUpdate()
 	{
@@ -43,6 +45,12 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 			Affinity   = (rm?.EnableAffinity   ?? true) ? (AffinityType)PendingAffinityRaw     : AffinityType.Neutral;
 			Discipline = (rm?.EnableDiscipline ?? true) ? (DisciplineType)PendingDisciplineRaw : DisciplineType.Generalist;
 			Passive    = (rm?.EnablePassive    ?? true) ? (PassiveType)PendingPassiveRaw       : PassiveType.None;
+		}
+
+		if ( ConfirmBuildActionId != _lastConfirmBuildActionId )
+		{
+			_lastConfirmBuildActionId = ConfirmBuildActionId;
+			BuildConfirmed = true;
 		}
 	}
 
@@ -70,6 +78,11 @@ public sealed class PlayerBuildComponent : Component, IPlayerBuildProvider
 		PendingDisciplineRaw = (int)Discipline;
 		PendingPassiveRaw    = (int)value;
 		BuildActionId++;
+	}
+
+	public void ClientConfirmBuild()
+	{
+		ConfirmBuildActionId++;
 	}
 
 	/// <summary>Host-only. Assigns a random identity and marks the player as confirmed.</summary>

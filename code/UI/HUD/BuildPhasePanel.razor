@@ -57,7 +57,7 @@
 	void ConfirmBuild()
 	{
 		if ( _confirmed || Build == null ) return;
-		Build.BuildConfirmed = true;
+		Build.ClientConfirmBuild();
 		_confirmed = true;
 	}
 

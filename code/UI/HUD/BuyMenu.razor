@@ -86,8 +86,8 @@
 @code {
 	enum Tab { Spells, Identity }
 
-	public Client Client => Client.Viewer;
-	public PlayerPawn Player => Client.Viewer?.PlayerPawn;
+	public Client LocalClient => Client.Local?.IsValid() == true ? Client.Local : Client.Viewer;
+	public PlayerPawn Player => LocalClient?.PlayerPawn ?? PlayerPawn.Local;
 	RoundManager Round => RoundManager.Instance;
 	SpellsDeck Deck => Player?.SpellsDeck;
 	PlayerBuildComponent Build => Player?.PlayerBuild;
@@ -337,7 +337,7 @@
 					<div class="wiz-sc @( selected ? "owned" : "" ) @( active ? "sel" : "" )"
 					     onclick=@( () => SelectSpell( idx ) )>
 						<div class="wiz-sc-icon" style="border-color: @entry.AccentColor;">
-							<div class="wiz-sc-dot" style="background: url(@entry.Image)"></div>
+							<div class="wiz-sc-dot" style="@BuildImageStyle( entry.Image )"></div>
 						</div>
 						<div class="wiz-sc-info">
 							<div class="wiz-sc-name">@entry.Name.ToUpper()</div>
@@ -590,6 +590,13 @@
 	void BuyConsumable( ConsumableType type )
 	{
 		Player?.ClientBuyConsumable( type );
+	}
+
+	string BuildImageStyle( string imagePath )
+	{
+		return string.IsNullOrWhiteSpace( imagePath )
+			? "background-image: none;"
+			: $"background-image: url(\"{imagePath}\");";
 	}
 
 	protected override int BuildHash()

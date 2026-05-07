@@ -78,7 +78,7 @@ public static partial class GameUtils
 	/// </summary>
 	public static PlayerPawn GetPlayerFromGameObject( GameObject gameObject )
 	{
-		if ( !gameObject.IsValid() ) return null;
+		if ( gameObject?.IsValid() != true ) return null;
 		return gameObject.Root.GetComponentInChildren<PlayerPawn>();
 	}
 
@@ -88,7 +88,7 @@ public static partial class GameUtils
 	public static PlayerPawn GetPlayerFromComponent( Component component )
 	{
 		if ( component is PlayerPawn player ) return player;
-		if ( !component.IsValid() ) return null;
+		if ( component?.IsValid() != true ) return null;
 		return GetPlayerFromGameObject( component.GameObject );
 	}
 
@@ -98,8 +98,8 @@ public static partial class GameUtils
 	public static Pawn GetPawn( Component component )
 	{
 		if ( component is Pawn pawn ) return pawn;
-		if ( !component.IsValid() ) return null;
-		return !component.GameObject.IsValid() ? null : component.GameObject.Root.GetComponentInChildren<Pawn>();
+		if ( component?.IsValid() != true ) return null;
+		return component.GameObject?.IsValid() == true ? component.GameObject.Root.GetComponentInChildren<Pawn>() : null;
 	}
 
 

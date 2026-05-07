@@ -34,6 +34,7 @@ public sealed class SpellsDeck : Component
 
 	private readonly BaseSpell[] _owned = new BaseSpell[SpellCatalog.All.Length];
 	private readonly BaseSpell[] _slots = new BaseSpell[RuntimeSlotCount];
+	private readonly float[] _lastSlotCooldownEnds = new float[RuntimeSlotCount];
 
 	public BasicCastSpell BasicCast { get; } = new();
 
@@ -46,21 +47,24 @@ public sealed class SpellsDeck : Component
 
 	protected override void OnUpdate()
 	{
-		if ( !Networking.IsHost )
-			return;
-
-		if ( ActionId != _lastActionId )
+		if ( Networking.IsHost )
 		{
-			_lastActionId = ActionId;
-			ExecuteAction( ActionType, ActionArg0, ActionArg1 );
+			if ( ActionId != _lastActionId )
+			{
+				_lastActionId = ActionId;
+				ExecuteAction( ActionType, ActionArg0, ActionArg1 );
+			}
+
+			SlotCD0 = _slots[0]?.CooldownEndTime ?? 0f;
+			SlotCD1 = _slots[1]?.CooldownEndTime ?? 0f;
+			SlotCD2 = _slots[2]?.CooldownEndTime ?? 0f;
+			SlotCD3 = _slots[3]?.CooldownEndTime ?? 0f;
+			SlotCD4 = _slots[4]?.CooldownEndTime ?? 0f;
+			SlotCD5 = _slots[5]?.CooldownEndTime ?? 0f;
+			return;
 		}
 
-		SlotCD0 = _slots[0]?.CooldownEndTime ?? 0f;
-		SlotCD1 = _slots[1]?.CooldownEndTime ?? 0f;
-		SlotCD2 = _slots[2]?.CooldownEndTime ?? 0f;
-		SlotCD3 = _slots[3]?.CooldownEndTime ?? 0f;
-		SlotCD4 = _slots[4]?.CooldownEndTime ?? 0f;
-		SlotCD5 = _slots[5]?.CooldownEndTime ?? 0f;
+		RebuildClientCache();
 	}
 
 	public BaseSpell GetSlot( int index )
@@ -414,4 +418,52 @@ public sealed class SpellsDeck : Component
 
 		return -1;
 	}
+
+	private void RebuildClientCache()
+	{
+		for ( int i = 0; i < _owned.Length; i++ )
+		{
+			if ( !IsOwned( i ) )
+			{
+				_owned[i] = null;
+				continue;
+			}
+
+			_owned[i] ??= SpellCatalog.CreateInstance( SpellCatalog.All[i].ClassName );
+			if ( _owned[i] != null )
+				_owned[i].Tier = GetTier( i );
+		}
+
+		for ( int slot = 0; slot < RuntimeSlotCount; slot++ )
+		{
+			var idx = GetSlotIdx( slot );
+			_slots[slot] = idx >= 0 && idx < _owned.Length ? _owned[idx] : null;
+
+			var spell = _slots[slot];
+			if ( spell == null )
+				continue;
+
+			var syncedEnd = GetSlotCDEnd( slot );
+			if ( MathF.Abs( _lastSlotCooldownEnds[slot] - syncedEnd ) < 0.001f )
+				continue;
+
+			_lastSlotCooldownEnds[slot] = syncedEnd;
+			var remaining = MathF.Max( 0f, syncedEnd - Time.Now );
+			if ( remaining <= 0f )
+				spell.ResetCooldown();
+			else
+				spell.StartCooldown( remaining );
+		}
+	}
+
+	private float GetSlotCDEnd( int slot ) => slot switch
+	{
+		0 => SlotCD0,
+		1 => SlotCD1,
+		2 => SlotCD2,
+		3 => SlotCD3,
+		4 => SlotCD4,
+		5 => SlotCD5,
+		_ => 0f
+	};
 }

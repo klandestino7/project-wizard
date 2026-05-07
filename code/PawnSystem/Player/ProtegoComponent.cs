@@ -21,7 +21,7 @@ public sealed class ProtegoComponent : Component
 	[Sync] public int ShieldHP { get; private set; } = 0;
 	[Sync] private int _activatedTier { get; set; } = 0;
 
-	[Sync] private GameObject ShieldFx { get; set; }
+	private GameObject ShieldFx;
 
 	public bool IsShieldUp => ShieldActive && Time.Now < ShieldEndTime && ShieldHP > 0;
 	public bool IsPerfectBlockWindow => ShieldActive && Time.Now < ActivatedAt + PerfectBlockWindow;

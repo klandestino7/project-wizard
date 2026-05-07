@@ -505,18 +505,20 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 		var victim = GameUtils.GetPlayerFromComponent( damageInfo.Victim );
 		var killer = GameUtils.GetPlayerFromComponent( damageInfo.Attacker );
 
-		if ( victim == null ) return;
+		if ( victim?.IsValid() != true ) return;
+
+		var victimClient = victim.Client;
 
 		// Grant assists to players who dealt recent damage to victim (excluding the killer)
 		var tracker = Scene.GetAllComponents<DamageTracker>().FirstOrDefault();
-		if ( tracker != null && victim.Client != null )
+		if ( tracker != null && victimClient?.IsValid() == true )
 		{
 			var recentDamagers = new HashSet<PlayerPawn>();
 
-			foreach ( var damageEntry in tracker.GetDamageInflictedTo( victim.Client ) )
+			foreach ( var damageEntry in tracker.GetDamageInflictedTo( victimClient ) )
 			{
 				var assistant = GameUtils.GetPlayerFromComponent( damageEntry?.Attacker );
-				if ( assistant == null || assistant == killer || assistant == victim || assistant.Team == victim.Team )
+				if ( assistant?.IsValid() != true || assistant == killer || assistant == victim || assistant.Team == victim.Team )
 					continue;
 
 				recentDamagers.Add( assistant );

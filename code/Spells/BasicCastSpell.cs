@@ -9,7 +9,7 @@ public sealed class BasicCastSpell : BaseSpell
 	public override string SpellName => "Basic Cast";
 	public override float ManaCost => 0f;
 	public override float BaseCooldown => 1f / 2f; // 3 tiros/segundo
-	public override string Image => "ui/spells/stypefy.png";
+	public override string Image => "ui/spells/stupefy.png";
 
 	public int BaseDamage { get; set; } = 40;
 	public int HeadshotDamage { get; set; } = 80;

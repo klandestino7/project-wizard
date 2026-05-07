@@ -40,7 +40,8 @@
 @code
 {
     private Client LocalClient => Client.Local;
-    private Team MyTeam => LocalClient?.Team ?? Team.Unassigned;
+    private Client EffectiveClient => LocalClient?.IsValid() == true ? LocalClient : Client.Viewer;
+    private Team MyTeam => EffectiveClient?.Team ?? Team.Unassigned;
     private Team EnemyTeam => MyTeam == Team.Unassigned ? Team.Unassigned : MyTeam.GetOpponents();
     private bool HasAssignedTeams => MyTeam != Team.Unassigned && EnemyTeam != Team.Unassigned;
 	RoundManager Round => RoundManager.Instance;
@@ -82,7 +83,7 @@
     private int storedTime;
     public override void Tick()
     {
-        if ( LocalClient?.IsValid() != true )
+        if ( EffectiveClient?.IsValid() != true )
             return;
 
         if ( Time.HasValue )
@@ -125,7 +126,7 @@
     {
         var hash = new HashCode();
 
-        hash.Add( LocalClient?.Id ?? 0 );
+        hash.Add( EffectiveClient?.Id );
         hash.Add( MyTeam );
         hash.Add( EnemyTeam );
 
