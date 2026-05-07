@@ -498,8 +498,12 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 	{
 		if ( !Networking.IsHost ) return;
 
-		var victim = eventArgs.DamageInfo.Victim?.Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
-		var killer = eventArgs.DamageInfo.Attacker?.Components.Get<PlayerPawn>( FindMode.EverythingInSelf );
+		var damageInfo = eventArgs?.DamageInfo;
+		if ( damageInfo == null )
+			return;
+
+		var victim = GameUtils.GetPlayerFromComponent( damageInfo.Victim );
+		var killer = GameUtils.GetPlayerFromComponent( damageInfo.Attacker );
 
 		if ( victim == null ) return;
 
@@ -507,10 +511,16 @@ public sealed class RoundManager : Component, IWarlockMatchRule, IWarlockScoring
 		var tracker = Scene.GetAllComponents<DamageTracker>().FirstOrDefault();
 		if ( tracker != null && victim.Client != null )
 		{
-			var recentDamagers = tracker.GetDamageInflictedTo( victim.Client )
-				.Select( d => d.Attacker?.Components.Get<PlayerPawn>( FindMode.EverythingInSelf ) )
-				.Where( p => p != null && p != killer && p != victim && p.Team != victim.Team )
-				.Distinct();
+			var recentDamagers = new HashSet<PlayerPawn>();
+
+			foreach ( var damageEntry in tracker.GetDamageInflictedTo( victim.Client ) )
+			{
+				var assistant = GameUtils.GetPlayerFromComponent( damageEntry?.Attacker );
+				if ( assistant == null || assistant == killer || assistant == victim || assistant.Team == victim.Team )
+					continue;
+
+				recentDamagers.Add( assistant );
+			}
 
 			foreach ( var assistant in recentDamagers )
 			{

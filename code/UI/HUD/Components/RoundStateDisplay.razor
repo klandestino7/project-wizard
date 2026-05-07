@@ -3,7 +3,7 @@
 @attribute [StyleSheet]
 
 <root class="flex gap-sm justify-center row">
-    @if ( MyTeamPlayers is not null )
+    @if ( HasAssignedTeams )
     {
         <RoundStateTeam Score="@MyTeamScore" Team="@MyTeam" Players="@MyTeamPlayers" iconPosition="Left" />
     }
@@ -27,7 +27,7 @@
         }
     </div>
 
-    @if ( EnemyTeamPlayers is not null )
+    @if ( HasAssignedTeams )
     {
         <RoundStateTeam Score="@EnemyTeamScore" Team="@EnemyTeam" Players="@EnemyTeamPlayers" iconPosition="Right" />
     }
@@ -39,8 +39,10 @@
 
 @code
 {
-    private Team MyTeam => Client.Local.Team;
-    private Team EnemyTeam => MyTeam.GetOpponents();
+    private Client LocalClient => Client.Local;
+    private Team MyTeam => LocalClient?.Team ?? Team.Unassigned;
+    private Team EnemyTeam => MyTeam == Team.Unassigned ? Team.Unassigned : MyTeam.GetOpponents();
+    private bool HasAssignedTeams => MyTeam != Team.Unassigned && EnemyTeam != Team.Unassigned;
 	RoundManager Round => RoundManager.Instance;
 
     private string MyTeamScore { get; set; } = "0";
@@ -49,9 +51,9 @@
     private List<Client> MyTeamPlayers { get; } = new();
     private List<Client> EnemyTeamPlayers { get; } = new();
 
-    public string Status => GameMode.Instance.IsValid() ? GameMode.Instance.DisplayedStatus : "";
-    public string IconPath => GameMode.Instance.IsValid() ? GameMode.Instance.Get<ShowStatusIcon>()?.IconPath : "";
-    public TimeSpan? Time => GameMode.Instance.IsValid() ? GameMode.Instance.DisplayedTime : null;
+    public string Status => GameMode.Instance?.IsValid() == true ? GameMode.Instance.DisplayedStatus : "";
+    public string IconPath => GameMode.Instance?.IsValid() == true ? GameMode.Instance.Get<ShowStatusIcon>()?.IconPath : "";
+    public TimeSpan? Time => GameMode.Instance?.IsValid() == true ? GameMode.Instance.DisplayedTime : null;
 
 
     RenderFragment RenderRoundInfo() => __builder =>
@@ -80,6 +82,9 @@
     private int storedTime;
     public override void Tick()
     {
+        if ( LocalClient?.IsValid() != true )
+            return;
+
         if ( Time.HasValue )
         {
             var timeInSeconds = (int)Time.Value.TotalSeconds;
@@ -93,10 +98,10 @@
         MyTeamPlayers.Clear();
         EnemyTeamPlayers.Clear();
 
-        if ( MyTeam == Team.Unassigned || EnemyTeam == Team.Unassigned )
+        if ( !HasAssignedTeams )
             return;
 
-        if ( Round.IsValid() )
+        if ( Round?.IsValid() == true )
         {
             MyTeamScore = MyTeam == Team.Aurors
                 ? Round.AurorScore.ToString()
@@ -120,6 +125,7 @@
     {
         var hash = new HashCode();
 
+        hash.Add( LocalClient?.Id ?? 0 );
         hash.Add( MyTeam );
         hash.Add( EnemyTeam );
 

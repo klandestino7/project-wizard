@@ -755,7 +755,10 @@ SplashScreen
 
 .match-accept-overlay {
 	position: absolute;
-	inset: 0;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -899,11 +902,11 @@ SplashScreen
 }
 
 .match-decline-btn {
-	background: rgba(255, 255, 255, 0.05);
+	background-color: rgba(255, 255, 255, 0.05);
 	color: #cbd5e1;
 
 	&:hover {
-		background: rgba(255, 255, 255, 0.1);
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	&:active {
@@ -916,7 +919,7 @@ SplashScreen
 	align-items: center;
 	justify-content: center;
 	padding: 10px;
-	background: rgba(255, 255, 255, 0.03);
+	background-color: rgba(255, 255, 255, 0.03);
 	border-radius: 6px;
 
 	label {

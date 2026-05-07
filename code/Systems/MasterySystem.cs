@@ -24,7 +24,8 @@ public sealed class MasterySystem : Component
 
 	protected override void OnStart()
 	{
-		Player = Components.Get<PlayerPawn>( FindMode.InAncestors );
+		Player = Components.Get<PlayerPawn>( FindMode.EverythingInSelf )
+			?? Components.Get<PlayerPawn>( FindMode.InAncestors );
 	}
 
 	/// <summary>
@@ -62,12 +63,16 @@ public sealed class MasterySystem : Component
 
 	private BaseSpell GetSpellByClassName( string className )
 	{
+		if ( Player?.IsValid() != true )
+			return null;
+
 		var deck = Player.SpellsDeck;
 		if ( deck == null ) return null;
 
-		if ( deck.BasicCast.GetType().Name == className ) return deck.BasicCast;
+		if ( deck.BasicCast != null && deck.BasicCast.GetType().Name == className )
+			return deck.BasicCast;
 
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < SpellsDeck.RuntimeSlotCount; i++ )
 		{
 			var s = deck.GetSlot( i );
 			if ( s != null && s.GetType().Name == className ) return s;

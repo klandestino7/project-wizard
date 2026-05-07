@@ -3,6 +3,11 @@
 
 @attribute [StyleSheet]
 
+@if ( Player?.IsValid() != true )
+{
+    return;
+}
+
 <root class="hud with-deadzone bottom-middle flex space-evenly align-center" style="width: 800px; height: 64px;">
     <VitalsOld />
 
@@ -26,13 +31,13 @@
 
 @code {
     public PlayerPawn Player => Client.Viewer?.PlayerPawn;
-	SpellsDeck _deck => Player.SpellsDeck;
+	SpellsDeck _deck => Player?.SpellsDeck;
     RenderFragment RenderAbilitySlot( string key, BaseSpell spell ) => __builder =>
 	{
 		bool ready = spell?.IsReady ?? true;
 		<div class="ability-slot @( ready ? "ready" : "cooling" )">
 			<div class="ability-key">@key</div>
-			<div class="ability-image" style="background: url(@spell?.Image)"> </div>
+			<div class="ability-image" style="@BuildSpellImageStyle( spell?.Image )"> </div>
 			<!-- <div class="ability-name">@( spell?.SpellName ?? "–" )</div> -->
 			@if ( !ready )
 			{
@@ -50,14 +55,21 @@
 		</div>
 	};
 
+	string BuildSpellImageStyle( string imagePath )
+	{
+		return string.IsNullOrWhiteSpace( imagePath )
+			? "background-image: none;"
+			: $"background-image: url(\"{imagePath}\");";
+	}
+
     protected override int BuildHash() => System.HashCode.Combine(
 		Player?.SpellsDeck,
 		Player?.IsAlive,
 		Player?.ItemSlot1?.Charges ?? 0,
 		Player?.ItemSlot2?.Charges ?? 0,
-		_deck.GetSlot(0),
-		_deck.GetSlot(1),
-		_deck.GetSlot(2),
-		_deck.GetSlot(3)
+		_deck?.GetSlot(0),
+		_deck?.GetSlot(1),
+		_deck?.GetSlot(2),
+		_deck?.GetSlot(3)
 	);
 }

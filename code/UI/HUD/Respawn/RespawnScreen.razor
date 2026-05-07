@@ -2,17 +2,17 @@
 @inherits Panel
 @attribute [StyleSheet]
 
-@if ( !Respawner.IsValid() )
+@if ( !Respawner.IsValid() || LocalClient?.IsValid() != true )
 {
     return;
 }
 
-@if ( Client.PlayerPawn.IsValid() )
+@if ( LocalClient.PlayerPawn?.IsValid() == true )
 {
     return;
 }
 
-@if ( Client.RespawnState == RespawnState.Immediate ) 
+@if ( LocalClient.RespawnState == RespawnState.Immediate ) 
 {
     return;
 }
@@ -44,7 +44,7 @@
 @code
 {
     public Respawner Respawner => Scene.GetAllComponents<Respawner>().FirstOrDefault();
-    public Client Client => Client.Local;
+    public Client LocalClient => Client.Local;
 
     protected override int BuildHash()
     {

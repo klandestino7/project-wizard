@@ -2,7 +2,7 @@
 @attribute [StyleSheet]
 
 <root class="@(Selected ? "selected" : "")">
-    <div class="background" style="background-image: url( @Map.GetMetadata( "Image", null ) )">
+    <div class="background" style="@BuildBackgroundStyle()">
         <div class="grow" />
     </div>
 
@@ -20,5 +20,13 @@
     protected override void OnClick( MousePanelEvent e )
     {
         OnSelected?.Invoke( Map );
+    }
+
+    private string BuildBackgroundStyle()
+    {
+        var image = Map?.GetMetadata( "Image", null );
+        return string.IsNullOrWhiteSpace( image )
+            ? "background-image: none;"
+            : $"background-image: url(\"{image}\");";
     }
 }

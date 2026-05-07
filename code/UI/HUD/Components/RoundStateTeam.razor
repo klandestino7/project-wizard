@@ -66,6 +66,6 @@
 
     private string BuildStyle()
     {
-        return $"background: linear-gradient( to {IconPosition}, rgba( {TeamColor}, 0.5 ), rgba( {TeamColor}, 0.75 ) ); border: 1px solid rgba( darken( {TeamColor}, 0.5 ), 0.5 );";
+        return $"background-color: {TeamColor}; opacity: 0.75; border: 1px solid {TeamColor};";
     }
 }

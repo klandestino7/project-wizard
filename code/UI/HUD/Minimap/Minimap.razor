@@ -2,7 +2,7 @@
 @attribute [StyleSheet]
 @inherits Panel
 
-@if ( !Client.Viewer.Pawn.IsValid() ) return;
+@if ( !CanRender ) return;
 
 <root class="radar">
     @if (Renderer.IsValid())
@@ -10,8 +10,8 @@
         <div class="mask" style="@MapRot()">
             <div class="map-parent">
                 <div style="@MapTransform()">
-                    <div class="minimap" style="background-image: url( @Renderer.CurrentMinimapPath )" />
-                    <div class="overlay" style="background-image: url( @Renderer.CurrentMinimapPath )" />
+                    <div class="minimap" style="@BuildBackgroundImageStyle( Renderer.CurrentMinimapPath )" />
+                    <div class="overlay" style="@BuildBackgroundImageStyle( Renderer.CurrentMinimapPath )" />
 
                     @foreach ( var volume in Game.ActiveScene.GetAllComponents<IMinimapVolume>() )
                     {
@@ -44,7 +44,7 @@
                     if (icon is ICustomMinimapIcon custom)
                         style += custom.CustomStyle;
 
-                    <div class="marker" style="background-image: url( @icon.IconPath ); @style z-index: @icon.IconOrder;" />
+                    <div class="marker" style="@($"{BuildBackgroundImageStyle( icon.IconPath )} {style} z-index: {icon.IconOrder};")" />
                 }
                 
                 if ( element is IMinimapLabel label )
@@ -68,14 +68,16 @@
 @code
 {
     public MinimapRenderer Renderer => Game.ActiveScene.GetAllComponents<MinimapRenderer>().FirstOrDefault();
+    public Client Viewer => Client.Viewer;
+    public bool CanRender => Viewer?.IsValid() == true && Viewer.Pawn?.IsValid() == true && Renderer?.IsValid() == true;
 
-    public Color TeamColor => Client.Viewer.Team.GetColor();
-    private PlayerPawn Player => Client.Viewer.PlayerPawn;
+    public Color TeamColor => Viewer?.Team.GetColor() ?? Color.White;
+    private PlayerPawn Player => Viewer?.PlayerPawn;
 
-    public Color ViewerColor => Client.Viewer.PlayerColor;
+    public Color ViewerColor => Viewer?.PlayerColor ?? Color.White;
 
-    public Vector3 ViewPos => Client.Viewer.Pawn?.WorldPosition ?? Vector3.Zero;
-    public float ViewYaw => Client.Viewer.Pawn?.EyeAngles.yaw ?? 0;
+    public Vector3 ViewPos => Viewer?.Pawn?.WorldPosition ?? Vector3.Zero;
+    public float ViewYaw => Viewer?.Pawn?.EyeAngles.yaw ?? 0;
 
     public float Zoom => 2;
 
@@ -85,6 +87,9 @@
     // generic
     string WorldToMap( Vector3 worldPosition )
     {
+        if ( Renderer?.IsValid() != true )
+            return string.Empty;
+
         var position = Renderer.FromWorldRadar( worldPosition, ViewPos, FixedMode ? 0 : ViewYaw, Zoom );
         return $"left: {Length.Fraction( position.x )}; top: {Length.Fraction( position.y )};";
     }
@@ -96,6 +101,9 @@
 
     string GetBox( IMinimapVolume volume )
     {
+        if ( Renderer?.IsValid() != true )
+            return string.Empty;
+
         var min = Renderer.FromWorld(volume.WorldPosition + (volume.Size / 2));
         var max = Renderer.FromWorld(volume.WorldPosition - (volume.Size / 2));
         var remappedSize = max - min;
@@ -132,8 +140,18 @@
 
     string MapTransform()
     {
+        if ( Renderer?.IsValid() != true )
+            return string.Empty;
+
         var position = -Renderer.FromWorld(ViewPos) * Zoom;
         return $"position: absolute; left: {Length.Fraction( position.x )}; top: {Length.Fraction( position.y )}; width: {Zoom * 100}%; height: {Zoom * 100}%";
+    }
+
+    string BuildBackgroundImageStyle( string path )
+    {
+        return string.IsNullOrWhiteSpace( path )
+            ? "background-image: none;"
+            : $"background-image: url(\"{path}\");";
     }
 
     string MapRot()

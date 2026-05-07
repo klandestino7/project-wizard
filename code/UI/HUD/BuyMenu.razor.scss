@@ -627,11 +627,11 @@ BuyMenu {
 	}
 
 	&.filled {
-		background: url("ui/buy_menu/bg_deck_item_empty.png") !important;
+		background-image: url("ui/buy_menu/bg_deck_item_empty.png");
 	}
 
 	&.pending {
-		background: url("ui/buy_menu/bg_deck_item_empty.png") !important;
+		background-image: url("ui/buy_menu/bg_deck_item_empty.png");
 	}
 }
 
