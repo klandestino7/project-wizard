@@ -9,6 +9,7 @@ namespace Warlocks;
 /// </summary>
 public sealed class IncendioSpell : BaseSpell
 {
+	private const float ImpactDamageRadius = 72f;
 	private static readonly int[]   DamageByTier  = { 60, 80, 100 };
 	private static readonly float[] BurnDpsByTier  = { 20f, 25f, 30f };
 	private static readonly float[] BurnDurByTier  = { 3f, 4f, 5f };
@@ -35,6 +36,7 @@ public sealed class IncendioSpell : BaseSpell
 			speed:        1800f,
 			damage:       damage,
 			color:        new Color( 1f, 0.4f, 0.05f ),
+			impactDamageRadius: ImpactDamageRadius,
 			burnDPS:      burnDps,
 			burnDuration: burnDuration
 		);

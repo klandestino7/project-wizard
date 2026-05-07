@@ -4,9 +4,11 @@
 /// </summary>
 public sealed class BasicCastSpell : BaseSpell
 {
+	private const float ImpactDamageRadius = 64f;
+
 	public override string SpellName => "Basic Cast";
 	public override float ManaCost => 0f;
-	public override float BaseCooldown => 1f / 3f; // 3 tiros/segundo
+	public override float BaseCooldown => 1f / 2f; // 3 tiros/segundo
 	public override string Image => "ui/spells/stypefy.png";
 
 	public int BaseDamage { get; set; } = 40;
@@ -18,12 +20,13 @@ public sealed class BasicCastSpell : BaseSpell
 		int damage = wand.ResolveDamageInt( BaseDamage );
 		wand?.SpawnProjectile(
 			sourceClass:    nameof( StupefySpell ),
-			speed:          5000f,
+			speed:          500f,
 			damage:         damage,
 			color:          new Color( 0.9f, 0.1f, 0.1f ),
 			stun:           0,
 			pierceShield:   Tier >= 2,
-			launchAirborne: Tier >= 2
-		);
+			launchAirborne: Tier >= 2,
+			impactDamageRadius: ImpactDamageRadius
+		); 
 	}
 }

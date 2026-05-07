@@ -74,13 +74,22 @@ public static partial class GameUtils
 	public static IReadOnlyList<Team> Teams { get; } = new[] { Team.DarkFollowers, Team.Aurors };
 
 	/// <summary>
+	/// Get a player from a GameObject that belongs to a player or their descendants.
+	/// </summary>
+	public static PlayerPawn GetPlayerFromGameObject( GameObject gameObject )
+	{
+		if ( !gameObject.IsValid() ) return null;
+		return gameObject.Root.GetComponentInChildren<PlayerPawn>();
+	}
+
+	/// <summary>
 	/// Get a player from a component that belongs to a player or their descendants.
 	/// </summary>
 	public static PlayerPawn GetPlayerFromComponent( Component component )
 	{
 		if ( component is PlayerPawn player ) return player;
 		if ( !component.IsValid() ) return null;
-		return !component.GameObject.IsValid() ? null : component.GameObject.Root.GetComponentInChildren<PlayerPawn>();
+		return GetPlayerFromGameObject( component.GameObject );
 	}
 
 	/// <summary>

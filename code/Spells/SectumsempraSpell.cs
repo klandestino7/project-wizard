@@ -23,7 +23,7 @@ public sealed class SectumsempraSpell : BaseSpell
 
 		if ( !tr.Hit ) return;
 
-		var victim = tr.GameObject?.Components.Get<PlayerPawn>();
+		var victim = GameUtils.GetPlayerFromGameObject( tr.GameObject );
 		if ( victim == null || victim.Team == wand.Player.Team ) return;
 
 		float hitHeight = tr.EndPosition.z - victim.WorldPosition.z;

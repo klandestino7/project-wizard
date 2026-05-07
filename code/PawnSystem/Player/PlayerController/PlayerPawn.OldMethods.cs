@@ -6,7 +6,7 @@ public partial class PlayerPawn
 	public const float EyeHeight = 64f;
 
 	// ─── Propriedades sincronizadas ───────────────────────────────────
-	[Property, Sync] public Team Team { get; set; } = Team.Unassigned;
+	// [Property, Sync] public Team Team { get; set; } = Team.Unassigned;
 	[Property, Sync] public int Kills { get; set; } = 0;
 	[Property, Sync] public int Deaths { get; set; } = 0;
 

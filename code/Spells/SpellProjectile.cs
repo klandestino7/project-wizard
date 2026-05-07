@@ -12,6 +12,7 @@ public sealed class SpellProjectile : Component
 	[Property, Sync] public float StunDuration { get; set; } = 0f;
 	[Property, Sync] public float Speed { get; set; } = 2000f;
 	[Property, Sync] public bool PierceShield { get; set; } = false;
+	[Property, Sync] public float ImpactDamageRadius { get; set; } = 0f;
 	[Property, Sync] public Color SpellColor { get; set; } = Color.Red;
 
 	/// <summary>Se true, lança a vítima no ar após aplicar stun (Stupefy T2).</summary>
@@ -104,7 +105,7 @@ public sealed class SpellProjectile : Component
 
 	private void OnHit( SceneTraceResult tr )
 	{
-		var victim = tr.GameObject?.Components.Get<PlayerPawn>();
+		var victim = ResolveVictim( tr );
 
 		if ( victim != null && victim.Team != ShooterTeam )
 		{
@@ -165,6 +166,34 @@ public sealed class SpellProjectile : Component
 
 		PlayHitEffect( tr.EndPosition, tr.Normal );
 		PlayImpactSound( tr.EndPosition );
+	}
+
+	private PlayerPawn ResolveVictim( SceneTraceResult tr )
+	{
+		var directVictim = GameUtils.GetPlayerFromGameObject( tr.GameObject );
+		if ( directVictim != null )
+			return directVictim;
+
+		if ( ImpactDamageRadius <= 0f )
+			return null;
+
+		PlayerPawn nearestVictim = null;
+		var nearestDistance = ImpactDamageRadius;
+
+		foreach ( var candidate in Scene.GetAllComponents<PlayerPawn>() )
+		{
+			if ( candidate == null || !candidate.IsAlive || candidate.Team == ShooterTeam )
+				continue;
+
+			var distance = candidate.WorldPosition.Distance( tr.EndPosition );
+			if ( distance > nearestDistance )
+				continue;
+
+			nearestVictim = candidate;
+			nearestDistance = distance;
+		}
+
+		return nearestVictim;
 	}
 
 	private void TryPlayPassBy()

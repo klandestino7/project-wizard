@@ -7,6 +7,8 @@
 /// </summary>
 public sealed class StupefySpell : BaseSpell
 {
+	private const float ImpactDamageRadius = 64f;
+
 	private static readonly int[]   DamageByTier = { 80, 120, 160 };
 	private static readonly float[] StunByTier   = { 1f, 1.5f, 2f };
 
@@ -28,7 +30,8 @@ public sealed class StupefySpell : BaseSpell
 			color:          new Color( 0.9f, 0.1f, 0.1f ),
 			stun:           stunDuration,
 			pierceShield:   Tier >= 2,
-			launchAirborne: Tier >= 2
+			launchAirborne: Tier >= 2,
+			impactDamageRadius: ImpactDamageRadius
 		);
 	}
 }

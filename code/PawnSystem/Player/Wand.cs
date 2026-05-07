@@ -141,6 +141,7 @@ public sealed class Wand : Component
 		float stun = 0f,
 		bool pierceShield = false,
 		bool launchAirborne = false,
+		float impactDamageRadius = 0f,
 		float burnDPS = 0f,
 		float burnDuration = 0f,
 		float slowFraction = 0f,
@@ -163,6 +164,7 @@ public sealed class Wand : Component
 		proj.StunDuration = stun;
 		proj.PierceShield = pierceShield;
 		proj.LaunchAirborne = launchAirborne;
+		proj.ImpactDamageRadius = impactDamageRadius;
 		proj.BurningDPS = burnDPS;
 		proj.BurningDuration = burnDuration;
 		proj.SlowFraction = slowFraction;
